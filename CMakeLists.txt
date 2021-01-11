@@ -1,20 +1,15 @@
-cmake_minimum_required(VERSION 3.8) # For C++17 Support
+cmake_minimum_required(VERSION 3.8)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-project(YOLO LANGUAGES CXX)
-set(APP_NAME YOLO)
+project("Yolo!" LANGUAGES CXX)
+set(APP_NAME "Yolo") # CMake doesn't support the "!"
 set(CMAKE_CXX_STANDARD 17)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES GNU)
-    set (UNIX TRUE)
-    add_definitions(-DPLATFORM_UNIX)
-
     set(CMAKE_CXX_FLAGS "-Wall")
     set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fprofile-arcs -ftest-coverage")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 elseif (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
-	set(WINDOWS TRUE)
-    add_definitions(-DPLATFORM_WINDOWS)
-    
     set(CMAKE_CXX_FLAGS "/W4 /EHsc")
     set(CMAKE_CXX_FLAGS_DEBUG "/Zi /Od")
     set(CMAKE_CXX_FLAGS_RELEASE "/O2")
@@ -30,27 +25,18 @@ else()
 endif()
 
 # Source files
-include_directories(External)
-include_directories(Source/Application)
+set(SRC_ROOT "Yolo!")
+include_directories(${SRC_ROOT})
 
-file(GLOB_RECURSE COMMON_SOURCES 
-    Source/Application/*.hpp
-    Source/Application/*.cpp
+file(GLOB_RECURSE SRC_FILES
+    "${SRC_ROOT}/Source/**.hpp"
+    "${SRC_ROOT}/Source/**.cpp"
 )
 
 # Executables
-# add_executable(${APP_NAME} ${COMMON_SOURCES} Source/Application/EntryPoint.cpp)
-# if (UNIX)
-#     target_link_libraries(${APP_NAME} pthread)
-# endif()
-
-# # Copy exemples and assets to build directory
-# file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
-# Copy Coverage generation for windows
-# if (WIN32)
-# file(COPY ${CMAKE_CURRENT_Source_DIR}/GenerateCoverage.bat DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-# endif()
+add_executable(${APP_NAME} ${SRC_FILES})
+set_property (DIRECTORY PROPERTY VS_STARTUP_PROJECT ${APP_NAME})
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRC_FILES})
 
 # Coverage tests
 # include(CTest)

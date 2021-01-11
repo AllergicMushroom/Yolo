@@ -33,7 +33,25 @@ project "Yolo!"
 
     files
     {
-        "%{prj.name}/*.txt"
+        -- General files
+        
+        ".gitignore",
+        "LICENSE",
+        "readme.md",
+
+        -- Generation scripts
+
+        "CMakeLists.txt",
+        "premake5.lua",
+
+        -- Documentation files
+
+        "%{prj.name}/**.txt",
+
+        -- Source files
+
+        "%{prj.name}/**.hpp",
+        "%{prj.name}/**.cpp"
     }
 
     includedirs
