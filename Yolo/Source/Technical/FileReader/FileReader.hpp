@@ -9,18 +9,17 @@ namespace Yolo
 {
     class FileReader
     {
+    private:
+        FileReader(std::string content);
+
     public:
-        FileReader(std::string filepath);
-        
-        inline bool hasFile() const { return mHasFile; }
+        static std::optional<FileReader> create(std::string filepath);
 
         inline std::string getContent() const { return mFileContent; }
 
         std::optional<std::string> getNextLine();
 
     private:
-        bool mHasFile;
-
         std::string mFileContent;
 
         size_t mCurrentPosition;

@@ -6,27 +6,33 @@ static constexpr char* EOL = "\n";
 
 namespace Yolo
 {
-    FileReader::FileReader(std::string filepath):
-        mCurrentPosition(0)
+    FileReader::FileReader(std::string fileContent):
+        mCurrentPosition(0), mFileContent(fileContent)
     {
+        
+    }
+
+    std::optional<FileReader> FileReader::create(std::string filepath)
+    {
+        std::string fileContent;
+
         std::ifstream fileStream(filepath, std::ios::in);
         if (fileStream)
         {
             fileStream.seekg(0, std::ios::end);
-            mFileContent.resize(fileStream.tellg());
+            fileContent.resize(fileStream.tellg());
 
             fileStream.seekg(0, std::ios::beg);
-            fileStream.read(&mFileContent[0], mFileContent.size());
+            fileStream.read(&fileContent[0], fileContent.size());
 
             fileStream.close();
 
-            mHasFile = true;
+            return FileReader(fileContent);
         }
-        else
-        {
-            YOLO_ERROR("File {0} not found!", filepath);
-            mHasFile = false;
-        }
+
+        YOLO_ERROR("File {0} not found!", filepath);
+
+        return std::nullopt;
     }
 
     std::optional<std::string> FileReader::getNextLine()

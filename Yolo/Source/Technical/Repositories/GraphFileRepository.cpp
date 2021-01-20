@@ -33,12 +33,14 @@ namespace Yolo
 
     std::optional<Graph> GraphFileRepository::load(std::string ID)
     {
-        Yolo::FileReader fileReader = FileReader(ID);
+        std::optional<Yolo::FileReader> fileOptional = FileReader::create(ID);
 
-        if (!fileReader.hasFile())
+        if (!fileOptional.has_value())
         {
             return std::nullopt;
         }
+
+        Yolo::FileReader& fileReader = *fileOptional;
 
         std::vector<std::vector<std::string>> tokenizedLines;
 
