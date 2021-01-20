@@ -1,4 +1,4 @@
-workspace "Yolo!"
+workspace "Yolo"
     architecture "x64"
     
     configurations
@@ -9,13 +9,18 @@ workspace "Yolo!"
     }
 
 outputdir = "%{cfg.buildcfg}-%{cfg.architecture}-%{cfg.system}"
+libdir = "Libraries"
 
-IncludeDir = {}
+includedir = {}
+includedir["spdlog"] = "Libraries/spdlog-1.8.2/include"
 
--- IncludeDir["HeaderLibs"]    = "Ocean/Source/Thirdparty/Headers"
+group "Dependencies"
+    include "Libraries/spdlog-1.8.2"
 
-project "Yolo!"
-    location "Yolo!"
+group ""
+
+project "Yolo"
+    location "Yolo"
     kind "ConsoleApp"
     staticruntime "On"
 
@@ -51,14 +56,20 @@ project "Yolo!"
         -- Source files
 
         "%{prj.name}/**.hpp",
-        "%{prj.name}/**.cpp"
+        "%{prj.name}/**.cpp",
     }
 
     includedirs
     {
         "%{prj.name}/Source",
 
-        -- "%{IncludeDir.HeaderLibs}"
+        "%{includedir.spdlog}",
+    }
+
+    postbuildcommands
+    {
+        -- postbuildcommands starts in bin directory, so we have to cd ..
+        "{copy} ../Data %{cfg.targetdir}/Data",
     }
 
     filter "system:windows"
@@ -77,7 +88,7 @@ project "Yolo!"
         optimize "On"
 
     filter "configurations:Release"
-        defines "YOO_MODE_RELEASE"
+        defines "YOLO_MODE_RELEASE"
         runtime "Release"
         symbols "Off"
         optimize "On"

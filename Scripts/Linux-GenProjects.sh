@@ -1,3 +1,4 @@
-cd ..
+pushd ..
+ls
 ./Scripts/premake5 gmake
-cd ./Scripts
+popd
