@@ -66,6 +66,12 @@ project "Yolo"
         "%{includedir.spdlog}",
     }
 
+    postbuildcommands
+    {
+        -- postbuildcommands starts in bin directory so we have to cd ..
+        "{copy} ../Instances {cfg.targetdir}/Instances"
+    }
+
     filter "system:windows"
         systemversion "latest"
 
