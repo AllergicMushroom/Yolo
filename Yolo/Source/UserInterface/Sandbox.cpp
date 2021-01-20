@@ -10,7 +10,7 @@ int main()
 
     Yolo::GraphFileRepository graphRepository;
 
-    std::optional<Yolo::Graph> g = graphRepository.load("Data/quatreSommets.txt");
+    std::optional<Yolo::Graph> g = graphRepository.load("Instances/quatreSommets.txt");
 
     Yolo::Core::shutdown();
 
