@@ -85,12 +85,13 @@ namespace Yolo
         checkPositivity(maxDegree, "Error: Maximum degree in instance " + ID + "  must be positive.");
 
         checkPositivity(maxDegree - minDegree, "Error: Maximum degree must be higher than or equal to minimum degree in instance " + ID);
-        
-        std::vector<std::vector<Edge>> adjacencyList;
-        for (int i = 0; i < nbVertices; ++i)
+
+        if (!isGraphValid)
         {
-            adjacencyList.push_back(std::vector<Edge>());
+            return std::nullopt;
         }
+        
+        std::vector<std::vector<Edge>> adjacencyList(nbVertices);
 
         for (int i = 0; i < nbEdges; ++i)
         {
@@ -98,15 +99,22 @@ namespace Yolo
             checkPositivity(tokenizedLines[lineIndex].size() - sNbEdgeProperties, "Error: Missing a property in arc in line " + std::to_string(lineIndex) + std::string(" in instance ") + ID);
 
             int source = std::stoi(tokenizedLines[lineIndex][0]);
-            checkPositivity(source, "Error: Arc in line #" + std::to_string(lineIndex) + std::string("in instance ") + ID + std::string(" must have a strictly positive source vertex."));
+            checkPositivity(source, "Error: Arc in line #" + std::to_string(lineIndex) + std::string(" in instance ") + ID + std::string(" must have a strictly positive source vertex."));
+            checkPositivity(nbVertices - source, "Error: Arc in line #" + std::to_string(lineIndex) + std::string(" in instance ") + ID + std::string(" must be lower than or equal to number of vertices."));
 
             int destination = std::stoi(tokenizedLines[lineIndex][1]);
-            checkPositivity(source, "Error: Arc in line #" + std::to_string(lineIndex) + std::string("in instance ") + ID + std::string(" must have a strictly positive destination vertex."));
+            checkPositivity(destination, "Error: Arc in line #" + std::to_string(lineIndex) + std::string(" in instance ") + ID + std::string(" must have a strictly positive destination vertex."));
+            checkPositivity(nbVertices - destination, "Error: Arc in line #" + std::to_string(lineIndex) + std::string(" in instance ") + ID + std::string(" must be lower than or equal to number of vertices."));
 
             double weight = stod(tokenizedLines[lineIndex][2]);
-            checkPositivity(source, "Error: Arc in line #" + std::to_string(lineIndex) + std::string("in instance ") + ID + std::string(" must have a positive weight."));
+            checkPositivity(source, "Error: Arc in line #" + std::to_string(lineIndex) + std::string(" in instance ") + ID + std::string(" must have a positive weight."));
 
-            /* We prefer indices from 0 to n-1 instead of 1 to n */
+            if (!isGraphValid)
+            {
+                return std::nullopt;
+            }
+
+            /* Vertices indices from [1, n] to [0, n-1] */
             --source;
             --destination;
 
@@ -120,22 +128,23 @@ namespace Yolo
             checkPositivity(tokenizedLines[lineIndex].size() - sNbVertexProperties, "Error: Missing a property in vertex in line " + std::to_string(i) + std::string(" in instance ") + ID);
 
             int source = stoi(tokenizedLines[lineIndex][0]);
-            checkPositivity(source, "Error: Vertex in line #" + std::to_string(i) + std::string(" in instance ") + ID + std::string(" must have a strictly positive index."));
+            checkPositivity(source, "Error: Vertex in line #" + std::to_string(lineIndex) + std::string(" in instance ") + ID + std::string(" must have a strictly positive index."));
+            checkPositivity(nbVertices - source, "Error: Vertex in line #" + std::to_string(lineIndex) + std::string(" in instance ") + ID + std::string(" must be lower than or equal to number of vertices."));
 
             int degree = stoi(tokenizedLines[lineIndex][1]);
             if (degree != adjacencyList[i].size())
             {
                 YOLO_ERROR("Error: Vertex in line #{0}  in instance {1} has different degree than the one calculated from the adjacency list.", lineIndex, ID);
-                isGraphValid = false;
+                return std::nullopt;
             }
         }
 
-        if (isGraphValid)
+        if (!isGraphValid)
         {
-            return Graph(adjacencyList);
+            return std::nullopt;
         }
 
-        return std::nullopt;
+        return Graph(adjacencyList);
     }
 
     std::vector<std::string> GraphFileRepository::tokenizeString(std::string string) const
