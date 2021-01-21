@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.8)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+add_subdirectory("Libraries/spdlog-1.8.2")
+include_directories("Libraries/spdlog-1.8.2/include/")
+
 project("Yolo" LANGUAGES CXX)
 set(APP_NAME "Yolo")
 set(CMAKE_CXX_STANDARD 17)
@@ -18,19 +21,19 @@ endif()
 option(ENABLE_DEBUG "Debug option" OFF)
 if (ENABLE_DEBUG)
     set(CMAKE_BUILD_TYPE DEBUG)
-    add_definitions(-DMODE_DEBUG)
+    add_definitions(-DYOLO_MODE_DEBUG)
 else()
     set(CMAKE_BUILD_TYPE RELEASE)
-    add_definitions(-DMODE_RELEASE)
+    add_definitions(-DYOLO_MODE_RELEASE)
 endif()
 
 # Source files
-set(SRC_ROOT "Yolo")
-include_directories(${SRC_ROOT})
+set(SRC_ROOT "Yolo/Source")
+include_directories("${SRC_ROOT}")
 
 file(GLOB_RECURSE SRC_FILES
-    "${SRC_ROOT}/Source/**.hpp"
-    "${SRC_ROOT}/Source/**.cpp"
+    "${SRC_ROOT}/**.hpp"
+    "${SRC_ROOT}/**.cpp"
 )
 
 # Executables
