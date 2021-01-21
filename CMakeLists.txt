@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.8)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-project("Yolo!" LANGUAGES CXX)
-set(APP_NAME "Yolo") # CMake doesn't support the "!"
+project("Yolo" LANGUAGES CXX)
+set(APP_NAME "Yolo")
 set(CMAKE_CXX_STANDARD 17)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES GNU)
@@ -25,7 +25,7 @@ else()
 endif()
 
 # Source files
-set(SRC_ROOT "Yolo!")
+set(SRC_ROOT "Yolo")
 include_directories(${SRC_ROOT})
 
 file(GLOB_RECURSE SRC_FILES
