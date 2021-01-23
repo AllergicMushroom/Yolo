@@ -27,7 +27,7 @@ namespace Yolo
 
     CheckerOutput Graph::checkSolution(const Solution& solution, bool &criterion(std::vector<int>)) const
     {
-        return {getSolutionCost(solution), isValid(solution, criterion)};
+        return {isValid(solution, criterion), getSolutionCost(solution)};
     }
     // go through every arc twice.
     double Graph::getSolutionCost(const Solution& solution) const
