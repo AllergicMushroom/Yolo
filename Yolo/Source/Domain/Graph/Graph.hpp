@@ -1,11 +1,19 @@
 #pragma once
 
-#include <vector>
-
 #include "Domain/Graph/Edge.hpp"
+
+#include "Domain/Solution/Solution.hpp"
+
+#include <vector>
 
 namespace Yolo
 {
+    struct CheckerOutput
+    {
+        const bool isValid;
+        const double cost;
+    };
+
     class Graph
     {
     public:
@@ -19,6 +27,8 @@ namespace Yolo
         inline int getMinDegree() const { return mMinDegree; }
 
         inline int getNbEdges() const { return mNbEdges; }
+
+        CheckerOutput checkSolution(const Solution& solution) const;
 
     private:
         std::vector<int> mVertexDegrees;

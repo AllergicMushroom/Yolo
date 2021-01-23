@@ -24,4 +24,9 @@ namespace Yolo
 
         mNbEdges /= 2; /* Undirected graph */
     }
+
+    CheckerOutput Graph::checkSolution(const Solution& solution) const
+    {
+        return {};
+    }
 }
