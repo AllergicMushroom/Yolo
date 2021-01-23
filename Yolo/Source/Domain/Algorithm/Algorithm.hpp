@@ -9,8 +9,13 @@ namespace Yolo
     class Algorithm
     {
     public:
-        Algorithm(const Graph& graph) = delete;
+        Algorithm(const Graph& graph, int nbClasses) : mGraph(graph), mNbClasses(nbClasses) {}
 
         virtual Solution solve() = 0;
+
+    protected:
+        Graph mGraph;
+
+        const int mNbClasses;
     };
 }
