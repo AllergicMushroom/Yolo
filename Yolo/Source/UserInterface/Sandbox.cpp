@@ -6,7 +6,7 @@
 
 int main()
 {
-    Yolo::Core::initialise();
+    Yolo::Core::initialize();
 
     Yolo::GraphFileRepository graphRepository;
 

@@ -1,6 +1,6 @@
 #pragma once
 
-enum class CompileMode : unsigned int
+enum class CompileMode : int
 {
     Debug,
     DebugOptOn,

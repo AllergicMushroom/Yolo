@@ -9,16 +9,16 @@ namespace Yolo
     class Core
     {
     public:
-        inline static void initialise()
+        inline static void initialize()
         {
-            Logger::initialise();
+            Logger::initialize();
 
-            YOLO_INFO("Initialised Yolo's Core. Don't forget to shut it down!");
+            YOLO_DEBUG("Initialised Yolo's Core. Don't forget to shut it down!");
         }
 
         inline static void shutdown()
         {
-            YOLO_INFO("Shut down Yolo's Core.");
+            YOLO_DEBUG("Shut down Yolo's Core.");
             Logger::shutdown();
         }
     };
