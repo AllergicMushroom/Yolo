@@ -9,32 +9,24 @@ namespace Yolo
     class Graph
     {
     public:
-        Graph(const std::vector<std::vector<Edge>>& adjacencyList) { 
-            mAdjacencyList = std::vector<std::vector<Edge>>(adjacencyList); 
-            vertexDegree = std::vector<int>(mAdjacencyList.size());
+        Graph(const std::vector<std::vector<Edge>>& adjacencyList);
 
-            maxDegree = mAdjacencyList[0].size();
-            minDegree = mAdjacencyList[0].size();
+        inline int getNbVertices() const { return static_cast<int>(mAdjacencyList.size()); }
 
-            for(int i = 0; i<mAdjacencyList.size(); ++i){
-                vertexDegree[i] = mAdjacencyList[i].size();
-                if(vertexDegree[i] > maxDegree)
-                    maxDegree = vertexDegree[i];
-                if(vertexDegree[i] < minDegree)
-                    minDegree = vertexDegree[i];
-            }
+        inline int getVertexDegree(int vertex) const { return mVertexDegrees[vertex]; }
 
-            
-        }
+        inline int getMaxDegree() const { return mMaxDegree; }
+        inline int getMinDegree() const { return mMinDegree; }
 
-        int getVertexDegree(int vertex){
-            return vertexDegree[vertex];
-        }
+        inline int getNbEdges() const { return mNbEdges; }
 
     private:
-        int maxDegree;
-        int minDegree;
+        std::vector<int> mVertexDegrees;
+        int mMaxDegree;
+        int mMinDegree;
+
+        int mNbEdges;
+
         std::vector<std::vector<Edge>> mAdjacencyList;
-        std::vector<int> vertexDegree;
     };
 }

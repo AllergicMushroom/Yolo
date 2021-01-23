@@ -96,7 +96,7 @@ namespace Yolo
         for (int i = 0; i < nbEdges; ++i)
         {
             int lineIndex = i + sNbSpecialLines;
-            checkPositivity(tokenizedLines[lineIndex].size() - sNbEdgeProperties, "Error: Missing a property in arc in line " + std::to_string(lineIndex) + std::string(" in instance ") + ID);
+            checkPositivity(static_cast<int>(tokenizedLines[lineIndex].size()) - sNbEdgeProperties, "Error: Missing a property in arc in line " + std::to_string(lineIndex) + std::string(" in instance ") + ID);
 
             int source = std::stoi(tokenizedLines[lineIndex][0]);
             checkPositivity(source, "Error: Arc in line #" + std::to_string(lineIndex) + std::string(" in instance ") + ID + std::string(" must have a strictly positive source vertex."));
@@ -125,7 +125,7 @@ namespace Yolo
         for (int i = 0; i < adjacencyList.size(); ++i)
         {
             int lineIndex = i + nbEdges + sNbSpecialLines;
-            checkPositivity(tokenizedLines[lineIndex].size() - sNbVertexProperties, "Error: Missing a property in vertex in line " + std::to_string(i) + std::string(" in instance ") + ID);
+            checkPositivity(static_cast<int>(tokenizedLines[lineIndex].size()) - sNbVertexProperties, "Error: Missing a property in vertex in line " + std::to_string(i) + std::string(" in instance ") + ID);
 
             int source = stoi(tokenizedLines[lineIndex][0]);
             checkPositivity(source, "Error: Vertex in line #" + std::to_string(lineIndex) + std::string(" in instance ") + ID + std::string(" must have a strictly positive index."));

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Domain/Repository.hpp"
+#include "Domain/Repository/Repository.hpp"
 
 #include "Domain/Graph/Graph.hpp"
 
