@@ -6,6 +6,9 @@ namespace Yolo
 {
     class Logger
     {
+    private:
+        Logger() = delete;
+
     public:
         static void initialize();
         static void shutdown();
