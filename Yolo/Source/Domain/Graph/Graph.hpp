@@ -28,9 +28,9 @@ namespace Yolo
 
         inline int getNbEdges() const { return mNbEdges; }
 
-        bool isValid(const Solution& solution, bool &criterion(std::vector<int>)) const;
+        bool isValid(const Solution& solution, bool (*criterion)(std::vector<int>, int, int)) const;
         double getSolutionCost(const Solution& solution) const;
-        CheckerOutput checkSolution(const Solution& solution, bool &criterion(std::vector<int>)) const;
+        CheckerOutput checkSolution(const Solution& solution, bool (*criterion)(std::vector<int>, int, int)) const;
 
     private:
         std::vector<int> mVertexDegrees;
