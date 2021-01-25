@@ -4,10 +4,10 @@
 
 namespace Yolo
 {
-    class ExplicitEnumerationAlgorithm : public Algorithm
+    class ImplicitEnumerationAlgorithm : public Algorithm
     {
     public:
-        ExplicitEnumerationAlgorithm(const Graph& graph, int nbClasses, bool (*criterion)(std::vector<int>, int, int)) : Algorithm(graph, nbClasses, criterion){}
+        ImplicitEnumerationAlgorithm(const Graph& graph, int nbClasses, bool (*criterion)(std::vector<int>, int, int)) : Algorithm(graph, nbClasses, criterion){}
 
         virtual Solution solve() override{
             enumerateFrom(mBest, 0);
@@ -24,7 +24,8 @@ namespace Yolo
             for (int i = 0; i < mNbClasses; ++i)
             {
                 sol.setVertexClass(from, i);
-                enumerateFrom(sol, from+1);
+                if(mGraph.isPartialSolutionValid(sol, mCriterion, from))
+                    enumerateFrom(sol, from+1);
             }
         }
 
