@@ -10,11 +10,14 @@ namespace Yolo
     public:
         Solution(int nbVertex, int nbClasses) : mSolution(std::vector<int>(nbVertex)) {
             mNbClasses = nbClasses;
+            mNbVertices = nbVertex;
         }
 
         inline void setVertexClass(int vertex, int vertexClass) { mSolution[vertex] = vertexClass; }
         inline int getVertexClass(int vertex) const { return mSolution[vertex]; }
         inline int getNbClasses() const { return mNbClasses; }
+        inline int getNbVertices() const {return mNbVertices; }
+        
         Solution clone(){
             Solution clone = Solution(mSolution.size(), mNbClasses);
             for (unsigned int i = 0; i < mSolution.size(); i++)
@@ -34,5 +37,6 @@ namespace Yolo
     private:
         std::vector<int> mSolution;
         int mNbClasses;
+        int mNbVertices;
     };
 }
