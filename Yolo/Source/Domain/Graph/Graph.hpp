@@ -28,6 +28,7 @@ namespace Yolo
 
         inline int getNbEdges() const { return mNbEdges; }
 
+        bool isPartialSolutionValid(const Solution& solution, bool (*criterion)(std::vector<int>, int, int), int lastIndex) const;
         bool isValid(const Solution& solution, bool (*criterion)(std::vector<int>, int, int)) const;
         double getSolutionCost(const Solution& solution) const;
         CheckerOutput checkSolution(const Solution& solution, bool (*criterion)(std::vector<int>, int, int)) const;

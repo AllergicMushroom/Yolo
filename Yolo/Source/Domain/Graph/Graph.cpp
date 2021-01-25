@@ -45,10 +45,10 @@ namespace Yolo
         }
     return cost/2;
     }
-
-    bool Graph::isValid(const Solution& solution,bool (*criterion)(std::vector<int>, int, int)) const{
+    
+    bool Graph::isPartialSolutionValid(const Solution& solution,bool (*criterion)(std::vector<int>, int, int), int lastIndex) const{
         std::vector<int> nbElementPerClasses = std::vector<int>(solution.getNbClasses(), 0);
-        for (unsigned int i = 0; i < mAdjacencyList.size(); ++i)
+        for (int i = 0; i < lastIndex+1; ++i)
         {
             if(solution.getVertexClass(i) > solution.getNbClasses())
             {
@@ -56,7 +56,11 @@ namespace Yolo
             }
             nbElementPerClasses[solution.getVertexClass(i)] ++;
         }
-        return criterion(nbElementPerClasses, getNbVertices(),-1);
+        return criterion(nbElementPerClasses, getNbVertices(), lastIndex+1);
         
+    }
+    
+    bool Graph::isValid(const Solution& solution,bool (*criterion)(std::vector<int>, int, int)) const{
+        return isPartialSolutionValid(solution, criterion, getNbVertices()-1);
     }
 }
