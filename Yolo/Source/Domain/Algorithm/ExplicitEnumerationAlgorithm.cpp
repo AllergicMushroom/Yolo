@@ -1,20 +1,13 @@
-#pragma once
-
-#include "Algorithm.hpp"
+#include "Domain/Algorithm/ExplicitEnumerationAlgorithm.hpp"
 
 namespace Yolo
 {
-    class ExplicitEnumerationAlgorithm : public Algorithm
-    {
-    public:
-        ExplicitEnumerationAlgorithm(const Graph& graph, int nbClasses, bool (*criterion)(std::vector<int>, int, int)) : Algorithm(graph, nbClasses, criterion){}
-
-        virtual Solution solve() override{
+         Solution ExplicitEnumerationAlgorithm::solve(){
             enumerateFrom(mBest, 0);
             return mBest;
         }
 
-        void enumerateFrom(Solution sol, int from){
+        void ExplicitEnumerationAlgorithm::enumerateFrom(Solution sol, int from){
             if(from == mGraph.getNbVertices())
             {
                 compareBest(sol);
@@ -28,7 +21,7 @@ namespace Yolo
             }
         }
 
-        void compareBest(Solution sol){
+        void ExplicitEnumerationAlgorithm::compareBest(Solution sol){
             if(mGraph.isValid(sol, mCriterion)){
                 std::cout << sol.toString()<<"\n";
                 
@@ -41,7 +34,4 @@ namespace Yolo
                 }
         }
 
-    private:
-        Solution mBest = Solution(mGraph.getNbVertices(), mNbClasses);
-    };
 }
