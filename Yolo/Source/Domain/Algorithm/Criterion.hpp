@@ -17,7 +17,7 @@ namespace Yolo
         int elementPerClass = nbVertices / array.size();
         for (int i = 0; i < to; ++i)
         {
-            if(array[i] != elementPerClass)
+            if(array[i] > elementPerClass)
                 return false;
         }
         
