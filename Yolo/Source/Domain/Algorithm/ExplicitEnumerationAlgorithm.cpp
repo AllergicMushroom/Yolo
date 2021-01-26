@@ -2,8 +2,8 @@
 
 namespace Yolo
 {
-         Solution ExplicitEnumerationAlgorithm::solve(){
-            enumerateFrom(mBest, 0);
+        Solution ExplicitEnumerationAlgorithm::solve(){
+            enumerateFrom(mBest, 1); // we can fix the first class as the class of the first vertex.
             return mBest;
         }
 
@@ -22,8 +22,8 @@ namespace Yolo
         }
 
         void ExplicitEnumerationAlgorithm::compareBest(Solution sol){
+            // std::cout << sol.toString()<<"\n";
             if(mGraph.isValid(sol, mCriterion)){
-                std::cout << sol.toString()<<"\n";
                 
                 if(!mGraph.isValid(mBest, mCriterion)){
                     mBest = sol.clone();

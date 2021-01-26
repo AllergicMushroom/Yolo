@@ -1,20 +1,19 @@
-#pragma once
+#include "Criterion.hpp"
 
-#include "Domain/Algorithm/Criterion.hpp"
 namespace Yolo
 {
-    static bool cAll(std::vector<int> array, int nbVertices, int to = -1){
+    static bool cAll(std::vector<int> array, int nbVertices, int to){
         return true;
     }
 
-    static bool cEqual(std::vector<int> array, int nbVertices, int to = -1){
+    static bool cEqual(std::vector<int> array, int nbVertices, int to){
         if(to == -1){
             to = array.size();
         }
         int elementPerClass = nbVertices / array.size();
         for (int i = 0; i < to; ++i)
         {
-            if(array[i] != elementPerClass)
+            if(array[i] > elementPerClass)
                 return false;
         }
         
