@@ -6,6 +6,6 @@
 
 namespace Yolo
 {
-    static bool cAll(std::vector<int> array, int nbVertices, int to);
-    static bool cEqual(std::vector<int> array, int nbVertices, int to);
+    bool cAll(std::vector<int> array, int nbVertices, int to);
+    bool cEqual(std::vector<int> array, int nbVertices, int to);
 }

@@ -2,11 +2,11 @@
 
 namespace Yolo
 {
-    static bool cAll(std::vector<int> array, int nbVertices, int to){
+    bool cAll(std::vector<int> array, int nbVertices, int to){
         return true;
     }
 
-    static bool cEqual(std::vector<int> array, int nbVertices, int to){
+    bool cEqual(std::vector<int> array, int nbVertices, int to){
         if(to == -1){
             to = array.size();
         }
