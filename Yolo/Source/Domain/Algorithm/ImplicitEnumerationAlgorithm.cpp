@@ -14,7 +14,7 @@ namespace Yolo
             return;
         }
 
-        for (int i = 0; i < mNbClasses; ++i)
+        for (int i = 0; i <= std::min(from, mNbClasses-1); ++i)
         {
             sol.setVertexClass(from, i);
             if(mGraph.isPartialSolutionValid(sol, mCriterion, from))
