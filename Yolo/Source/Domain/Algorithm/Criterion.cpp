@@ -28,7 +28,7 @@ namespace Yolo
         int elementPerClass = floor(nbVertices / array.size());
         for (int i = 0; i < to; ++i)
         {
-            if(array[i] > elementPerClass + delta || array[i] < elementPerClass - delta)
+            if(array[i] > elementPerClass + delta
                 return false;
         }
         
@@ -42,7 +42,7 @@ namespace Yolo
         int elementPerClass = floor(nbVertices / array.size());
         for (int i = 0; i < to; ++i)
         {
-            if(static_cast<double>(array[i]) > elementPerClass*(1+percentage) || static_cast<double>(array[i]) > elementPerClass*(1-percentage))
+            if(static_cast<double>(array[i]) > elementPerClass*(1+percentage)
                 return false;
         }
         
