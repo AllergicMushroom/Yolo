@@ -52,6 +52,7 @@ namespace Yolo
         {
             if(solution.getVertexClass(i) > solution.getNbClasses())
             {
+                std::cout<<"The number of classes is higher than expected.\n";
                 return false;
             }
             nbElementPerClasses[solution.getVertexClass(i)] ++;
@@ -61,6 +62,6 @@ namespace Yolo
     }
     
     bool Graph::isValid(const Solution& solution,bool (*criterion)(std::vector<int>, int, int)) const{
-        return isPartialSolutionValid(solution, criterion, getNbVertices()-1);
+        return isPartialSolutionValid(solution, criterion, solution.getNbClasses()-1);
     }
 }
