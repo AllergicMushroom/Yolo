@@ -12,6 +12,7 @@ namespace Yolo
         virtual Solution solve() override;
         void enumerateFrom(Solution sol, int from);
         void compareBest(Solution sol);
+        std::string getName() override {return "Explicit Enumeration";}
 
     protected:
         Solution mBest;

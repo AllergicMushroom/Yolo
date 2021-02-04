@@ -12,6 +12,7 @@ namespace Yolo
         Algorithm(const Graph& graph, int nbClasses, bool (*criterion)(std::vector<int>, int, int)) : mGraph(graph), mNbClasses(nbClasses), mCriterion(criterion) {}
 
         virtual Solution solve() = 0;
+        virtual std::string getName(){return "Algorithm";};
 
     protected:
         Graph mGraph;

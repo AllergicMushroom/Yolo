@@ -18,6 +18,8 @@ namespace Yolo
         Solution findBestNeighbour(Solution sol, bool real);
         Solution generateValidSolution();
 
+        std::string getName() override {return "Gradient Descent";}
+
     protected:
         Solution mActual;
         double mActualCost = 0;
