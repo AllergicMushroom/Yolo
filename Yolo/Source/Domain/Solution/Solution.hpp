@@ -24,6 +24,7 @@ namespace Yolo
             {
                 clone.setVertexClass(i, mSolution[i]);
             }
+            clone.mNbClasses = mNbClasses;
             return clone;
         }
         std::string toString(){
