@@ -122,7 +122,7 @@ namespace Yolo
             adjacencyList[destination].push_back(Edge(destination, source, weight));
         }
 
-        for (int i = 0; i < adjacencyList.size(); ++i)
+        for (unsigned int i = 0; i < adjacencyList.size(); ++i)
         {
             int lineIndex = i + nbEdges + sNbSpecialLines;
             checkPositivity(static_cast<int>(tokenizedLines[lineIndex].size()) - sNbVertexProperties, "Error: Missing a property in vertex in line " + std::to_string(i) + std::string(" in instance ") + ID);
