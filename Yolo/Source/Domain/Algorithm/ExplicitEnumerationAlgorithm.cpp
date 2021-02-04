@@ -22,7 +22,6 @@ namespace Yolo
         }
 
         void ExplicitEnumerationAlgorithm::compareBest(Solution sol){
-            // std::cout << sol.toString()<<"\n";
             if(mGraph.isValid(sol, mCriterion)){
                 
                 if(!mGraph.isValid(mBest, mCriterion)){

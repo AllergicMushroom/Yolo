@@ -10,6 +10,7 @@ namespace Yolo
     void ImplicitEnumerationAlgorithm::enumerateFrom(Solution sol, int from){
         if(from == mGraph.getNbVertices())
         {
+            // std::cout << sol.toString()<<mGraph.isValid(sol, mCriterion)<<mgr"\n";
             compareBest(sol);
             return;
         }
@@ -29,8 +30,9 @@ namespace Yolo
                 mBest = sol.clone();
                 return;
             }
-            if(mGraph.getSolutionCost(sol) < mGraph.getSolutionCost(mBest))
+            if(mGraph.getSolutionCost(sol) < mGraph.getSolutionCost(mBest)){
                 mBest = sol.clone();
             }
+        }
     }
 }
