@@ -10,29 +10,40 @@
 #include "Domain/Algorithm/Neighborhood.hpp"
 
 #include <iostream>
-
+#include <chrono>
 
 int main()
 {
-    printf("start\n");
     Yolo::Core::initialize();
 
     Yolo::GraphFileRepository graphRepository;
 
-    std::optional<Yolo::Graph> g = graphRepository.load("Instances/quatreSommets.txt");
+    std::optional<Yolo::Graph> g = graphRepository.load("Instances/quinzeSommets.txt");
+    std::chrono::high_resolution_clock::time_point a,b;
+
+    int nbClasses = 4;
+    int epsilon = 0;
+    
+    Yolo::ExplicitEnumerationAlgorithm EE = Yolo::ExplicitEnumerationAlgorithm(g.value(), nbClasses, [](std::vector<int> array, int nbVertices, int to) { return Yolo::cEqualDelta(array, nbVertices, to, 1); });
+    Yolo::ImplicitEnumerationAlgorithm IE = Yolo::ImplicitEnumerationAlgorithm(g.value(), nbClasses, [](std::vector<int> array, int nbVertices, int to) { return Yolo::cEqualDelta(array, nbVertices, to, 1); });
+    Yolo::GradientDescentAlgorithm GD = Yolo::GradientDescentAlgorithm(g.value(), nbClasses, epsilon, Yolo::pickNDrop , 
+        [](std::vector<int> array, int nbVertices, int to) { return Yolo::cEqualDelta(array, nbVertices, to, 1); });
+
     if(g.has_value()){
-
-        Yolo::ExplicitEnumerationAlgorithm algo = Yolo::ExplicitEnumerationAlgorithm(g.value(), 2, Yolo::cEqual);
-        Yolo::Solution sol = algo.solve();
-        std::cout << "\nExplicit Enumeration:\nBest solution: " << sol.toString() << " cost: " << g.value().getSolutionCost(sol) << "\n";
+        std::vector<Yolo::Algorithm*> algos = std::vector<Yolo::Algorithm*>(
+            {
+                // &EE,
+                &IE, 
+                &GD
+            });
         
-        Yolo::ImplicitEnumerationAlgorithm algo2 = Yolo::ImplicitEnumerationAlgorithm(g.value(), 2, Yolo::cEqual);
-        Yolo::Solution sol2 = algo2.solve();
-        std::cout << "\nImplicit Enumeration:\nBest solution: " << sol2.toString() << " cost: " << g.value().getSolutionCost(sol2) << "\n";
-
-        Yolo::GradientDescentAlgorithm algo3 = Yolo::GradientDescentAlgorithm(g.value(), 2, 0,Yolo::pickNDrop , [](std::vector<int> array, int nbVertices, int to) { return Yolo::cEqualDelta(array, nbVertices, to, 1); });
-        Yolo::Solution sol3 = algo3.solve();
-        std::cout << "\nGradient Descent :\nBest solution: " << sol3.toString() << " cost: " << g.value().getSolutionCost(sol3) << "\n";
+        for (auto & algorithm: algos)
+        {
+            a = std::chrono::high_resolution_clock::now();
+            Yolo::Solution sol = algorithm->solve();
+            b = std::chrono::high_resolution_clock::now();
+            std::cout << "\n"<< algorithm->getName()<<":\n  Best solution: " << sol.toString() << "\n    cost: " << g.value().getSolutionCost(sol) << "\n    Found in:" << (b - a).count()<<" microseconds \n";
+        }
     }
     Yolo::Core::shutdown();
 

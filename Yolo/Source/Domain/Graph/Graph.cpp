@@ -62,6 +62,6 @@ namespace Yolo
     }
     
     bool Graph::isValid(const Solution& solution,bool (*criterion)(std::vector<int>, int, int)) const{
-        return isPartialSolutionValid(solution, criterion, solution.getNbClasses()-1);
+        return isPartialSolutionValid(solution, criterion, getNbVertices()-1);
     }
 }
