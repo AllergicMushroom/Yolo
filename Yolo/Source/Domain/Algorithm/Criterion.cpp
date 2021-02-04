@@ -1,5 +1,5 @@
 #include "Criterion.hpp"
-#include <cmath>
+
 namespace Yolo
 {
     bool cAll(std::vector<int> array, int nbVertices, int to){
@@ -26,9 +26,9 @@ namespace Yolo
             to = array.size();
         }
         int elementPerClass = floor(nbVertices / array.size());
-        for (int i = 0; i < to; ++i)
+        for (unsigned int i = 0; i < array.size(); ++i)
         {
-            if(array[i] > elementPerClass + delta
+            if(array[i] > elementPerClass + delta)
                 return false;
         }
         
@@ -40,9 +40,9 @@ namespace Yolo
             to = array.size();
         }
         int elementPerClass = floor(nbVertices / array.size());
-        for (int i = 0; i < to; ++i)
+        for (unsigned int i = 0; i < array.size(); ++i)
         {
-            if(static_cast<double>(array[i]) > elementPerClass*(1+percentage)
+            if(static_cast<double>(array[i]) > elementPerClass*(1+percentage))
                 return false;
         }
         
