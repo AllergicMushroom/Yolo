@@ -11,14 +11,12 @@ namespace Yolo
             mActual = initialSolution;
             bool isValid = mGraph.isValid(initialSolution, mCriterion);
             if(!isValid)
-                printf("Solution not valid in gradient descent algo.\n");
+                printf("\nSolution not valid in gradient descent algo.\n");
             mActualCost = mGraph.getSolutionCost(initialSolution);
 
             Solution bestNeigh = findBestNeighbour(mActual, true);
             double bestNeighCost = mGraph.getSolutionCost(bestNeigh);
 
-
-            std::cout<<"cost and neigh\n";
             while(mActualCost - bestNeighCost > mEpsilon )
             {
                 mActual = bestNeigh;
@@ -26,7 +24,6 @@ namespace Yolo
 
                 bestNeigh = findBestNeighbour(mActual, true);
                 bestNeighCost = mGraph.getSolutionCost(bestNeigh);
-                std::cout<<"llele "<<mActualCost<<"\n";
 
             }
             return mActual;

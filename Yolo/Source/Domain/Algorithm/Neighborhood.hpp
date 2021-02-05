@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+
 #include "Domain/Solution/Solution.hpp"
 
 namespace Yolo

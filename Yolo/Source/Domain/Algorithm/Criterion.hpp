@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+
 #include "Domain/Graph/Graph.hpp"
 
 #include "Domain/Solution/Solution.hpp"
