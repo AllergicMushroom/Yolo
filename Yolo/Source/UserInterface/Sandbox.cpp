@@ -6,7 +6,7 @@
 
 #include "Domain/Criterion/SimilarSizeCriterion.hpp"
 
-#include "Domain/Neighborhood/Neighborhood.hpp"
+#include "Domain/Neighborhood/PickNDropNeighborhood.hpp"
 
 #include "Technical/Repositories/GraphFileRepository.hpp"
 
@@ -18,23 +18,25 @@ int main()
 
     Yolo::GraphFileRepository graphRepository;
 
-    std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/dixSommets.txt");
+    std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/milleSommets.txt");
     if (graphOptional.has_value())
     {
         Yolo::Graph graph = *graphOptional;
 
-        int nbClasses = 3;
+        int nbClasses = 2;
         int epsilon = 0;
 
         Yolo::SimilarSizeCriterion criterion = Yolo::SimilarSizeCriterion(1);
 
+        Yolo::PickNDropNeighborhood neighborhood = Yolo::PickNDropNeighborhood();
+
         Yolo::ExplicitEnumerationAlgorithm EE = Yolo::ExplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
         Yolo::ImplicitEnumerationAlgorithm IE = Yolo::ImplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
-        Yolo::GradientDescentAlgorithm GD = Yolo::GradientDescentAlgorithm(graph, nbClasses, epsilon, Yolo::pickNDrop, &criterion);
+        Yolo::GradientDescentAlgorithm GD = Yolo::GradientDescentAlgorithm(graph, nbClasses, epsilon, &neighborhood, &criterion);
 
         Yolo::Algorithm* algorithms[] = {
-            &EE,
-            &IE,
+            //&EE,
+            //&IE,
             &GD};
 
         for (auto& algorithm : algorithms)

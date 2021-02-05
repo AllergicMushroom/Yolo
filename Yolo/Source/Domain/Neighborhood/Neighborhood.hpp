@@ -6,6 +6,11 @@
 
 namespace Yolo
 {
-   std::vector<Solution> pickNDrop(Solution sol);
-   
-}
+    class Neighborhood
+    {
+    public:
+        Neighborhood() {}
+
+        virtual std::vector<Solution> generate(Solution solution) const = 0;
+    };
+} // namespace Yolo
