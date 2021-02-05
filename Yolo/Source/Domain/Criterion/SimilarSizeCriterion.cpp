@@ -22,7 +22,7 @@ namespace Yolo
 
         int elementPerClass = static_cast<int>(static_cast<size_t>(graph.getNbVertices()) / nbClasses);
 
-        for (unsigned int i = 0; i < nbClasses; ++i)
+        for (int i = 0; i < nbClasses; ++i)
         {
             int classCardinal = solution.getClassCardinal(i);
             if (mUseIntSlack)

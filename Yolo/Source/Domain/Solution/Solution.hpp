@@ -20,7 +20,7 @@ namespace Yolo
 
         Solution clone()
         {
-            Solution clone = Solution(mSolution.size(), mNbClasses);
+            Solution clone = Solution(static_cast<int>(mSolution.size()), mNbClasses);
             for (unsigned int i = 0; i < mSolution.size(); i++)
             {
                 clone.setVertexClass(i, mSolution[i]);

@@ -1,16 +1,18 @@
 #pragma once
 
-#include "Algorithm.hpp"
+#include "Domain/Algorithm/Algorithm.hpp"
+
+#include "Domain/Neighborhood/Neighborhood.hpp"
 
 namespace Yolo
 {
     class GradientDescentAlgorithm : public Algorithm
     {
     public:
-        GradientDescentAlgorithm(const Graph& graph, int nbClasses, double epsilon, std::vector<Solution> (*neigh)(Solution sol), const Criterion* criterion)
+        GradientDescentAlgorithm(const Graph& graph, int nbClasses, double epsilon, const Neighborhood* neighborhood, const Criterion* criterion)
             : Algorithm(graph, nbClasses, criterion), mActualSolution(Solution(mGraph.getNbVertices(), mNbClasses))
         {
-            mNeigh = neigh;
+            mNeighborhood = neighborhood;
             mEpsilon = epsilon;
         }
 
@@ -25,7 +27,7 @@ namespace Yolo
         Solution generateValidSolution();
 
     protected:
-        std::vector<Solution> (*mNeigh)(Solution sol);
+        const Neighborhood* mNeighborhood;
 
         Solution mActualSolution;
         double mActualSolutionCost = 0.0f;

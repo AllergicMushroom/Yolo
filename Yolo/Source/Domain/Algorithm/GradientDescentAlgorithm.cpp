@@ -38,7 +38,7 @@ namespace Yolo
 
     Solution GradientDescentAlgorithm::findBestNeighbor(Solution solution, bool real)
     {
-        std::vector<Solution> neighborhood = mNeigh(solution);
+        std::vector<Solution> neighborhood = mNeighborhood->generate(solution);
         double cost;
         Solution best = solution;
         bool isSet = false;
@@ -70,11 +70,11 @@ namespace Yolo
     // TODO: We don't actually know if it's valid.
     Solution GradientDescentAlgorithm::generateValidSolution()
     {
-        Solution sol = Solution(mGraph.getNbVertices(), mNbClasses);
+        Solution solution = Solution(mGraph.getNbVertices(), mNbClasses);
         for (int i = 0; i < mGraph.getNbVertices(); i++)
         {
-            sol.setVertexClass(i, i % mNbClasses);
+            solution.setVertexClass(i, i % mNbClasses);
         }
-        return sol;
+        return solution;
     }
 } // namespace Yolo
