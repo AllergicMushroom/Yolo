@@ -7,14 +7,19 @@ namespace Yolo
     class ExplicitEnumerationAlgorithm : public Algorithm
     {
     public:
-        ExplicitEnumerationAlgorithm(const Graph& graph, int nbClasses, bool (*criterion)(std::vector<int>, int, int)) : Algorithm(graph, nbClasses, criterion), mBest(Solution(mGraph.getNbVertices(), mNbClasses)){}
+        ExplicitEnumerationAlgorithm(const Graph& graph, int nbClasses, const Criterion* criterion)
+            : Algorithm(graph, nbClasses, criterion), mBestSolution(Solution(mGraph.getNbVertices(), mNbClasses))
+        {
+        }
 
         virtual Solution solve() override;
-        void enumerateFrom(Solution sol, int from);
-        void compareBest(Solution sol);
-        std::string getName() override {return "Explicit Enumeration";}
+
+        virtual inline std::string getName() override { return "Explicit Enumeration"; }
+
+    private:
+        void enumerateFromVertex(Solution solution, int vertex);
 
     protected:
-        Solution mBest;
+        Solution mBestSolution;
     };
-}
+} // namespace Yolo

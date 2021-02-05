@@ -1,15 +1,15 @@
 #include "Core/Core.hpp"
 
-#include "Technical/Repositories/GraphFileRepository.hpp"
-
-#include "Domain/Algorithm/Criterion.hpp"
 #include "Domain/Algorithm/ExplicitEnumerationAlgorithm.hpp"
+#include "Domain/Algorithm/GradientDescentAlgorithm.hpp"
 #include "Domain/Algorithm/ImplicitEnumerationAlgorithm.hpp"
 
-#include "Domain/Algorithm/GradientDescentAlgorithm.hpp"
-#include "Domain/Algorithm/Neighborhood.hpp"
+#include "Domain/Criterion/SimilarSizeCriterion.hpp"
 
-#include <iostream>
+#include "Domain/Neighborhood/Neighborhood.hpp"
+
+#include "Technical/Repositories/GraphFileRepository.hpp"
+
 #include <chrono>
 
 int main()
@@ -18,33 +18,42 @@ int main()
 
     Yolo::GraphFileRepository graphRepository;
 
-    std::optional<Yolo::Graph> g = graphRepository.load("Instances/quinzeSommets.txt");
-    std::chrono::high_resolution_clock::time_point a,b;
+    std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/dixSommets.txt");
+    if (graphOptional.has_value())
+    {
+        Yolo::Graph graph = *graphOptional;
 
-    int nbClasses = 4;
-    int epsilon = 0;
-    
-    Yolo::ExplicitEnumerationAlgorithm EE = Yolo::ExplicitEnumerationAlgorithm(g.value(), nbClasses, [](std::vector<int> array, int nbVertices, int to) { return Yolo::cEqualDelta(array, nbVertices, to, 1); });
-    Yolo::ImplicitEnumerationAlgorithm IE = Yolo::ImplicitEnumerationAlgorithm(g.value(), nbClasses, [](std::vector<int> array, int nbVertices, int to) { return Yolo::cEqualDelta(array, nbVertices, to, 1); });
-    Yolo::GradientDescentAlgorithm GD = Yolo::GradientDescentAlgorithm(g.value(), nbClasses, epsilon, Yolo::pickNDrop , 
-        [](std::vector<int> array, int nbVertices, int to) { return Yolo::cEqualDelta(array, nbVertices, to, 1); });
+        int nbClasses = 3;
+        int epsilon = 0;
 
-    if(g.has_value()){
-        std::vector<Yolo::Algorithm*> algos = std::vector<Yolo::Algorithm*>(
-            {
-                // &EE,
-                &IE, 
-                &GD
-            });
-        
-        for (auto & algorithm: algos)
+        Yolo::SimilarSizeCriterion criterion = Yolo::SimilarSizeCriterion(1);
+
+        Yolo::ExplicitEnumerationAlgorithm EE = Yolo::ExplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
+        Yolo::ImplicitEnumerationAlgorithm IE = Yolo::ImplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
+        Yolo::GradientDescentAlgorithm GD = Yolo::GradientDescentAlgorithm(graph, nbClasses, epsilon, Yolo::pickNDrop, &criterion);
+
+        Yolo::Algorithm* algorithms[] = {
+            &EE,
+            &IE,
+            &GD};
+
+        for (auto& algorithm : algorithms)
         {
-            a = std::chrono::high_resolution_clock::now();
-            Yolo::Solution sol = algorithm->solve();
-            b = std::chrono::high_resolution_clock::now();
-            std::cout << "\n"<< algorithm->getName()<<":\n  Best solution: " << sol.toString() << "\n    cost: " << g.value().getSolutionCost(sol) << "\n    Found in:" << (b - a).count()<<" microseconds \n";
+            const auto& startPoint = std::chrono::steady_clock::now();
+
+            Yolo::Solution solution = algorithm->solve();
+
+            const auto& endPoint = std::chrono::steady_clock::now();
+
+            auto elapsedSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(endPoint - startPoint).count() / 1000.0f;
+
+            YOLO_INFO(algorithm->getName());
+            YOLO_INFO("Best solution found: {0}", solution.toString());
+            YOLO_INFO("Cost: {0}", graph.getSolutionCost(solution));
+            YOLO_INFO("Found in {0} seconds.", elapsedSeconds);
         }
     }
+
     Yolo::Core::shutdown();
 
     return 0;

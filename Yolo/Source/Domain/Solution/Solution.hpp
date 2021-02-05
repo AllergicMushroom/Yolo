@@ -1,24 +1,25 @@
 #pragma once
 
+#include <string>
 #include <vector>
-#include <iostream> 
-#include <string> 
+
 namespace Yolo
 {
     class Solution
     {
     public:
-        Solution(int nbVertex, int nbClasses) : mSolution(std::vector<int>(nbVertex)) {
-            mNbClasses = nbClasses;
-            mNbVertices = nbVertex;
-        }
+        Solution(int nbVertices, int nbClasses);
 
-        inline void setVertexClass(int vertex, int vertexClass) { mSolution[vertex] = vertexClass; }
-        inline int getVertexClass(int vertex) const { return mSolution[vertex]; }
         inline int getNbClasses() const { return mNbClasses; }
-        inline int getNbVertices() const {return mNbVertices; }
-        
-        Solution clone(){
+        inline int getNbVertices() const { return mNbVertices; }
+
+        void setVertexClass(int vertex, int vertexClass);
+        inline int getVertexClass(int vertex) const { return mSolution[vertex]; }
+
+        inline int getClassCardinal(int c) const { return mClassCardinals[c]; }
+
+        Solution clone()
+        {
             Solution clone = Solution(mSolution.size(), mNbClasses);
             for (unsigned int i = 0; i < mSolution.size(); i++)
             {
@@ -27,17 +28,22 @@ namespace Yolo
             clone.mNbClasses = mNbClasses;
             return clone;
         }
-        std::string toString(){
+
+        std::string toString()
+        {
             std::string str = "";
             for (unsigned int i = 0; i < mSolution.size(); ++i)
             {
-                str += std::to_string(mSolution[i]) +" ";
+                str += std::to_string(mSolution[i]) + " ";
             }
             return str;
         }
+
     private:
         std::vector<int> mSolution;
+        std::vector<int> mClassCardinals;
+
         int mNbClasses;
         int mNbVertices;
     };
-}
+} // namespace Yolo

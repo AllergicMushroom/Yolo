@@ -1,66 +1,80 @@
-#include "Domain/Algorithm/GradientDescentAlgorithm.hpp"
+#include "GradientDescentAlgorithm.hpp"
+
+#include "Core/Logger/Logger.hpp"
 
 namespace Yolo
 {
-        Solution GradientDescentAlgorithm::solve(){
-            Solution initSol = generateValidSolution();
-            return GradientDescentAlgorithm::solve(initSol);
+    Solution GradientDescentAlgorithm::solve()
+    {
+        Solution initalSolution = generateValidSolution();
+        return solve(initalSolution);
+    }
+
+    Solution GradientDescentAlgorithm::solve(Solution initialSolution)
+    {
+        mActualSolution = initialSolution;
+
+        if (!mCriterion->evaluate(mGraph, mActualSolution))
+        {
+            YOLO_WARN("Initial solution in gradient descent isn't valid.");
         }
 
-        Solution GradientDescentAlgorithm::solve(Solution initialSolution){
-            mActual = initialSolution;
-            bool isValid = mGraph.isValid(initialSolution, mCriterion);
-            if(!isValid)
-                printf("\nSolution not valid in gradient descent algo.\n");
-            mActualCost = mGraph.getSolutionCost(initialSolution);
+        mActualSolutionCost = mGraph.getSolutionCost(initialSolution);
 
-            Solution bestNeigh = findBestNeighbour(mActual, true);
-            double bestNeighCost = mGraph.getSolutionCost(bestNeigh);
+        Solution bestNeighbor = findBestNeighbor(mActualSolution, true);
+        double bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
 
-            while(mActualCost - bestNeighCost > mEpsilon )
-            {
-                mActual = bestNeigh;
-                mActualCost = bestNeighCost;
+        while (mActualSolutionCost - bestNeighborCost > mEpsilon)
+        {
+            mActualSolution = bestNeighbor;
+            mActualSolutionCost = bestNeighborCost;
 
-                bestNeigh = findBestNeighbour(mActual, true);
-                bestNeighCost = mGraph.getSolutionCost(bestNeigh);
-
-            }
-            return mActual;
+            bestNeighbor = findBestNeighbor(mActualSolution, true);
+            bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
         }
-        Solution GradientDescentAlgorithm::findBestNeighbour(Solution sol, bool real){
-            std::vector<Solution> neighboroud = mNeigh(sol);
-            double cost;
-            Solution best = sol;
-            bool isSet = false;
 
-            for (unsigned int i = 0; i < neighboroud.size(); i++)
+        return mActualSolution;
+    }
+
+    Solution GradientDescentAlgorithm::findBestNeighbor(Solution solution, bool real)
+    {
+        std::vector<Solution> neighborhood = mNeigh(solution);
+        double cost;
+        Solution best = solution;
+        bool isSet = false;
+
+        for (unsigned int i = 0; i < neighborhood.size(); i++)
+        {
+            if (!real || mCriterion->evaluate(mGraph, neighborhood[i]))
             {
-                if(!real || mGraph.isValid(neighboroud[i], mCriterion)){
-
-                    if(!isSet){
-                        cost = mGraph.getSolutionCost(neighboroud[i]);
-                        best = neighboroud[i];
-                        isSet = true;
-                    }
-                    else {
-                        double newCost = mGraph.getSolutionCost(neighboroud[i]);
-                        if(newCost < cost){
-                            cost = newCost;
-                            best = neighboroud[i];
-                        }
+                if (!isSet)
+                {
+                    cost = mGraph.getSolutionCost(neighborhood[i]);
+                    best = neighborhood[i];
+                    isSet = true;
+                }
+                else
+                {
+                    double newCost = mGraph.getSolutionCost(neighborhood[i]);
+                    if (newCost < cost)
+                    {
+                        cost = newCost;
+                        best = neighborhood[i];
                     }
                 }
             }
-            return best;
         }
+        return best;
+    }
 
-        Solution GradientDescentAlgorithm::generateValidSolution(){
-            Solution sol = Solution(mGraph.getNbVertices(), mNbClasses);
-            for (int i = 0; i < mGraph.getNbVertices(); i++)
-            {
-                sol.setVertexClass(i, i%mNbClasses);
-            }
-            return sol;
+    // TODO: We don't actually know if it's valid.
+    Solution GradientDescentAlgorithm::generateValidSolution()
+    {
+        Solution sol = Solution(mGraph.getNbVertices(), mNbClasses);
+        for (int i = 0; i < mGraph.getNbVertices(); i++)
+        {
+            sol.setVertexClass(i, i % mNbClasses);
         }
-}
+        return sol;
+    }
+} // namespace Yolo

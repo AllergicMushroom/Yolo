@@ -2,35 +2,38 @@
 
 namespace Yolo
 {
-        Solution ExplicitEnumerationAlgorithm::solve(){
-            enumerateFrom(mBest, 1); // we can fix the first class as the class of the first vertex.
-            return mBest;
-        }
+    Solution ExplicitEnumerationAlgorithm::solve()
+    {
+        enumerateFromVertex(mBestSolution, 0);
 
-        void ExplicitEnumerationAlgorithm::enumerateFrom(Solution sol, int from){
-            if(from == mGraph.getNbVertices())
+        return mBestSolution;
+    }
+
+    void ExplicitEnumerationAlgorithm::enumerateFromVertex(Solution solution, int vertex)
+    {
+        if (vertex == mGraph.getNbVertices())
+        {
+            if (mCriterion->evaluate(mGraph, solution))
             {
-                compareBest(sol);
-                return;
+                // Todo: We shouldn't need to evaluate mBestSolution at every call. Maybe get a random initial solution
+                if (!mCriterion->evaluate(mGraph, mBestSolution))
+                {
+                    mBestSolution = solution;
+                }
+                else if (mGraph.getSolutionCost(solution) < mGraph.getSolutionCost(mBestSolution))
+                {
+                    mBestSolution = solution;
+                }
             }
-
-            for (int i = 0; i <= std::min(from, mNbClasses-1); ++i)
+        }
+        else
+        {
+            /* We take the minimum between vertex and mNbClasses-1 to eliminate symmetries. For example, <0, 2, 1> is equivalent to <0, 1, 2> */
+            for (int i = 0; i <= std::min(vertex, mNbClasses - 1); ++i)
             {
-                sol.setVertexClass(from, i);
-                enumerateFrom(sol, from+1);
+                solution.setVertexClass(vertex, i);
+                enumerateFromVertex(solution, vertex + 1);
             }
         }
-
-        void ExplicitEnumerationAlgorithm::compareBest(Solution sol){
-            if(mGraph.isValid(sol, mCriterion)){
-                
-                if(!mGraph.isValid(mBest, mCriterion)){
-                    mBest = sol.clone();
-                    return;
-                }
-                if(mGraph.getSolutionCost(sol) < mGraph.getSolutionCost(mBest))
-                    mBest = sol.clone();
-                }
-        }
-
-}
+    }
+} // namespace Yolo

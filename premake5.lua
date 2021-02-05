@@ -41,6 +41,7 @@ project "Yolo"
         -- General files
         
         ".gitignore",
+        ".clang-format",
         "LICENSE",
         "readme.md",
 

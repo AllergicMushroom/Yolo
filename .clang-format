@@ -12,7 +12,7 @@ IndentPPDirectives: BeforeHash
 BreakBeforeBraces: Allman
 NamespaceIndentation: All
 
-AllowShortFunctionsOnASingleLine: None
+AllowShortFunctionsOnASingleLine: InlineOnly
 AllowShortIfStatementsOnASingleLine: false
 
 AccessModifierOffset: -4

@@ -31,6 +31,7 @@ namespace Yolo
         bool isPartialSolutionValid(const Solution& solution, bool (*criterion)(std::vector<int>, int, int), int lastIndex) const;
         bool isValid(const Solution& solution, bool (*criterion)(std::vector<int>, int, int)) const;
         double getSolutionCost(const Solution& solution) const;
+
         CheckerOutput checkSolution(const Solution& solution, bool (*criterion)(std::vector<int>, int, int)) const;
 
     private:
@@ -42,4 +43,4 @@ namespace Yolo
 
         std::vector<std::vector<Edge>> mAdjacencyList;
     };
-}
+} // namespace Yolo
