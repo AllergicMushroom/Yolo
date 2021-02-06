@@ -11,6 +11,6 @@ namespace Yolo
     public:
         Criterion() {}
 
-        virtual bool evaluate(Graph graph, Solution solution) const = 0;
+        virtual bool evaluate(const Graph& graph, const Solution& solution) const = 0;
     };
 } // namespace Yolo

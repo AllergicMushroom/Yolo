@@ -23,7 +23,7 @@ int main()
     {
         Yolo::Graph graph = *graphOptional;
 
-        int nbClasses = 2;
+        int nbClasses = 3;
         int epsilon = 0;
 
         Yolo::SimilarSizeCriterion criterion = Yolo::SimilarSizeCriterion(1);

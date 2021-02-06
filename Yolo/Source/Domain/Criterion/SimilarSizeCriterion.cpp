@@ -16,7 +16,7 @@ namespace Yolo
         mUseIntSlack = false;
     }
 
-    bool SimilarSizeCriterion::evaluate(Graph graph, Solution solution) const
+    bool SimilarSizeCriterion::evaluate(const Graph& graph, const Solution& solution) const
     {
         int nbClasses = solution.getNbClasses();
 
