@@ -21,7 +21,7 @@ namespace Yolo
 
         mActualSolutionCost = mGraph.getSolutionCost(initialSolution);
 
-        Solution bestNeighbor = mNeighborhood->getBest(mGraph, mCriterion, solution);
+        Solution bestNeighbor = mNeighborhood->getBest(mGraph, mCriterion, initialSolution);
         double bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
 
         while (mActualSolutionCost - bestNeighborCost > mEpsilon)
@@ -29,7 +29,7 @@ namespace Yolo
             mActualSolution = bestNeighbor;
             mActualSolutionCost = bestNeighborCost;
 
-            bestNeighbor = findBestNeighbor(mActualSolution, true);
+            bestNeighbor = mNeighborhood->getBest(mGraph, mCriterion, mActualSolution);
             bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
         }
 
