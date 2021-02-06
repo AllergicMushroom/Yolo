@@ -33,7 +33,7 @@ namespace Yolo
         return neighbors;
     }
 
-    Solution PickNDropNeighborhood::getBest(Graph g, const Criterion* criterion, Solution solution) const
+    Solution PickNDropNeighborhood::getBest(const Graph& g, const Criterion* criterion,const Solution& solution) const
     {
         Solution best = solution;
         double bestDeltaCost = 0;

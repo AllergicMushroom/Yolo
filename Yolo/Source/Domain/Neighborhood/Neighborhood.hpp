@@ -14,6 +14,6 @@ namespace Yolo
         Neighborhood() {}
 
         virtual std::vector<Solution> generate(Solution solution) const = 0;
-        virtual Solution getBest(Graph g, const Criterion* criterion, Solution solution) const = 0;
+        virtual Solution getBest(const Graph& g, const Criterion* criterion,const Solution& solution) const = 0;
     };
 } // namespace Yolo

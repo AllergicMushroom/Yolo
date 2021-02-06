@@ -10,6 +10,6 @@ namespace Yolo
         PickNDropNeighborhood() {}
 
         virtual std::vector<Solution> generate(Solution solution) const override;
-        virtual Solution getBest(Graph g, const Criterion* criterion, Solution solution) const override;
+        virtual Solution getBest(const Graph& g, const Criterion* criterion,const Solution& solution) const override;
     };
 } // namespace Yolo
