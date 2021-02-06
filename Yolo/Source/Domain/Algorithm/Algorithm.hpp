@@ -12,7 +12,7 @@ namespace Yolo
     {
     public:
         Algorithm(const Graph& graph, int nbClasses, const Criterion* criterion)
-            : mGraph(graph), mNbClasses(nbClasses), mCriterion(criterion)
+            : mGraph(graph), mCriterion(criterion), mNbClasses(nbClasses)
         {
         }
 
