@@ -13,7 +13,7 @@ namespace Yolo
     public:
         Neighborhood() {}
 
-        virtual std::vector<Solution> generate(Solution solution) const = 0;
+        virtual std::vector<Solution> generate(const Solution& solution) const = 0;
         virtual Solution getBest(const Graph& g, const Criterion* criterion,const Solution& solution) const = 0;
     };
 } // namespace Yolo

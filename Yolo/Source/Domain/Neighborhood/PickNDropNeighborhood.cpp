@@ -2,7 +2,7 @@
 
 namespace Yolo
 {
-    std::vector<Solution> PickNDropNeighborhood::generate(Solution solution) const
+    std::vector<Solution> PickNDropNeighborhood::generate(const Solution& solution) const
     {
         /*
             We have to include the current solution so that convergence is guaranteed.

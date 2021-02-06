@@ -9,7 +9,7 @@ namespace Yolo
     public:
         PickNDropNeighborhood() {}
 
-        virtual std::vector<Solution> generate(Solution solution) const override;
+        virtual std::vector<Solution> generate(const Solution& solution) const override;
         virtual Solution getBest(const Graph& g, const Criterion* criterion,const Solution& solution) const override;
     };
 } // namespace Yolo
