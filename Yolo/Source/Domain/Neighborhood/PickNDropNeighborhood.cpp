@@ -26,17 +26,19 @@ namespace Yolo
                 Solution temp = solution;
                 temp.setVertexClass(i, j);
                 neighbors[index++] = temp;
-                //neighbors[i * (solution.getNbClasses() - 1) + j] = temp;
             }
         }
 
         return neighbors;
     }
 
-    Solution PickNDropNeighborhood::getBest(const Graph& g, const Criterion* criterion,const Solution& solution) const
+    Solution PickNDropNeighborhood::getBest(const Graph& g, const Criterion* criterion, const Solution& solution) const
     {
         Solution best = solution;
         double bestDeltaCost = 0;
+
+        int previousModifiedVertex = 0;
+
         for (int i = 0; i < solution.getNbVertices(); i++)
         {
             for (int j = 0; j < solution.getNbClasses(); j++)
@@ -47,14 +49,24 @@ namespace Yolo
                 }
 
                 double currentDeltaCost = g.getSolutionCostDifference(solution, i, j);
-                if(currentDeltaCost < bestDeltaCost)
+                if (currentDeltaCost < bestDeltaCost)
                 {
-                    
-                    Solution tmp = solution;
-                    tmp.setVertexClass(i, j);
-                    if(criterion->evaluate(g, tmp)){
-                        best = tmp;
+                    int previousModifiedVertexClass = best.getVertexClass(previousModifiedVertex);
+
+                    best.setVertexClass(previousModifiedVertex, solution.getVertexClass(previousModifiedVertex));
+
+                    best.setVertexClass(i, j);
+
+                    if (criterion->evaluate(g, best))
+                    {
                         bestDeltaCost = currentDeltaCost;
+
+                        previousModifiedVertex = i;
+                    }
+                    else
+                    {
+                        best.setVertexClass(i, solution.getVertexClass(i));
+                        best.setVertexClass(previousModifiedVertex, previousModifiedVertexClass);
                     }
                 }
             }
