@@ -37,7 +37,6 @@ namespace Yolo
     {
         Solution best = solution;
         double bestDeltaCost = 0;
-        bool isSet = false;
         for (int i = 0; i < solution.getNbVertices(); i++)
         {
             for (int j = 0; j < solution.getNbClasses(); j++)
@@ -48,16 +47,6 @@ namespace Yolo
                 }
 
                 double currentDeltaCost = g.getSolutionCostDifference(solution, i, j);
-                if(!isSet)
-                {
-                    Solution tmp = solution;
-                    tmp.setVertexClass(i, j);
-                    if(criterion->evaluate(g, tmp)){
-                        best = tmp;
-                        bestDeltaCost = currentDeltaCost;
-                    }
-                    isSet = true;
-                }
                 if(currentDeltaCost < bestDeltaCost)
                 {
                     
