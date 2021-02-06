@@ -21,7 +21,7 @@ namespace Yolo
 
         mActualSolutionCost = mGraph.getSolutionCost(initialSolution);
 
-        Solution bestNeighbor = findBestNeighbor(mActualSolution, true);
+        Solution bestNeighbor = mNeighborhood->getBest(mGraph, mCriterion, solution);
         double bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
 
         while (mActualSolutionCost - bestNeighborCost > mEpsilon)
@@ -36,38 +36,6 @@ namespace Yolo
         return mActualSolution;
     }
 
-    Solution GradientDescentAlgorithm::findBestNeighbor(Solution solution, bool real)
-    {
-        std::vector<Solution> neighborhood = mNeighborhood->generate(solution);
-        double cost;
-        Solution best = solution;
-        bool isSet = false;
-
-        for (unsigned int i = 0; i < neighborhood.size(); i++)
-        {
-            if (!real || mCriterion->evaluate(mGraph, neighborhood[i]))
-            {
-                if (!isSet)
-                {
-                    cost = mGraph.getSolutionCost(neighborhood[i]);
-                    best = neighborhood[i];
-                    isSet = true;
-                }
-                else
-                {
-                    double newCost = mGraph.getSolutionCost(neighborhood[i]);
-                    if (newCost < cost)
-                    {
-                        cost = newCost;
-                        best = neighborhood[i];
-                    }
-                }
-            }
-        }
-        return best;
-    }
-
-    // TODO: We don't actually know if it's valid.
     Solution GradientDescentAlgorithm::generateValidSolution()
     {
         Solution solution = Solution(mGraph.getNbVertices(), mNbClasses);

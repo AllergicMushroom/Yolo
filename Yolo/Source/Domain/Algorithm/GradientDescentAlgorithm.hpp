@@ -23,7 +23,6 @@ namespace Yolo
     private:
         Solution solve(Solution initialSolution);
 
-        Solution findBestNeighbor(Solution sol, bool real);
         Solution generateValidSolution();
 
     protected:
