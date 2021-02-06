@@ -17,7 +17,7 @@ namespace Yolo
         virtual bool evaluate(const Graph& graph, const Solution& solution) const override;
 
     private:
-        bool mUseIntSlack;
+        const bool mUseIntSlack;
 
         int mIntSlack = -1;
         double mPercentageSlack = -1;

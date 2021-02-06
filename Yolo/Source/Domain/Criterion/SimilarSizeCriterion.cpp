@@ -3,17 +3,17 @@
 namespace Yolo
 {
     SimilarSizeCriterion::SimilarSizeCriterion(int maxSlack)
-        : Criterion()
+        : Criterion(), mUseIntSlack(true)
     {
         mIntSlack = std::max(0, maxSlack);
-        mUseIntSlack = true;
+        
     }
 
     SimilarSizeCriterion::SimilarSizeCriterion(double percentage)
-        : Criterion()
+        : Criterion(), mUseIntSlack(false)
     {
         mPercentageSlack = std::min(0.0, percentage);
-        mUseIntSlack = false;
+        
     }
 
     bool SimilarSizeCriterion::evaluate(const Graph& graph, const Solution& solution) const
