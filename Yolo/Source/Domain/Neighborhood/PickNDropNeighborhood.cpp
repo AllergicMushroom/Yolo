@@ -32,4 +32,44 @@ namespace Yolo
 
         return neighbors;
     }
+
+    Solution PickNDropNeighborhood::getBest(Graph g, const Criterion* criterion, Solution solution) const
+    {
+        Solution best = solution;
+        double bestDeltaCost = 0;
+        bool isSet = false;
+        for (int i = 0; i < solution.getNbVertices(); i++)
+        {
+            for (int j = 0; j < solution.getNbClasses(); j++)
+            {
+                if (solution.getVertexClass(i) == j)
+                {
+                    continue;
+                }
+
+                double currentDeltaCost = g.getSolutionCostDifference(solution, i, j);
+                if(!isSet)
+                {
+                    Solution tmp = solution;
+                    tmp.setVertexClass(i, j);
+                    if(criterion->evaluate(g, tmp)){
+                        best = tmp;
+                        bestDeltaCost = currentDeltaCost;
+                    }
+                    isSet = true;
+                }
+                if(currentDeltaCost < bestDeltaCost)
+                {
+                    
+                    Solution tmp = solution;
+                    tmp.setVertexClass(i, j);
+                    if(criterion->evaluate(g, tmp)){
+                        best = tmp;
+                        bestDeltaCost = currentDeltaCost;
+                    }
+                }
+            }
+        }
+        return best;
+    }
 } // namespace Yolo
