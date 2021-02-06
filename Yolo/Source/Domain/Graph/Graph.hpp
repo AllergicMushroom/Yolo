@@ -31,7 +31,7 @@ namespace Yolo
         bool isPartialSolutionValid(const Solution& solution, bool (*criterion)(std::vector<int>, int, int), int lastIndex) const;
         bool isValid(const Solution& solution, bool (*criterion)(std::vector<int>, int, int)) const;
         double getSolutionCost(const Solution& solution) const;
-        double getSolutionCostDifference(const Solution& solution, int vertex, int newClass);
+        double getSolutionCostDifference(const Solution& solution, int vertex, int newClass) const;
 
         CheckerOutput checkSolution(const Solution& solution, bool (*criterion)(std::vector<int>, int, int)) const;
 

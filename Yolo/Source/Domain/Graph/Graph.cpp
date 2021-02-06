@@ -63,7 +63,8 @@ namespace Yolo
         return criterion(nbElementPerClasses, getNbVertices(), lastIndex + 1);
     }
 
-    double Graph::getSolutionCostDifference(const Solution& solution, int vertex, int newClass){
+    double Graph::getSolutionCostDifference(const Solution& solution, int vertex, int newClass) const
+    {
         int currentClass = solution.getVertexClass(vertex);
         double delta = 0;
         for (unsigned int j = 0; j < mAdjacencyList[vertex].size(); ++j)
