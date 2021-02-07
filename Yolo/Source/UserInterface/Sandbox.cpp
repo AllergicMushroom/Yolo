@@ -7,6 +7,7 @@
 #include "Domain/Criterion/SimilarSizeCriterion.hpp"
 
 #include "Domain/Neighborhood/PickNDropNeighborhood.hpp"
+#include "Domain/Neighborhood/SwapNeighborhood.hpp"
 
 #include "Technical/Repositories/GraphFileRepository.hpp"
 
@@ -18,7 +19,7 @@ int main()
 
     Yolo::GraphFileRepository graphRepository;
 
-    std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/milleSommets.txt");
+    std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/centSommets.txt");
     if (graphOptional.has_value())
     {
         Yolo::Graph graph = *graphOptional;
@@ -28,7 +29,7 @@ int main()
 
         Yolo::SimilarSizeCriterion criterion = Yolo::SimilarSizeCriterion(1);
 
-        Yolo::PickNDropNeighborhood neighborhood = Yolo::PickNDropNeighborhood();
+        Yolo::SwapNeighborhood neighborhood = Yolo::SwapNeighborhood();
 
         Yolo::ExplicitEnumerationAlgorithm EE = Yolo::ExplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
         Yolo::ImplicitEnumerationAlgorithm IE = Yolo::ImplicitEnumerationAlgorithm(graph, nbClasses, &criterion);

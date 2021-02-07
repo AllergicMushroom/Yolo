@@ -2,13 +2,13 @@
 
 namespace Yolo
 {
-    std::vector<Solution> PickNDropNeighborhood::generate(const Solution& solution) const
+    std::vector<Solution> PickNDropNeighborhood::generateAll(const Solution& solution) const
     {
         /*
             We have to include the current solution so that convergence is guaranteed.
             We can cut nbVertices solutions because they're the same ones as the current solution.
         */
-        size_t size = static_cast<size_t>(solution.getNbVertices()) * static_cast<size_t>(solution.getNbClasses() - 1) + 1;
+        size_t size = static_cast<size_t>(solution.getNbVertices()) * (static_cast<size_t>(solution.getNbClasses()) - 1) + 1;
         std::vector<Solution> neighbors(size, Solution(0, 0));
 
         int index = 0;
@@ -32,7 +32,7 @@ namespace Yolo
         return neighbors;
     }
 
-    Solution PickNDropNeighborhood::getBest(const Graph& g, const Criterion* criterion, const Solution& solution) const
+    Solution PickNDropNeighborhood::generateBest(const Graph& g, const Criterion* criterion, const Solution& solution) const
     {
         Solution best = solution;
         double bestDeltaCost = 0;
@@ -71,6 +71,7 @@ namespace Yolo
                 }
             }
         }
+
         return best;
     }
 } // namespace Yolo

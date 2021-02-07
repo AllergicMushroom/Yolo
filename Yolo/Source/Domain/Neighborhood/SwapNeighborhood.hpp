@@ -4,10 +4,10 @@
 
 namespace Yolo
 {
-    class PickNDropNeighborhood : public Neighborhood
+    class SwapNeighborhood : public Neighborhood
     {
     public:
-        PickNDropNeighborhood() {}
+        SwapNeighborhood() {}
 
         virtual std::vector<Solution> generateAll(const Solution& solution) const override;
         virtual Solution generateBest(const Graph& g, const Criterion* criterion, const Solution& solution) const override;
