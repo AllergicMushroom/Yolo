@@ -29,12 +29,14 @@ namespace Yolo
 
     CheckerOutput Graph::checkSolution(const Solution& solution, bool criterion(std::vector<int>, int, int)) const
     {
-        return {isValid(solution, criterion), getSolutionCost(solution)};
+        // TODO
+        return {false, getSolutionCost(solution)};
     }
-    // go through every arc twice.
+
     double Graph::getSolutionCost(const Solution& solution) const
     {
         double cost = 0;
+
         for (unsigned int i = 0; i < mAdjacencyList.size(); ++i)
         {
             for (unsigned int j = 0; j < mAdjacencyList[i].size(); ++j)
@@ -45,22 +47,9 @@ namespace Yolo
                 }
             }
         }
-        return cost / 2;
-    }
 
-    bool Graph::isPartialSolutionValid(const Solution& solution, bool (*criterion)(std::vector<int>, int, int), int lastIndex) const
-    {
-        std::vector<int> nbElementPerClasses = std::vector<int>(solution.getNbClasses(), 0);
-        for (int i = 0; i < lastIndex + 1; ++i)
-        {
-            if (solution.getVertexClass(i) > solution.getNbClasses())
-            {
-                std::cout << "The number of classes is higher than expected.\n";
-                return false;
-            }
-            nbElementPerClasses[solution.getVertexClass(i)]++;
-        }
-        return criterion(nbElementPerClasses, getNbVertices(), lastIndex + 1);
+        /* Since the graph is inderected, we've gone through each arc twice. */
+        return cost / 2;
     }
 
     double Graph::getSolutionCostDifference(const Solution& solution, int vertex, int newClass) const
@@ -68,22 +57,17 @@ namespace Yolo
         int currentClass = solution.getVertexClass(vertex);
         double delta = 0;
         for (unsigned int j = 0; j < mAdjacencyList[vertex].size(); ++j)
+        {
+            int adjacentClass = solution.getVertexClass(mAdjacencyList[vertex][j].getDestination());
+            if (adjacentClass == currentClass)
             {
-                int adjacentClass = solution.getVertexClass(mAdjacencyList[vertex][j].getDestination());
-                if (adjacentClass == currentClass)
-                {
-                    delta += mAdjacencyList[vertex][j].getWeight();
-                }
-                else if(adjacentClass == newClass)
-                {
-                    delta-= mAdjacencyList[vertex][j].getWeight();
-                }
+                delta += mAdjacencyList[vertex][j].getWeight();
             }
+            else if (adjacentClass == newClass)
+            {
+                delta -= mAdjacencyList[vertex][j].getWeight();
+            }
+        }
         return delta;
-    }
-
-    bool Graph::isValid(const Solution& solution, bool (*criterion)(std::vector<int>, int, int)) const
-    {
-        return isPartialSolutionValid(solution, criterion, getNbVertices() - 1);
     }
 } // namespace Yolo
