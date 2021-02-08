@@ -11,8 +11,8 @@ namespace Yolo
         size_t size = static_cast<size_t>(solution.getNbVertices()) * (static_cast<size_t>(solution.getNbVertices()) - 1) + 1;
         std::vector<Solution> neighbors = std::vector<Solution>(size, Solution(0, 0));
 
-        int index = 0;
-        neighbors[0] = solution;
+        size_t index = 0;
+        neighbors[index++] = solution;
 
         for (int i = 0; i < solution.getNbVertices(); ++i)
         {
