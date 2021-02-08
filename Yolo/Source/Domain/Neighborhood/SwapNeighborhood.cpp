@@ -16,16 +16,14 @@ namespace Yolo
 
         for (int i = 0; i < solution.getNbVertices(); ++i)
         {
-            for (int j = 0; j < solution.getNbVertices(); ++j)
+            /* Swapping i with j is the same as swapping j with i, and there is no interest in swapping i with itself, so we can consider only j > i. */
+            for (int j = i + 1; j < solution.getNbVertices(); ++j)
             {
                 int iClass = solution.getVertexClass(i);
                 int jClass = solution.getVertexClass(j);
 
-                /*
-                    1.Don't swap an element with itself.
-                    2. Don't swap elements of same class.
-                */
-                if (i == j || iClass == jClass)
+                /* Don't swap elements of same class. */
+                if (iClass == jClass)
                 {
                     continue;
                 }
@@ -52,16 +50,14 @@ namespace Yolo
 
         for (int i = 0; i < solution.getNbVertices(); ++i)
         {
-            for (int j = 0; j < solution.getNbVertices(); ++j)
+            /* Swapping i with j is the same as swapping j with i, and there is no interest in swapping i with itself, so we can consider only j > i. */
+            for (int j = i + 1; j < solution.getNbVertices(); ++j)
             {
                 int iClass = solution.getVertexClass(i);
                 int jClass = solution.getVertexClass(j);
 
-                /*
-                    1.Don't swap an element with itself.
-                    2. Don't swap elements of same class.
-                */
-                if (i == j || iClass == jClass)
+                /* Don't swap elements of same class. */
+                if (iClass == jClass)
                 {
                     continue;
                 }
