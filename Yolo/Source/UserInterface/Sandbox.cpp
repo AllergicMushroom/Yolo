@@ -8,6 +8,7 @@
 
 #include "Domain/Neighborhood/PickNDropNeighborhood.hpp"
 #include "Domain/Neighborhood/SwapNeighborhood.hpp"
+#include "Domain/Neighborhood/SweepNeighborhood.hpp"
 
 #include "Technical/Repositories/GraphFileRepository.hpp"
 
@@ -22,7 +23,11 @@ int main()
     std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/centSommets.txt");
     if (graphOptional.has_value())
     {
-        Yolo::Graph graph = *graphOptional;
+        Yolo::Graph graph1 = *graphOptional;
+        Yolo::Graph graph2 = Yolo::Graph(500, 2000, 1, 4);
+
+        Yolo::Graph graphs[] = {graph1,
+                                graph2};
 
         int nbClasses = 3;
         int epsilon = 0;
@@ -31,29 +36,32 @@ int main()
 
         Yolo::SwapNeighborhood neighborhood = Yolo::SwapNeighborhood();
 
-        Yolo::ExplicitEnumerationAlgorithm EE = Yolo::ExplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
-        Yolo::ImplicitEnumerationAlgorithm IE = Yolo::ImplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
-        Yolo::GradientDescentAlgorithm GD = Yolo::GradientDescentAlgorithm(graph, nbClasses, epsilon, &neighborhood, &criterion);
-
-        Yolo::Algorithm* algorithms[] = {
-            //&EE,
-            //&IE,
-            &GD};
-
-        for (auto& algorithm : algorithms)
+        for (const auto& graph : graphs)
         {
-            const auto& startPoint = std::chrono::steady_clock::now();
+            Yolo::ExplicitEnumerationAlgorithm EE = Yolo::ExplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
+            Yolo::ImplicitEnumerationAlgorithm IE = Yolo::ImplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
+            Yolo::GradientDescentAlgorithm GD = Yolo::GradientDescentAlgorithm(graph, nbClasses, epsilon, &neighborhood, &criterion);
 
-            Yolo::Solution solution = algorithm->solve();
+            Yolo::Algorithm* algorithms[] = {
+                //&EE,
+                //&IE,
+                &GD};
 
-            const auto& endPoint = std::chrono::steady_clock::now();
+            for (auto& algorithm : algorithms)
+            {
+                const auto& startPoint = std::chrono::steady_clock::now();
 
-            auto elapsedSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(endPoint - startPoint).count() / 1000.0f;
+                Yolo::Solution solution = algorithm->solve();
 
-            YOLO_INFO(algorithm->getName());
-            YOLO_INFO("Best solution found: {0}", solution.toString());
-            YOLO_INFO("Cost: {0}", graph.getSolutionCost(solution));
-            YOLO_INFO("Found in {0} seconds.", elapsedSeconds);
+                const auto& endPoint = std::chrono::steady_clock::now();
+
+                auto elapsedSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(endPoint - startPoint).count() / 1000.0f;
+
+                YOLO_INFO(algorithm->getName());
+                YOLO_INFO("Best solution found: {0}", solution.toString());
+                YOLO_INFO("Cost: {0}", graph.getSolutionCost(solution));
+                YOLO_INFO("Found in {0} seconds.", elapsedSeconds);
+            }
         }
     }
 
