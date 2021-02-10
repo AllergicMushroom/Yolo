@@ -17,11 +17,13 @@ namespace Yolo
     class Graph
     {
     public:
+        Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree);
+
         Graph(const std::vector<std::vector<Edge>>& adjacencyList);
 
         inline int getNbVertices() const { return static_cast<int>(mAdjacencyList.size()); }
 
-        inline int getVertexDegree(int vertex) const { return mVertexDegrees[vertex]; }
+        inline int getVertexDegree(int vertex) const { return mVerticesDegrees[vertex]; }
 
         inline int getMaxDegree() const { return mMaxDegree; }
         inline int getMinDegree() const { return mMinDegree; }
@@ -34,7 +36,7 @@ namespace Yolo
         CheckerOutput checkSolution(const Solution& solution, bool (*criterion)(std::vector<int>, int, int)) const;
 
     private:
-        std::vector<int> mVertexDegrees;
+        std::vector<int> mVerticesDegrees;
         int mMaxDegree;
         int mMinDegree;
 

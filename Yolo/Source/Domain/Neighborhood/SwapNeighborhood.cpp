@@ -43,7 +43,7 @@ namespace Yolo
     Solution SwapNeighborhood::generateBest(const Graph& graph, const Criterion* criterion, const Solution& solution) const
     {
         Solution best = solution;
-        double bestDeltaCost = 0;
+        double bestDeltaCost = 0.0;
 
         int previousModifiedVertices[2] = {0, 0};
         int previousModifiedVerticesClasses[2] = {best.getVertexClass(previousModifiedVertices[0]), best.getVertexClass(previousModifiedVertices[1])};

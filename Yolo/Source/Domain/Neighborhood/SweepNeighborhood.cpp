@@ -39,7 +39,7 @@ namespace Yolo
         return neighbors;
     }
 
-    Solution SweepNeighborhood::generateBest(const Graph& graph, const Criterion* criterion, const Solution& solution) const
+    Solution SweepNeighborhood::generateBest(const Graph& graph, const Criterion*, const Solution& solution) const
     {
         const auto& neighbors = generateAll(solution);
 
