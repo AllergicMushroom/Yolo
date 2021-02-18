@@ -4,11 +4,7 @@ namespace Yolo
 {
     std::vector<Solution> SweepNeighborhood::generateAll(const Solution& solution) const
     {
-        /*
-        * TODO
-        * This method generates a lot of doubles.
-        * How to optimize it?
-        */
+        // Todo: This method generates a lot of doubles. How to optimize it?
 
         size_t nbVertices = static_cast<size_t>(solution.getNbVertices());
         size_t size = (nbVertices * nbVertices - nbVertices) / 2 + 1;

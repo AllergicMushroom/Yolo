@@ -35,7 +35,7 @@ namespace Yolo
                 solution.setVertexClass(vertex, i);
                 enumerateFrom(solution, vertex + 1, cost);
 
-                // TODO
+                // Todo
                 /*if (mGraph.isPartialSolutionValid(sol, mCriterion, from))
                     enumerateFrom(sol, from + 1);*/
             }
