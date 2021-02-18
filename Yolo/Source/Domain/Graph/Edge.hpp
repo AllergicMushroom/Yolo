@@ -5,8 +5,10 @@ namespace Yolo
     class Edge
     {
     public:
-        Edge(int source, int destination, double weight) :
-            mSource(source), mDestination(destination), mWeight(weight) {}
+        Edge(int source, int destination, double weight);
+
+        bool operator==(const Edge& edge2) const;
+        bool operator!=(const Edge& edge2) const;
 
         inline int getSource() const { return mSource; }
         inline int getDestination() const { return mDestination; }
@@ -19,4 +21,4 @@ namespace Yolo
 
         double mWeight;
     };
-}
+} // namespace Yolo

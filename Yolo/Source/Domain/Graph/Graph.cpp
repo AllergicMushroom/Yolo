@@ -7,137 +7,264 @@
 namespace Yolo
 {
     Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree)
-        : mAdjacencyList(std::vector<std::vector<Edge>>(nbVertices)), mVerticesDegrees(std::vector<int>(nbVertices))
     {
-        int maxNbEdges = nbVertices * (nbVertices - 1);
+        if (nbVertices < 0)
+        {
+            YOLO_ERROR("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): nbVertices must be positive.");
+            nbVertices = 0;
+        }
+
+        if (nbEdges < 0)
+        {
+            YOLO_ERROR("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): nbEdges must be positive.");
+            nbEdges = 0;
+        }
+
+        if (minDegree < 0)
+        {
+            YOLO_ERROR("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): minDegree must be positive.");
+            minDegree = 0;
+        }
+
+        if (maxDegree < 0)
+        {
+            YOLO_ERROR("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): maxDegree must be positive.");
+            maxDegree = 0;
+        }
+
+        mAdjacencyList = std::vector<std::vector<Edge>>(nbVertices);
+        mVerticesDegrees = std::vector<int>(nbVertices);
 
         mNbEdges = nbEdges;
-        if (nbEdges > maxNbEdges)
-        {
-            YOLO_WARN("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): Number of edges is too high for the number of vertices. {0} edges will be generated.", maxNbEdges);
-            mNbEdges = maxNbEdges;
-        }
 
         mMinDegree = minDegree;
-        if (minDegree < 1)
-        {
-            YOLO_WARN("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): minDegree must be strictly positive. Setting it to 1.");
-            mMinDegree = 1;
-        }
-
         mMaxDegree = maxDegree;
-        if (maxDegree > nbVertices - 1)
+
+        /* Zero and one vertex-graphs cannot have edges. */
+        if (nbVertices > 1)
         {
-            YOLO_WARN("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): maxDegree must be lower than or equal to nbVertices - 1. Setting it to {0}.", nbVertices - 1);
-            mMaxDegree = nbVertices - 1;
-        }
+            int maxNbEdges = nbVertices * (nbVertices - 1) / 2;
 
-        if (mMinDegree > mMaxDegree)
-        {
-            YOLO_WARN("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): maxDegree must be higher than or equal to minDegree. Setting both of them to {0}.", std::min(mMinDegree, mMaxDegree));
-            mMinDegree = std::min(mMinDegree, mMaxDegree);
-            mMaxDegree = mMinDegree;
-        }
+            if (mNbEdges > maxNbEdges)
+            {
+                YOLO_WARN("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): Number of edges is too high for the number of vertices. {0} edges will be generated.", maxNbEdges);
+                mNbEdges = maxNbEdges;
+            }
 
-        if (mNbEdges < mMinDegree * nbVertices / 2)
-        {
-            YOLO_WARN("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): nbEdges must be higher than or equal to minDegree * nbVertices. Setting it to {0}.", minDegree * nbVertices / 2);
-            mNbEdges = mMinDegree * nbVertices / 2;
-        }
+            if (mMinDegree < 1)
+            {
+                YOLO_WARN("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): minDegree must be at least one. Setting it to 1.");
+                mMinDegree = 1;
+            }
 
-        if (mNbEdges > mMaxDegree * nbVertices / 2)
-        {
-            YOLO_WARN("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): nbEdges must be lower than or equal to maxDegree * nbVertices. Setting it to {0}.", maxDegree * nbVertices / 2);
-            mNbEdges = mMaxDegree * nbVertices / 2;
-        }
+            if (mMaxDegree > getNbVertices() - 1)
+            {
+                YOLO_WARN("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): maxDegree must be lower than or equal to nbVertices - 1. Setting it to {0}.", getNbVertices() - 1);
+                mMaxDegree = getNbVertices() - 1;
+            }
 
-        std::random_device randomDevice;
-        std::mt19937_64 randomEngine(randomDevice());
+            const int nbMinEdges = mMinDegree * getNbVertices() / 2;
+            if (mNbEdges < nbMinEdges)
+            {
+                YOLO_WARN("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): nbEdges must be higher than or equal to minDegree * nbVertices / 2. Setting it to {0}.", nbMinEdges);
+                mNbEdges = mMinDegree * nbMinEdges;
+            }
 
-        std::uniform_real_distribution<double> randomRealDistribution(0, 1);
+            const int nbMaxEdges = mMaxDegree * getNbVertices() / 2;
+            if (mNbEdges > nbMaxEdges)
+            {
+                YOLO_WARN("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): nbEdges must be lower than or equal to maxDegree * nbVertices. Setting it to {0}.", nbMaxEdges);
+                mNbEdges = nbMaxEdges;
+            }
 
-        int currentNbEdges = 0;
+            if (mMaxDegree < mMinDegree)
+            {
+                YOLO_WARN("Graph::Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree): maxDegree must be higher than or equal to minDegree. Setting both of them to {0}.", mMinDegree);
+                mMaxDegree = mMinDegree;
+            }
 
-        /* Generate the minimum edges per vertex */
-        for (int source = 0; source < mAdjacencyList.size(); ++source)
-        {
-            std::vector<int> underMinDegreeVertices;
+            std::random_device randomDevice;
+            std::mt19937_64 randomEngine(randomDevice());
+
+            std::uniform_real_distribution<double> randomRealDistribution(0, 1);
+
+            int currentNbEdges = 0;
+
+            std::vector<int> underMinDegreeVertices(mAdjacencyList.size());
             for (int vertex = 0; vertex < mAdjacencyList.size(); ++vertex)
             {
-                /* No loops */
-                if (source == vertex)
-                {
-                    continue;
-                }
-
-                if (mAdjacencyList[vertex].size() < static_cast<size_t>(mMinDegree))
-                {
-                    underMinDegreeVertices.push_back(vertex);
-                }
+                underMinDegreeVertices[vertex] = vertex;
             }
+
+            std::vector<int> underMaxDegreeVertices(underMinDegreeVertices);
 
             std::shuffle(underMinDegreeVertices.begin(), underMinDegreeVertices.end(), randomEngine);
-
-            for (int destination : underMinDegreeVertices)
-            {
-                if (mVerticesDegrees[source] >= mMinDegree)
-                {
-                    break;
-                }
-
-                /* Don't create paralel edges */
-                if (std::find_if(mAdjacencyList[source].begin(), mAdjacencyList[source].end(), [destination](Edge edge) { return edge.getDestination() == destination; }) != mAdjacencyList[source].end())
-                {
-                    continue;
-                }
-
-                double weight = randomRealDistribution(randomEngine);
-
-                Edge edge = Edge(source, destination, weight);
-                Edge reverseEdge = Edge(destination, source, weight);
-
-                mAdjacencyList[source].push_back(edge);
-                mAdjacencyList[destination].push_back(reverseEdge);
-                ++mVerticesDegrees[source];
-                ++mVerticesDegrees[destination];
-                ++currentNbEdges;
-            }
-        }
-
-        /* Generate the others */
-        while (currentNbEdges < mNbEdges)
-        {
-            std::vector<int> underMaxDegreeVertices;
-            for (int vertex = 0; vertex < mAdjacencyList.size(); ++vertex)
-            {
-                if (mAdjacencyList[vertex].size() < static_cast<size_t>(mMaxDegree))
-                {
-                    underMaxDegreeVertices.push_back(vertex);
-                }
-            }
-
             std::shuffle(underMaxDegreeVertices.begin(), underMaxDegreeVertices.end(), randomEngine);
 
-            for (size_t vertex = 0; vertex < underMaxDegreeVertices.size() - 1; vertex += 2)
+            /*
+            * Todo
+            * 
+            * I'm sure there is a way simpler and more efficient to construct the graph.
+            * I'll come back to this later.
+            * 
+            * Also it would seems MSVC compiler cannot optimize this code well.
+            * 
+            * - Luis
+            */
+
+            /* Generate the minimum edges per vertex */
+
+            int minIndex = 0;
+            int maxIndex = 0;
+            while (underMinDegreeVertices.size() > 0)
             {
-                double weight = randomRealDistribution(randomEngine);
+                int source = underMinDegreeVertices[minIndex];
+                int destination = underMaxDegreeVertices[maxIndex];
 
-                int source = underMaxDegreeVertices[vertex];
-                int destination = underMaxDegreeVertices[vertex + 1];
+                if (source != destination)
+                {
+                    if (std::find_if(mAdjacencyList[source].begin(), mAdjacencyList[source].end(), [destination](Edge edge) { return edge.getDestination() == destination; }) == mAdjacencyList[source].end())
+                    {
+                        double weight = randomRealDistribution(randomEngine);
 
-                Edge edge = Edge(source, destination, weight);
-                Edge reverseEdge = Edge(destination, source, weight);
+                        Edge edge = Edge(source, destination, weight);
+                        Edge reverseEdge = Edge(destination, source, weight);
 
-                mAdjacencyList[source].push_back(edge);
-                mAdjacencyList[destination].push_back(reverseEdge);
-                ++mVerticesDegrees[source];
-                ++mVerticesDegrees[destination];
-                ++currentNbEdges;
+                        mAdjacencyList[source].push_back(edge);
+                        mAdjacencyList[destination].push_back(reverseEdge);
+                        ++currentNbEdges;
 
-                if (currentNbEdges >= mNbEdges)
+                        ++mVerticesDegrees[source];
+                        if (mVerticesDegrees[source] == mMinDegree)
+                        {
+                            underMinDegreeVertices.erase(underMinDegreeVertices.begin() + minIndex);
+                        }
+
+                        if (mMinDegree == mMaxDegree)
+                        {
+                            auto iterator = std::find_if(underMaxDegreeVertices.begin(), underMaxDegreeVertices.end(), [source](int vertex) { return vertex == source; });
+                            if (iterator != underMaxDegreeVertices.end())
+                            {
+                                int iteratorIndex = static_cast<int>(iterator - underMaxDegreeVertices.begin());
+
+                                underMaxDegreeVertices.erase(iterator);
+
+                                if (iteratorIndex < maxIndex)
+                                {
+                                    --maxIndex;
+                                }
+                            }
+                        }
+
+                        ++mVerticesDegrees[destination];
+                        if (mVerticesDegrees[destination] == mMaxDegree)
+                        {
+                            underMaxDegreeVertices.erase(underMaxDegreeVertices.begin() + maxIndex);
+                        }
+
+                        if (mVerticesDegrees[destination] == mMinDegree)
+                        {
+                            auto iterator = std::find_if(underMinDegreeVertices.begin(), underMinDegreeVertices.end(), [destination](int vertex) { return vertex == destination; });
+                            if (iterator != underMinDegreeVertices.end())
+                            {
+                                underMinDegreeVertices.erase(iterator);
+                            }
+                        }
+
+                        minIndex = (minIndex + 1) % std::max(static_cast<int>(underMinDegreeVertices.size()), 1);
+                    }
+                }
+
+                maxIndex = (maxIndex + 1) % std::max(static_cast<int>(underMaxDegreeVertices.size()), 1);
+            }
+
+            /* Generate the others */
+            while (currentNbEdges < mNbEdges)
+            {
+                /*
+                * Todo:
+                * 
+                * This variable is a hotfix to avoid infinite loops because of the following problem:
+                * 
+                * Suppose we want a graph with vertices of degree 4.
+                * Suppose the last vertices to create edges have degrees 3 3 2 3 3.
+                * 
+                * Then the loop could create an edge between the two couples of 3's and get stuck trying to create a loop.
+                */
+                bool hasEdgeBeenAdded = false;
+
+                int sourceIndex = 0;
+                int destinationIndex = 0;
+
+                while (sourceIndex < underMaxDegreeVertices.size())
+                {
+                    while (destinationIndex < underMaxDegreeVertices.size())
+                    {
+                        if (sourceIndex != destinationIndex)
+                        {
+                            int source = underMaxDegreeVertices[sourceIndex];
+                            int destination = underMaxDegreeVertices[destinationIndex];
+
+                            /* Don't create paralel edges */
+                            if (std::find_if(mAdjacencyList[source].begin(), mAdjacencyList[source].end(), [destination](Edge edge) { return edge.getDestination() == destination; }) == mAdjacencyList[source].end())
+                            {
+
+                                double weight = randomRealDistribution(randomEngine);
+                                Edge edge = Edge(source, destination, weight);
+                                Edge reverseEdge = Edge(destination, source, weight);
+
+                                mAdjacencyList[source].push_back(edge);
+                                mAdjacencyList[destination].push_back(reverseEdge);
+
+                                hasEdgeBeenAdded = true;
+
+                                ++mVerticesDegrees[source];
+                                if (mVerticesDegrees[source] == mMaxDegree)
+                                {
+                                    underMaxDegreeVertices.erase(underMaxDegreeVertices.begin() + sourceIndex);
+                                    if (sourceIndex < destinationIndex)
+                                    {
+                                        --destinationIndex;
+                                    }
+                                }
+
+                                ++mVerticesDegrees[destination];
+                                if (mVerticesDegrees[destination] == mMaxDegree)
+                                {
+                                    underMaxDegreeVertices.erase(underMaxDegreeVertices.begin() + destinationIndex);
+                                }
+
+                                ++currentNbEdges;
+                            }
+                        }
+
+                        ++destinationIndex;
+
+                        if (currentNbEdges >= mNbEdges)
+                        {
+                            break;
+                        }
+                    }
+
+                    ++sourceIndex;
+
+                    if (currentNbEdges >= mNbEdges)
+                    {
+                        break;
+                    }
+                }
+
+                if (!hasEdgeBeenAdded)
                 {
                     break;
                 }
+            }
+
+            /* Recalculate min and max degrees */
+            for (const auto& sourceAdjacents : mAdjacencyList)
+            {
+                mMinDegree = std::min(mMinDegree, static_cast<int>(sourceAdjacents.size()));
+                mMaxDegree = std::max(mMaxDegree, static_cast<int>(sourceAdjacents.size()));
             }
         }
     }
@@ -165,10 +292,65 @@ namespace Yolo
         mNbEdges /= 2; /* Undirected graph */
     }
 
-    CheckerOutput Graph::checkSolution(const Solution& solution, bool(std::vector<int>, int, int)) const
+    bool Graph::operator==(const Graph& graph2) const
     {
-        // TODO
-        return {false, getSolutionCost(solution)};
+        if (this->getNbVertices() != graph2.getNbVertices())
+        {
+            return false;
+        }
+
+        if (this->getNbEdges() != graph2.getNbEdges())
+        {
+            return false;
+        }
+
+        /* Check if there's a edge in the first graph that's not in the second one. */
+        for (int source = 0; source < this->getNbVertices(); ++source)
+        {
+            for (int i = 0; i < this->mAdjacencyList[source].size(); ++i)
+            {
+                const Edge& edgeToCompare = this->mAdjacencyList[source][i];
+
+                if (std::find_if(graph2.mAdjacencyList[source].begin(), graph2.mAdjacencyList[source].end(), [edgeToCompare](Edge edge) { return edge == edgeToCompare; }) == graph2.mAdjacencyList[source].end())
+                {
+                    return false;
+                }
+            }
+        }
+
+        // Todo: This is optimizable.
+        /* Same thing but from second graph to first graph. */
+        for (int source = 0; source < graph2.getNbVertices(); ++source)
+        {
+            for (int i = 0; i < graph2.mAdjacencyList[source].size(); ++i)
+            {
+                const Edge& edgeToCompare = graph2.mAdjacencyList[source][i];
+
+                if (std::find_if(this->mAdjacencyList[source].begin(), this->mAdjacencyList[source].end(), [edgeToCompare](Edge edge) { return edge == edgeToCompare; }) == this->mAdjacencyList[source].end())
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    bool Graph::operator!=(const Graph& graph2) const
+    {
+        return !((*this) == graph2);
+    }
+
+    double Graph::getEdgeWeight(int source, int destination) const
+    {
+        auto iterator = std::find_if(mAdjacencyList[source].begin(), mAdjacencyList[source].end(), [destination](Edge edge) { return edge.getDestination() == destination; });
+
+        if (iterator != mAdjacencyList[source].end())
+        {
+            return iterator->getWeight();
+        }
+
+        return 0;
     }
 
     double Graph::getSolutionCost(const Solution& solution) const

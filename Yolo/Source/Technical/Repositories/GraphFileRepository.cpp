@@ -28,7 +28,41 @@ namespace Yolo
 {
     void GraphFileRepository::save(std::string ID, Graph graph)
     {
+        std::ofstream file(ID);
+        if (file.is_open())
+        {
+            file << "# nbVertices nbEdges\n";
+            file << graph.getNbVertices() << ' ' << graph.getNbEdges() << '\n';
 
+            file << "# minDegree maxDegree\n";
+            file << graph.getMinDegree() << ' ' << graph.getMaxDegree() << '\n';
+
+            file << "# source destination weight\n";
+            for (int source = 0; source < graph.getNbVertices(); ++source)
+            {
+                for (int destination = source + 1; destination < graph.getNbVertices(); ++destination)
+                {
+                    double weight = graph.getEdgeWeight(source, destination);
+                    if (weight != 0)
+                    {
+                        /* [0, n] to [1, n+1]*/
+                        file << source + 1 << ' ' << destination + 1 << ' ' << weight << '\n';
+                    }
+                }
+            }
+
+            file << "# vertex degree\n";
+            for (int vertex = 0; vertex < graph.getNbVertices(); ++vertex)
+            {
+                file << vertex + 1 << ' ' << graph.getVertexDegree(vertex) << '\n';
+            }
+
+            file.close();
+        }
+        else
+        {
+            YOLO_ERROR("{0}: Could not open file {1} for writing.\n", __func__, ID);
+        }
     }
 
     std::optional<Graph> GraphFileRepository::load(std::string ID)
@@ -63,8 +97,7 @@ namespace Yolo
         }
 
         bool isGraphValid = true;
-        const auto checkPositivity = [&isGraphValid](int x, const std::string& msg)
-        {
+        const auto checkPositivity = [&isGraphValid](int x, const std::string& msg) {
             if (x < 0)
             {
                 YOLO_ERROR(msg);
@@ -90,7 +123,7 @@ namespace Yolo
         {
             return std::nullopt;
         }
-        
+
         std::vector<std::vector<Edge>> adjacencyList(nbVertices);
 
         for (int i = 0; i < nbEdges; ++i)
@@ -106,7 +139,7 @@ namespace Yolo
             checkPositivity(destination, "Error: Arc in line #" + std::to_string(lineIndex) + std::string(" in instance ") + ID + std::string(" must have a strictly positive destination vertex."));
             checkPositivity(nbVertices - destination, "Error: Arc in line #" + std::to_string(lineIndex) + std::string(" in instance ") + ID + std::string(" must be lower than or equal to number of vertices."));
 
-            double weight = stod(tokenizedLines[lineIndex][2]);
+            double weight = std::stod(tokenizedLines[lineIndex][2]);
             checkPositivity(source, "Error: Arc in line #" + std::to_string(lineIndex) + std::string(" in instance ") + ID + std::string(" must have a positive weight."));
 
             if (!isGraphValid)
@@ -118,8 +151,16 @@ namespace Yolo
             --source;
             --destination;
 
-            adjacencyList[source].push_back(Edge(source, destination, weight));
-            adjacencyList[destination].push_back(Edge(destination, source, weight));
+            auto iterator = std::find_if(adjacencyList[source].begin(), adjacencyList[source].end(), [source, destination](Edge edge) { return edge.getSource() == source && edge.getDestination() == destination; });
+            if (iterator != adjacencyList[source].end())
+            {
+                *iterator = Edge(source, destination, iterator->getWeight() + weight);
+            }
+            else
+            {
+                adjacencyList[source].push_back(Edge(source, destination, weight));
+                adjacencyList[destination].push_back(Edge(destination, source, weight));
+            }
         }
 
         for (unsigned int i = 0; i < adjacencyList.size(); ++i)
@@ -165,4 +206,4 @@ namespace Yolo
 
         return elements;
     }
-}
+} // namespace Yolo

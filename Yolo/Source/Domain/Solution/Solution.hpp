@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+static constexpr int sVertexNoClass = -1;
+
 namespace Yolo
 {
     class Solution
@@ -10,24 +12,13 @@ namespace Yolo
     public:
         Solution(int nbVertices, int nbClasses);
 
-        inline int getNbClasses() const { return mNbClasses; }
-        inline int getNbVertices() const { return mNbVertices; }
+        inline int getNbVertices() const { return static_cast<int>(mSolution.size()); }
+        inline int getNbClasses() const { return static_cast<int>(mClassCardinals.size()); }
 
         void setVertexClass(int vertex, int vertexClass);
-        inline int getVertexClass(int vertex) const { return mSolution[vertex]; }
+        int getVertexClass(int vertex) const;
 
-        inline int getClassCardinal(int c) const { return mClassCardinals[c]; }
-
-        Solution clone()
-        {
-            Solution clone = Solution(static_cast<int>(mSolution.size()), mNbClasses);
-            for (unsigned int i = 0; i < mSolution.size(); i++)
-            {
-                clone.setVertexClass(i, mSolution[i]);
-            }
-            clone.mNbClasses = mNbClasses;
-            return clone;
-        }
+        int getClassCardinal(int c) const;
 
         std::string toString()
         {
@@ -42,8 +33,5 @@ namespace Yolo
     private:
         std::vector<int> mSolution;
         std::vector<int> mClassCardinals;
-
-        int mNbClasses;
-        int mNbVertices;
     };
 } // namespace Yolo
