@@ -10,6 +10,7 @@ namespace Yolo
         ExplicitEnumerationAlgorithm(const Graph& graph, int nbClasses, const Criterion* criterion)
             : Algorithm(graph, nbClasses, criterion), mBestSolution(Solution(mGraph.getNbVertices(), mNbClasses))
         {
+            mIsBestSolutionValid = criterion->evaluate(mGraph, mBestSolution);
         }
 
         virtual Solution solve() override;
@@ -21,5 +22,6 @@ namespace Yolo
 
     protected:
         Solution mBestSolution;
+        bool mIsBestSolutionValid;
     };
 } // namespace Yolo

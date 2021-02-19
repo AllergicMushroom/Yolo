@@ -14,9 +14,9 @@ namespace Yolo
         {
             if (mCriterion->evaluate(mGraph, solution))
             {
-                // Todo: We shouldn't need to evaluate mBestSolution at every call. Maybe get a random initial solution
-                if (!mCriterion->evaluate(mGraph, mBestSolution))
+                if (!mIsBestSolutionValid)
                 {
+                    mIsBestSolutionValid = true;
                     mBestSolution = solution;
                     mBestCost = cost;
                 }
