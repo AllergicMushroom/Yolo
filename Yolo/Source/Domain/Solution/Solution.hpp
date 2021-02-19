@@ -20,15 +20,8 @@ namespace Yolo
 
         int getClassCardinal(int c) const;
 
-        std::string toString()
-        {
-            std::string str = "";
-            for (unsigned int i = 0; i < mSolution.size(); ++i)
-            {
-                str += std::to_string(mSolution[i]) + " ";
-            }
-            return str;
-        }
+        bool isEqual(const Solution& sol) const;
+        std::string toString() const;
 
     private:
         std::vector<int> mSolution;
