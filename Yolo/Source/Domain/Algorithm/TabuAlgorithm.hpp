@@ -24,6 +24,7 @@ namespace Yolo
         virtual Solution solve() override;
 
         std::string getName() override { return "Tabu"; }
+        virtual std::string getDetail() override { return "\n   Nb iter: "+std::to_string(mIterMax)+"\n   Tabu size: "+std::to_string(mTabuSize)+"\n   each: "+(mEach ? "True" : "False")+"\n   aspiration: "+(mAspiration ? "True" : "False"); }
 
     private:
         Solution solve(Solution initialSolution);

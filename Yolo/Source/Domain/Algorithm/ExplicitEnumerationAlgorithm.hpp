@@ -16,6 +16,7 @@ namespace Yolo
         virtual Solution solve() override;
 
         virtual inline std::string getName() override { return "Explicit Enumeration"; }
+        virtual std::string getDetail() override { return ""; }
 
     private:
         void enumerateFrom(Solution solution, int vertex, double cost);

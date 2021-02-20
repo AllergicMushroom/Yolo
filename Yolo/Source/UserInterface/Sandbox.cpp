@@ -3,6 +3,7 @@
 #include "Domain/Algorithm/ExplicitEnumerationAlgorithm.hpp"
 #include "Domain/Algorithm/GradientDescentAlgorithm.hpp"
 #include "Domain/Algorithm/ImplicitEnumerationAlgorithm.hpp"
+#include "Domain/Algorithm/TabuAlgorithm.hpp"
 
 #include "Domain/Criterion/SimilarSizeCriterion.hpp"
 
@@ -20,35 +21,48 @@ int main()
 
     Yolo::GraphFileRepository graphRepository;
 
-    std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/centSommets.txt");
+    std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/milleSommets.txt");
     if (graphOptional.has_value())
     {
         Yolo::Graph graph1 = *graphOptional;
-        Yolo::Graph graph2 = Yolo::Graph(500, 2000, 1, 4);
+        // Yolo::Graph graph2 = Yolo::Graph(500, 2000, 1, 4);
 
-        Yolo::Graph graphs[] = {graph1,
-                                graph2};
+        Yolo::Graph graphs[] = {
+                                graph1,
+                                // graph2
+                                };
 
-        int nbClasses = 3;
+        int nbClasses = 2;
         int epsilon = 0;
+        
+        int tabuSize = 7;
+        int iterMax = 1000;
+        bool each = false;
+        // Aspiration is not implemented since we use Solution in tabu list.
+        bool aspiration = false;
+
 
         Yolo::SimilarSizeCriterion criterion = Yolo::SimilarSizeCriterion(1);
 
-        Yolo::SwapNeighborhood neighborhood = Yolo::SwapNeighborhood();
+        Yolo::PickNDropNeighborhood neighborhood = Yolo::PickNDropNeighborhood();
 
         for (const auto& graph : graphs)
         {
             Yolo::ExplicitEnumerationAlgorithm EE = Yolo::ExplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
             Yolo::ImplicitEnumerationAlgorithm IE = Yolo::ImplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
             Yolo::GradientDescentAlgorithm GD = Yolo::GradientDescentAlgorithm(graph, nbClasses, epsilon, &neighborhood, &criterion);
+            Yolo::TabuAlgorithm TA = Yolo::TabuAlgorithm(graph, nbClasses, tabuSize, iterMax, each, aspiration, &neighborhood, &criterion);
 
             Yolo::Algorithm* algorithms[] = {
-                //&EE,
-                //&IE,
-                &GD};
+                // &EE,
+                // &IE,
+                &GD,
+                &TA
+                };
 
             for (auto& algorithm : algorithms)
             {
+                YOLO_INFO(algorithm->getName());
                 const auto& startPoint = std::chrono::steady_clock::now();
 
                 Yolo::Solution solution = algorithm->solve();
@@ -56,11 +70,10 @@ int main()
                 const auto& endPoint = std::chrono::steady_clock::now();
 
                 auto elapsedSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(endPoint - startPoint).count() / 1000.0f;
-
-                YOLO_INFO(algorithm->getName());
-                YOLO_INFO("Best solution found: {0}", solution.toString());
+                YOLO_INFO(algorithm->getDetail());
+                // YOLO_INFO("Best solution found: {0}", solution.toString());
                 YOLO_INFO("Cost: {0}", graph.getSolutionCost(solution));
-                YOLO_INFO("Found in {0} seconds.", elapsedSeconds);
+                YOLO_INFO("Found in {0} seconds.\n", elapsedSeconds);
             }
         }
     }

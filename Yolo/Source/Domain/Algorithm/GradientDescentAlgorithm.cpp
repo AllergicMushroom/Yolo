@@ -23,16 +23,14 @@ namespace Yolo
 
         Solution bestNeighbor = mNeighborhood->generateBest(mGraph, mCriterion, initialSolution);
         double bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
-
         while (mActualSolutionCost - bestNeighborCost > mEpsilon)
         {
             mActualSolution = bestNeighbor;
             mActualSolutionCost = bestNeighborCost;
-
             bestNeighbor = mNeighborhood->generateBest(mGraph, mCriterion, mActualSolution);
             bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
+            mCount ++;
         }
-
         return mActualSolution;
     }
 
