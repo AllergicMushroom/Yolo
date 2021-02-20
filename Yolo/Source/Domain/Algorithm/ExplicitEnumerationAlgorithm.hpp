@@ -18,10 +18,11 @@ namespace Yolo
         virtual inline std::string getName() override { return "Explicit Enumeration"; }
 
     private:
-        void enumerateFromVertex(Solution solution, int vertex);
+        void enumerateFrom(Solution solution, int vertex, double cost);
 
     protected:
         Solution mBestSolution;
+        double mBestCost;
         bool mIsBestSolutionValid;
     };
 } // namespace Yolo
