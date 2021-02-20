@@ -55,7 +55,7 @@ namespace Yolo
         return mClassCardinals[c];
     }
 
-    bool Solution::isEqual(const Solution& sol) const
+    bool Solution::operator==(const Solution& sol) const
     {
         if(sol.getNbVertices() != getNbVertices())
             return false;
