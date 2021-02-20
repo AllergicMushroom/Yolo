@@ -111,4 +111,79 @@ namespace Yolo
 
         return best;
     }
+
+    Solution SwapNeighborhood::generateBestWithExceptions(const Graph& g, const std::list<Solution> &Exceptions, const Criterion* criterion, const Solution& solution) const
+    {
+        Solution best = solution;
+        double bestDeltaCost = 0.0;
+        bool isSet = false;
+
+        int previousModifiedVertices[2] = {0, 0};
+        int previousModifiedVerticesClasses[2] = {best.getVertexClass(previousModifiedVertices[0]), best.getVertexClass(previousModifiedVertices[1])};
+
+        for (int i = 0; i < solution.getNbVertices(); ++i)
+        {
+            /* Swapping i with j is the same as swapping j with i, and there is no interest in swapping i with itself, so we can consider only j > i. */
+            for (int j = i + 1; j < solution.getNbVertices(); ++j)
+            {
+                int iClass = solution.getVertexClass(i);
+                int jClass = solution.getVertexClass(j);
+
+                /* Don't swap elements of same class. */
+                if (iClass == jClass)
+                {
+                    continue;
+                }
+
+                /* Revert to solution */
+                best.setVertexClass(previousModifiedVertices[0], solution.getVertexClass(previousModifiedVertices[0]));
+                best.setVertexClass(previousModifiedVertices[1], solution.getVertexClass(previousModifiedVertices[1]));
+
+                double currentDeltacost = 0;
+
+                currentDeltacost += g.getSolutionCostDifference(best, i, jClass);
+                best.setVertexClass(i, jClass);
+
+                currentDeltacost += g.getSolutionCostDifference(best, j, iClass);
+
+                best.setVertexClass(i, iClass);
+                best.setVertexClass(j, jClass);
+
+                if (currentDeltacost < bestDeltaCost ||!isSet)
+                {
+                    best.setVertexClass(i, jClass);
+                    best.setVertexClass(j, iClass);
+
+                    bool isInExceptions = (Exceptions.end() != std::find(Exceptions.begin(), Exceptions.end(), best));
+
+                    if (!isInExceptions && criterion->evaluate(g, best))
+                    {
+                        isSet = true;
+                        bestDeltaCost = currentDeltacost;
+
+                        previousModifiedVertices[0] = i;
+                        previousModifiedVertices[1] = j;
+
+                        previousModifiedVerticesClasses[0] = jClass;
+                        previousModifiedVerticesClasses[1] = iClass;
+                    }
+                    else
+                    {
+                        /* Revert to previous best */
+                        best.setVertexClass(i, iClass);
+                        best.setVertexClass(j, jClass);
+
+                        best.setVertexClass(previousModifiedVertices[0], previousModifiedVerticesClasses[0]);
+                        best.setVertexClass(previousModifiedVertices[1], previousModifiedVerticesClasses[1]);
+                    }
+                }
+                else
+                {
+                    best.setVertexClass(previousModifiedVertices[0], previousModifiedVerticesClasses[0]);
+                    best.setVertexClass(previousModifiedVertices[1], previousModifiedVerticesClasses[1]);
+                }
+            }
+        }
+        return best;
+    }
 } // namespace Yolo

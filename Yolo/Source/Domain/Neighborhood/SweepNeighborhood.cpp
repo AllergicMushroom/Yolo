@@ -54,4 +54,27 @@ namespace Yolo
 
         return bestSolution;
     }
+
+    Solution SweepNeighborhood::generateBestWithExceptions(const Graph& g, const std::list<Solution> &Exceptions, const Criterion* criterion, const Solution& solution) const
+    {
+        const auto& neighbors = generateAll(solution);
+
+        Solution bestSolution = neighbors[0];
+        double bestSolutionCost = g.getSolutionCost(bestSolution);
+
+        for (const auto& neighbor : neighbors)
+        {
+            double neighborCost = g.getSolutionCost(neighbor);
+            if (neighborCost < bestSolutionCost)
+            {
+                bool isInExceptions = (Exceptions.end() != std::find(Exceptions.begin(), Exceptions.end(), bestSolution));
+                if(!isInExceptions){
+                    bestSolution = neighbor;
+                    bestSolutionCost = neighborCost;
+                }
+            }
+        }
+
+        return bestSolution;
+    }
 } // namespace Yolo
