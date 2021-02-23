@@ -1,10 +1,16 @@
 # Yolo! pour "Youpi! Outils Logiciels pour l'Optimisation!"
 
-Ce projet est une implémentation des concepts présentés dans l'UE "Outils logiciels pour l'Optimisation", donné à l'Université de Bordeaux.
+Ce projet est une implémentation des concepts présentés dans l'UE "Outils logiciels pour l'Optimisation", donnée à l'Université de Bordeaux.
+
+Il contient des méthodes de résolution pour le problème suivant:
+
+```
+Dans un graphe non dirigé où les arêtes ont des poids, étant donnée un nombre de classes k, trouver une répartition des sommets dans ces k classes qui minimise la somme des poids des arêtes interclasses.
+```
 
 ## Comment générer le projet
 
-Le projet peut être généré de deux manières différentes
+Le projet peut être généré de deux manières différentes.
 
 ### Le bon vieux CMake
 
