@@ -4,11 +4,7 @@ namespace Yolo
 {
     std::vector<Solution> SweepNeighborhood::generateAll(const Solution& solution) const
     {
-        /*
-        * TODO
-        * This method generates a lot of doubles.
-        * How to optimize it?
-        */
+        // Todo: This method generates a lot of doubles. How to optimize it?
 
         size_t nbVertices = static_cast<size_t>(solution.getNbVertices());
         size_t size = (nbVertices * nbVertices - nbVertices) / 2 + 1;
@@ -39,7 +35,7 @@ namespace Yolo
         return neighbors;
     }
 
-    Solution SweepNeighborhood::generateBest(const Graph& graph, const Criterion* criterion, const Solution& solution) const
+    Solution SweepNeighborhood::generateBest(const Graph& graph, const Criterion*, const Solution& solution) const
     {
         const auto& neighbors = generateAll(solution);
 
@@ -53,6 +49,29 @@ namespace Yolo
             {
                 bestSolution = neighbor;
                 bestSolutionCost = neighborCost;
+            }
+        }
+
+        return bestSolution;
+    }
+
+    Solution SweepNeighborhood::generateBestWithExceptions(const Graph& g, const std::list<Solution> &Exceptions, const Criterion* criterion, const Solution& solution) const
+    {
+        const auto& neighbors = generateAll(solution);
+
+        Solution bestSolution = neighbors[0];
+        double bestSolutionCost = g.getSolutionCost(bestSolution);
+
+        for (const auto& neighbor : neighbors)
+        {
+            double neighborCost = g.getSolutionCost(neighbor);
+            if (neighborCost < bestSolutionCost)
+            {
+                bool isInExceptions = (Exceptions.end() != std::find(Exceptions.begin(), Exceptions.end(), bestSolution));
+                if(!isInExceptions){
+                    bestSolution = neighbor;
+                    bestSolutionCost = neighborCost;
+                }
             }
         }
 

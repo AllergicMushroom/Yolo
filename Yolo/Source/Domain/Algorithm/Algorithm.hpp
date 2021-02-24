@@ -19,6 +19,7 @@ namespace Yolo
         virtual Solution solve() = 0;
 
         virtual std::string getName() = 0;
+        virtual std::string getDetail() = 0;
 
     protected:
         Graph mGraph;

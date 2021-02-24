@@ -19,6 +19,7 @@ namespace Yolo
         virtual Solution solve() override;
 
         std::string getName() override { return "Gradient Descent"; }
+        virtual std::string getDetail() override { return ("\n   Nb iter: "+std::to_string(mCount)); }
 
     private:
         Solution solve(Solution initialSolution);
@@ -30,7 +31,7 @@ namespace Yolo
 
         Solution mActualSolution;
         double mActualSolutionCost = 0.0f;
-
+        int mCount = 0;
         double mEpsilon;
     };
 } // namespace Yolo

@@ -4,35 +4,40 @@ namespace Yolo
 {
     Solution ExplicitEnumerationAlgorithm::solve()
     {
-        enumerateFromVertex(mBestSolution, 0);
-
+        enumerateFrom(mBestSolution, 0, 0);
         return mBestSolution;
     }
 
-    void ExplicitEnumerationAlgorithm::enumerateFromVertex(Solution solution, int vertex)
+    void ExplicitEnumerationAlgorithm::enumerateFrom(Solution solution, int vertex, double cost)
     {
         if (vertex == mGraph.getNbVertices())
         {
             if (mCriterion->evaluate(mGraph, solution))
             {
-                // Todo: We shouldn't need to evaluate mBestSolution at every call. Maybe get a random initial solution
-                if (!mCriterion->evaluate(mGraph, mBestSolution))
+                if (!mIsBestSolutionValid)
                 {
+                    mIsBestSolutionValid = true;
                     mBestSolution = solution;
+                    mBestCost = cost;
                 }
-                else if (mGraph.getSolutionCost(solution) < mGraph.getSolutionCost(mBestSolution))
+                else if (cost < mBestCost)
                 {
                     mBestSolution = solution;
+                    mBestCost = cost;
                 }
             }
         }
         else
         {
-            /* We take the minimum between vertex and mNbClasses-1 to eliminate symmetries. For example, <0, 2, 1> is equivalent to <0, 1, 2> */
             for (int i = 0; i <= std::min(vertex, mNbClasses - 1); ++i)
             {
+                cost = cost + mGraph.getSolutionCostDifference(solution, vertex, i);
                 solution.setVertexClass(vertex, i);
-                enumerateFromVertex(solution, vertex + 1);
+                enumerateFrom(solution, vertex + 1, cost);
+
+                // Todo
+                /*if (mGraph.isPartialSolutionValid(sol, mCriterion, from))
+                    enumerateFrom(sol, from + 1);*/
             }
         }
     }

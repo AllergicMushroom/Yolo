@@ -14,6 +14,6 @@ namespace Yolo
         AlwaysValidCriterion()
             : Criterion() {}
 
-        virtual inline bool evaluate(const Graph& graph, const Solution& solution) const override { return true; };
+        virtual inline bool evaluate(const Graph&, const Solution&) const override { return true; };
     };
 } // namespace Yolo

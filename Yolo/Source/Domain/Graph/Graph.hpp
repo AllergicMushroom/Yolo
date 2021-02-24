@@ -8,33 +8,32 @@
 
 namespace Yolo
 {
-    struct CheckerOutput
-    {
-        const bool isValid;
-        const double cost;
-    };
-
     class Graph
     {
     public:
+        Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree);
+
         Graph(const std::vector<std::vector<Edge>>& adjacencyList);
+
+        bool operator==(const Graph& graph2) const;
+        bool operator!=(const Graph& graph2) const;
 
         inline int getNbVertices() const { return static_cast<int>(mAdjacencyList.size()); }
 
-        inline int getVertexDegree(int vertex) const { return mVertexDegrees[vertex]; }
+        inline int getVertexDegree(int vertex) const { return mVerticesDegrees[vertex]; }
 
         inline int getMaxDegree() const { return mMaxDegree; }
         inline int getMinDegree() const { return mMinDegree; }
 
         inline int getNbEdges() const { return mNbEdges; }
 
+        double getEdgeWeight(int source, int destination) const;
+
         double getSolutionCost(const Solution& solution) const;
         double getSolutionCostDifference(const Solution& solution, int vertex, int newClass) const;
 
-        CheckerOutput checkSolution(const Solution& solution, bool (*criterion)(std::vector<int>, int, int)) const;
-
     private:
-        std::vector<int> mVertexDegrees;
+        std::vector<int> mVerticesDegrees;
         int mMaxDegree;
         int mMinDegree;
 
