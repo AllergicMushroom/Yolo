@@ -3,6 +3,7 @@
 #include "Domain/Algorithm/ExplicitEnumerationAlgorithm.hpp"
 #include "Domain/Algorithm/GradientDescentAlgorithm.hpp"
 #include "Domain/Algorithm/ImplicitEnumerationAlgorithm.hpp"
+#include "Domain/Algorithm/TabuAlgorithm.hpp"
 
 #include "Domain/Criterion/AlwaysValidCriterion.hpp"
 #include "Domain/Criterion/SimilarSizeCriterion.hpp"
@@ -134,6 +135,44 @@ TEST(AlgorithmsSuite, GradientDescentValid)
                 for (const auto& neighborhood : neighborhoods)
                 {
                     Yolo::GradientDescentAlgorithm algorithm(graph, nbClasses, 1, neighborhood, criterion);
+                    Yolo::Solution solution = algorithm.solve();
+
+                    EXPECT_TRUE(criterion->evaluate(graph, solution));
+                }
+            }
+        }
+    }
+}
+
+TEST(AlgorithmsSuite, TabuAlgorithmValid)
+{
+    Yolo::AlwaysValidCriterion alwaysValid = Yolo::AlwaysValidCriterion();
+    Yolo::SimilarSizeCriterion similarSize = Yolo::SimilarSizeCriterion(1);
+
+    Yolo::Criterion* criterions[] = {&alwaysValid,
+                                     &similarSize};
+
+    Yolo::SwapNeighborhood swap = Yolo::SwapNeighborhood();
+    Yolo::SweepNeighborhood sweep = Yolo::SweepNeighborhood();
+    Yolo::PickNDropNeighborhood pnd = Yolo::PickNDropNeighborhood();
+
+    Yolo::Neighborhood* neighborhoods[] = {&swap, &sweep, &pnd};
+
+    Yolo::GraphFileRepository graphRepository;
+
+    std::optional<Yolo::Graph> graphOptional = graphRepository.load(instance);
+    if (graphOptional.has_value())
+    {
+        Yolo::Graph graph = *graphOptional;
+
+        constexpr int maxNbClasses = 100;
+        for (int nbClasses = 1; nbClasses < maxNbClasses; ++nbClasses)
+        {
+            for (const auto& criterion : criterions)
+            {
+                for (const auto& neighborhood : neighborhoods)
+                {
+                    Yolo::TabuAlgorithm algorithm(graph, nbClasses, 8, 1000, true, true, neighborhood, criterion);
                     Yolo::Solution solution = algorithm.solve();
 
                     EXPECT_TRUE(criterion->evaluate(graph, solution));
