@@ -10,15 +10,17 @@ namespace Yolo
     class TabuAlgorithm : public Algorithm
     {
     public:
-        TabuAlgorithm(const Graph& graph, int nbClasses, int tabuSize, int iterMax, bool each, bool aspiration, const Neighborhood* neighborhood, const Criterion* criterion)
+        TabuAlgorithm(const Graph& graph, int nbClasses, const Neighborhood* neighborhood, const Criterion* criterion, int tabuListSize, int maxIterations, bool storeAll, bool aspiration)
             : Algorithm(graph, nbClasses, criterion), mActualSolution(Solution(mGraph.getNbVertices(), mNbClasses))
         {
-            mTabu = std::list<Solution>();
-            mTabuSize = tabuSize;
             mNeighborhood = neighborhood;
-            mEach = each;
+
+            mTabuList = std::list<Solution>();
+            mTabuListSize = tabuListSize;
+
+            mStoreAll = storeAll;
             mAspiration = aspiration;
-            mIterMax = iterMax;
+            mMaxIterations = maxIterations;
         }
 
         virtual inline std::string getName() const override { return "Tabu"; }
@@ -32,12 +34,15 @@ namespace Yolo
         Solution generateValidSolution();
 
     protected:
-        size_t mTabuSize;
         const Neighborhood* mNeighborhood;
-        int mIterMax;
-        std::list<Solution> mTabu;
-        bool mEach;
+
+        std::list<Solution> mTabuList;
+        int mTabuListSize;
+
+        int mMaxIterations;
+        bool mStoreAll;
         bool mAspiration;
+
         Solution mActualSolution;
         double mActualSolutionCost = 0.0f;
     };

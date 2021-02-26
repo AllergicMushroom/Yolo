@@ -49,8 +49,8 @@ int main()
         {
             Yolo::ExplicitEnumerationAlgorithm EE = Yolo::ExplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
             Yolo::ImplicitEnumerationAlgorithm IE = Yolo::ImplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
-            Yolo::GradientDescentAlgorithm GD = Yolo::GradientDescentAlgorithm(graph, nbClasses, epsilon, &neighborhood, &criterion);
-            Yolo::TabuAlgorithm TA = Yolo::TabuAlgorithm(graph, nbClasses, tabuSize, iterMax, each, aspiration, &neighborhood, &criterion);
+            Yolo::GradientDescentAlgorithm GD = Yolo::GradientDescentAlgorithm(graph, nbClasses, &neighborhood, &criterion, epsilon);
+            Yolo::TabuAlgorithm TA = Yolo::TabuAlgorithm(graph, nbClasses, &neighborhood, &criterion, tabuSize, iterMax, each, aspiration);
 
             Yolo::Algorithm* algorithms[] = {
                 &EE,

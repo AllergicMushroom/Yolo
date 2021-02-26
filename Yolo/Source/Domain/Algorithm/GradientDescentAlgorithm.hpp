@@ -9,7 +9,7 @@ namespace Yolo
     class GradientDescentAlgorithm : public Algorithm
     {
     public:
-        GradientDescentAlgorithm(const Graph& graph, int nbClasses, double epsilon, const Neighborhood* neighborhood, const Criterion* criterion)
+        GradientDescentAlgorithm(const Graph& graph, int nbClasses, const Neighborhood* neighborhood, const Criterion* criterion, double epsilon)
             : Algorithm(graph, nbClasses, criterion), mActualSolution(Solution(mGraph.getNbVertices(), mNbClasses))
         {
             mNeighborhood = neighborhood;

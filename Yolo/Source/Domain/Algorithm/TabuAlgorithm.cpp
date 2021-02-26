@@ -15,9 +15,9 @@ namespace Yolo
     std::string TabuAlgorithm::getDetails() const
     {
         std::stringstream ss;
-        ss << "\n\tNumber of iterations: " << mIterMax;
-        ss << "\n\tTabu list size: " << mTabuSize;
-        ss << "\n\tEach: " << (mEach ? "True" : "False");
+        ss << "\n\tNumber of iterations: " << mMaxIterations;
+        ss << "\n\tTabu list size: " << mTabuListSize;
+        ss << "\n\tEach: " << (mStoreAll ? "True" : "False");
         ss << "\n\tAspiration: " << (mAspiration ? "True" : "False");
 
         return ss.str();
@@ -44,18 +44,18 @@ namespace Yolo
         // YOLO_INFO("{0} {1}",bestNeighbor.toString(), bestNeighborCost);
 
         int iter = 0;
-        while (iter < mIterMax)
+        while (iter < mMaxIterations)
         {
             ++iter;
 
-            if (mEach || bestNeighborCost >= mActualSolutionCost)
+            if (mStoreAll || bestNeighborCost >= mActualSolutionCost)
             {
-                mTabu.push_back(bestNeighbor);
+                mTabuList.push_back(bestNeighbor);
             }
 
-            if (mTabu.size() > mTabuSize)
+            if (mTabuList.size() > mTabuListSize)
             {
-                mTabu.pop_front();
+                mTabuList.pop_front();
             }
 
             mActualSolution = bestNeighbor;
@@ -67,7 +67,7 @@ namespace Yolo
                 veryBestCost = mActualSolutionCost;
             }
 
-            bestNeighbor = mNeighborhood->generateBestWithExceptions(mGraph, mTabu, mCriterion, mActualSolution);
+            bestNeighbor = mNeighborhood->generateBestWithExceptions(mGraph, mTabuList, mCriterion, mActualSolution);
             bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
         }
         if (bestNeighborCost < veryBestCost)
