@@ -3,6 +3,7 @@
 #include "Domain/Algorithm/Algorithm.hpp"
 
 #include "Domain/Neighborhood/Neighborhood.hpp"
+
 #include <list>
 
 namespace Yolo
@@ -10,23 +11,12 @@ namespace Yolo
     class TabuAlgorithm : public Algorithm
     {
     public:
-        TabuAlgorithm(const Graph& graph, int nbClasses, const Neighborhood* neighborhood, const Criterion* criterion, int tabuListSize, int maxIterations, bool storeAll, bool aspiration)
-            : Algorithm(graph, nbClasses, criterion), mActualSolution(Solution(mGraph.getNbVertices(), mNbClasses))
-        {
-            mNeighborhood = neighborhood;
-
-            mTabuList = std::list<Solution>();
-            mTabuListSize = tabuListSize;
-
-            mStoreAll = storeAll;
-            mAspiration = aspiration;
-            mMaxIterations = maxIterations;
-        }
+        TabuAlgorithm(const Graph& graph, int nbClasses, const Criterion* criterion, const Neighborhood* neighborhood, int tabuListSize, int maxIterations, bool storeAll, bool aspiration);
 
         virtual inline std::string getName() const override { return "Tabu"; }
         virtual std::string getDetails() const override;
 
-        virtual Solution solve() override;
+        virtual std::optional<Solution> solve() override;
 
     private:
         Solution solve(Solution initialSolution);

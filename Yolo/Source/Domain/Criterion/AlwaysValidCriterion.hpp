@@ -15,5 +15,7 @@ namespace Yolo
             : Criterion() {}
 
         virtual inline bool evaluate(const Graph&, const Solution&) const override { return true; };
+
+        virtual std::optional<Solution> generateInitialSolution(const Graph& graph, int nbClasses) const override { return Solution(graph.getNbVertices(), nbClasses); };
     };
 } // namespace Yolo

@@ -1,10 +1,19 @@
 #include "Domain/Algorithm/ExplicitEnumerationAlgorithm.hpp"
 
+#include "Core/Logger/Logger.hpp"
+
 namespace Yolo
 {
-    Solution ExplicitEnumerationAlgorithm::solve()
+    std::optional<Solution> ExplicitEnumerationAlgorithm::solve()
     {
         enumerateFrom(mBestSolution, 0, 0);
+
+        if (!mCriterion->evaluate(mGraph, mBestSolution))
+        {
+            YOLO_DEBUG("ExplicitEnumerationAlgorithm::solve(): Infeasible instance.\n");
+            return std::nullopt;
+        }
+
         return mBestSolution;
     }
 

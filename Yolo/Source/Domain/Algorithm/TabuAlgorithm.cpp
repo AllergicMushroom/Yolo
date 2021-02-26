@@ -6,8 +6,22 @@
 
 namespace Yolo
 {
-    Solution TabuAlgorithm::solve()
+    TabuAlgorithm::TabuAlgorithm(const Graph& graph, int nbClasses, const Criterion* criterion, const Neighborhood* neighborhood, int tabuListSize, int maxIterations, bool storeAll, bool aspiration)
+        : Algorithm(graph, nbClasses, criterion), mActualSolution(Solution(mGraph.getNbVertices(), mNbClasses))
     {
+        mNeighborhood = neighborhood;
+
+        mTabuList = std::list<Solution>();
+        mTabuListSize = tabuListSize;
+
+        mStoreAll = storeAll;
+        mAspiration = aspiration;
+        mMaxIterations = maxIterations;
+    }
+
+    std::optional<Solution> TabuAlgorithm::solve()
+    {
+        // Todo
         Solution initalSolution = generateValidSolution();
         return solve(initalSolution);
     }
@@ -17,7 +31,7 @@ namespace Yolo
         std::stringstream ss;
         ss << "\n\tNumber of iterations: " << mMaxIterations;
         ss << "\n\tTabu list size: " << mTabuListSize;
-        ss << "\n\tEach: " << (mStoreAll ? "True" : "False");
+        ss << "\n\tAre we storing potentially better solutions: " << (mStoreAll ? "Yes" : "No");
         ss << "\n\tAspiration: " << (mAspiration ? "True" : "False");
 
         return ss.str();
@@ -31,6 +45,7 @@ namespace Yolo
 
         if (!mCriterion->evaluate(mGraph, mActualSolution))
         {
+            // Todo
             YOLO_WARN("Initial solution in tabu isn't valid.");
         }
 
@@ -38,7 +53,7 @@ namespace Yolo
         double veryBestCost = mActualSolutionCost;
 
         // Solution bestNeighbor = mNeighborhood->generateBestWithExceptions(mGraph, mTabu, mCriterion, initialSolution);
-        Solution bestNeighbor = mNeighborhood->generateBest(mGraph, mCriterion, initialSolution);
+        Solution bestNeighbor = mNeighborhood->generateBest(initialSolution, mGraph, mCriterion);
         double bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
 
         // YOLO_INFO("{0} {1}",bestNeighbor.toString(), bestNeighborCost);
@@ -67,7 +82,7 @@ namespace Yolo
                 veryBestCost = mActualSolutionCost;
             }
 
-            bestNeighbor = mNeighborhood->generateBestWithExceptions(mGraph, mTabuList, mCriterion, mActualSolution);
+            bestNeighbor = mNeighborhood->generateBest(mActualSolution, mGraph, mCriterion, mTabuList);
             bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
         }
         if (bestNeighborCost < veryBestCost)

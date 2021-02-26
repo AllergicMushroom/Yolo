@@ -19,7 +19,7 @@ namespace Yolo
         virtual std::string getName() const = 0;
         virtual inline std::string getDetails() const { return std::string(); };
 
-        virtual Solution solve() = 0;
+        virtual std::optional<Solution> solve() = 0;
 
     protected:
         Graph mGraph;

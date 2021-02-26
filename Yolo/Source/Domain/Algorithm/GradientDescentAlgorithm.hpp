@@ -9,29 +9,18 @@ namespace Yolo
     class GradientDescentAlgorithm : public Algorithm
     {
     public:
-        GradientDescentAlgorithm(const Graph& graph, int nbClasses, const Neighborhood* neighborhood, const Criterion* criterion, double epsilon)
-            : Algorithm(graph, nbClasses, criterion), mActualSolution(Solution(mGraph.getNbVertices(), mNbClasses))
-        {
-            mNeighborhood = neighborhood;
-            mEpsilon = epsilon;
-        }
+        GradientDescentAlgorithm(const Graph& graph, int nbClasses, const Criterion* criterion, const Neighborhood* neighborhood, double epsilon);
 
         virtual inline std::string getName() const override { return "Gradient Descent"; }
         virtual std::string getDetails() const override;
 
-        virtual Solution solve() override;
-
-    private:
-        Solution solve(Solution initialSolution);
-
-        Solution generateValidSolution();
+        virtual std::optional<Solution> solve() override;
 
     protected:
         const Neighborhood* mNeighborhood;
 
-        Solution mActualSolution;
-        double mActualSolutionCost = 0.0f;
-        int mCount = 0;
         double mEpsilon;
+
+        int mIterationCount;
     };
 } // namespace Yolo

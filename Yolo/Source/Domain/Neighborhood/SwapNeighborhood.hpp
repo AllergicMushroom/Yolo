@@ -10,7 +10,12 @@ namespace Yolo
         SwapNeighborhood() {}
 
         virtual std::vector<Solution> generateAll(const Solution& solution) const override;
-        virtual Solution generateBest(const Graph& g, const Criterion* criterion, const Solution& solution) const override;
-        virtual Solution generateBestWithExceptions(const Graph& g, const std::list<Solution> &Exceptions, const Criterion* criterion, const Solution& solution) const override;
+        virtual std::vector<Solution> generateAll(const Solution& solution, const Graph& graph, const Criterion* criterion) const override;
+
+        virtual Solution generateRandom(const Solution& solution) const override;
+        virtual Solution generateRandom(const Solution& solution, const Graph& graph, const Criterion* criterion) const override;
+
+        virtual Solution generateBest(const Solution& solution, const Graph& graph, const Criterion* criterion) const override;
+        virtual Solution generateBest(const Solution& solution, const Graph& graph, const Criterion* criterion, const std::list<Solution>& exceptions) const override;
     };
 } // namespace Yolo

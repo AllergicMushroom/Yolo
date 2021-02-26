@@ -3,6 +3,7 @@
 #include "Domain/Algorithm/ExplicitEnumerationAlgorithm.hpp"
 #include "Domain/Algorithm/GradientDescentAlgorithm.hpp"
 #include "Domain/Algorithm/ImplicitEnumerationAlgorithm.hpp"
+#include "Domain/Algorithm/SimulatedAnnealingAlgorithm.hpp"
 #include "Domain/Algorithm/TabuAlgorithm.hpp"
 
 #include "Domain/Criterion/SimilarSizeCriterion.hpp"
@@ -21,7 +22,16 @@ int main()
 
     Yolo::GraphFileRepository graphRepository;
 
-    std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/vingtSommets.txt");
+    const auto& startPoint2 = std::chrono::steady_clock::now();
+
+    std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/dixMilleSommets.txt");
+
+    const auto& endPoint2 = std::chrono::steady_clock::now();
+
+    auto elapsedSeconds2 = std::chrono::duration_cast<std::chrono::milliseconds>(endPoint2 - startPoint2).count() / 1000.0f;
+
+    YOLO_INFO("Loading took {0} seconds.\n", elapsedSeconds2);
+
     if (graphOptional.has_value())
     {
         Yolo::Graph graph1 = *graphOptional;
@@ -32,7 +42,7 @@ int main()
             // graph2
         };
 
-        int nbClasses = 2;
+        int nbClasses = 3;
         int epsilon = 0;
 
         int tabuSize = 7;
@@ -49,21 +59,25 @@ int main()
         {
             Yolo::ExplicitEnumerationAlgorithm EE = Yolo::ExplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
             Yolo::ImplicitEnumerationAlgorithm IE = Yolo::ImplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
-            Yolo::GradientDescentAlgorithm GD = Yolo::GradientDescentAlgorithm(graph, nbClasses, &neighborhood, &criterion, epsilon);
-            Yolo::TabuAlgorithm TA = Yolo::TabuAlgorithm(graph, nbClasses, &neighborhood, &criterion, tabuSize, iterMax, each, aspiration);
+            Yolo::GradientDescentAlgorithm GD = Yolo::GradientDescentAlgorithm(graph, nbClasses, &criterion, &neighborhood, epsilon);
+            Yolo::TabuAlgorithm TA = Yolo::TabuAlgorithm(graph, nbClasses, &criterion, &neighborhood, tabuSize, iterMax, each, aspiration);
+            Yolo::SimulatedAnnealingAlgorithm SA = Yolo::SimulatedAnnealingAlgorithm(graph, nbClasses, &criterion, &neighborhood, iterMax);
 
             Yolo::Algorithm* algorithms[] = {
-                &EE,
-                &IE,
+                //&EE,
+                //&IE,
                 &GD,
-                &TA};
+                &TA,
+                &SA
+                //
+            };
 
             for (auto& algorithm : algorithms)
             {
                 YOLO_INFO(algorithm->getName());
                 const auto& startPoint = std::chrono::steady_clock::now();
 
-                Yolo::Solution solution = algorithm->solve();
+                std::optional<Yolo::Solution> solution = algorithm->solve();
 
                 const auto& endPoint = std::chrono::steady_clock::now();
 
@@ -75,9 +89,16 @@ int main()
                     YOLO_INFO(details);
                 }
 
-                // YOLO_INFO("Best solution found: {0}", solution.toString());
-                YOLO_INFO("Cost: {0}", graph.getSolutionCost(solution));
-                YOLO_INFO("Found in {0} seconds.\n", elapsedSeconds);
+                if (solution.has_value())
+                {
+                    // YOLO_INFO("Best solution found: {0}", solution.toString());
+                    YOLO_INFO("Cost: {0}", graph.getSolutionCost(*solution));
+                    YOLO_INFO("Found in {0} seconds.\n", elapsedSeconds);
+                }
+                else
+                {
+                    YOLO_INFO("The instance is infeasible.\n");
+                }
             }
         }
     }

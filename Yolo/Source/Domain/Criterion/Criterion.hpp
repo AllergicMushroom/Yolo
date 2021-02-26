@@ -4,6 +4,8 @@
 
 #include "Domain/Solution/Solution.hpp"
 
+#include <optional>
+
 namespace Yolo
 {
     class Criterion
@@ -12,5 +14,7 @@ namespace Yolo
         Criterion() {}
 
         virtual bool evaluate(const Graph& graph, const Solution& solution) const = 0;
+
+        virtual std::optional<Solution> generateInitialSolution(const Graph& graph, int nbClasses) const = 0;
     };
 } // namespace Yolo
