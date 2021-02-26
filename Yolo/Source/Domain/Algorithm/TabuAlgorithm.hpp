@@ -4,7 +4,7 @@
 
 #include "Domain/Neighborhood/Neighborhood.hpp"
 #include <list>
- 
+
 namespace Yolo
 {
     class TabuAlgorithm : public Algorithm
@@ -21,16 +21,16 @@ namespace Yolo
             mIterMax = iterMax;
         }
 
-        virtual Solution solve() override;
+        virtual inline std::string getName() const override { return "Tabu"; }
+        virtual std::string getDetails() const override;
 
-        std::string getName() override { return "Tabu"; }
-        virtual std::string getDetail() override { return "\n   Nb iter: "+std::to_string(mIterMax)+"\n   Tabu size: "+std::to_string(mTabuSize)+"\n   each: "+(mEach ? "True" : "False")+"\n   aspiration: "+(mAspiration ? "True" : "False"); }
+        virtual Solution solve() override;
 
     private:
         Solution solve(Solution initialSolution);
 
         Solution generateValidSolution();
-        
+
     protected:
         size_t mTabuSize;
         const Neighborhood* mNeighborhood;

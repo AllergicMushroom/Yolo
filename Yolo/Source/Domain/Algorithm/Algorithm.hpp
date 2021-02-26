@@ -16,10 +16,10 @@ namespace Yolo
         {
         }
 
-        virtual Solution solve() = 0;
+        virtual std::string getName() const = 0;
+        virtual inline std::string getDetails() const { return std::string(); };
 
-        virtual std::string getName() = 0;
-        virtual std::string getDetail() = 0;
+        virtual Solution solve() = 0;
 
     protected:
         Graph mGraph;

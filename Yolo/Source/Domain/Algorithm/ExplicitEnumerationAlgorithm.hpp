@@ -13,15 +13,14 @@ namespace Yolo
             mIsBestSolutionValid = criterion->evaluate(mGraph, mBestSolution);
         }
 
-        virtual Solution solve() override;
+        virtual inline std::string getName() const override { return "Explicit Enumeration"; }
 
-        virtual inline std::string getName() override { return "Explicit Enumeration"; }
-        virtual std::string getDetail() override { return ""; }
+        virtual Solution solve() override;
 
     private:
         void enumerateFrom(Solution solution, int vertex, double cost);
 
-    protected:
+    private:
         Solution mBestSolution;
         double mBestCost;
         bool mIsBestSolutionValid;

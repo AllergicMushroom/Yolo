@@ -8,15 +8,14 @@ namespace Yolo
     {
     public:
         ImplicitEnumerationAlgorithm(const Graph& graph, int nbClasses, const Criterion* criterion)
-            : Algorithm(graph, nbClasses, criterion), mBestSolution(Solution(mGraph.getNbVertices(), mNbClasses)) 
-            {
-                mIsBestSolutionValid = criterion->evaluate(mGraph, mBestSolution);
-            }
+            : Algorithm(graph, nbClasses, criterion), mBestSolution(Solution(mGraph.getNbVertices(), mNbClasses))
+        {
+            mIsBestSolutionValid = criterion->evaluate(mGraph, mBestSolution);
+        }
+
+        virtual inline std::string getName() const override { return "Implicit Enumeration"; }
 
         virtual Solution solve() override;
-
-        virtual inline std::string getName() override { return "Implicit Enumeration"; }
-        virtual std::string getDetail() override { return ""; }
 
     private:
         void enumerateFrom(Solution solution, int vertex, double cost);

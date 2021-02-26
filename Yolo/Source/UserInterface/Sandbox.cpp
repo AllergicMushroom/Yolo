@@ -21,7 +21,7 @@ int main()
 
     Yolo::GraphFileRepository graphRepository;
 
-    std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/milleSommets.txt");
+    std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/vingtSommets.txt");
     if (graphOptional.has_value())
     {
         Yolo::Graph graph1 = *graphOptional;
@@ -53,8 +53,8 @@ int main()
             Yolo::TabuAlgorithm TA = Yolo::TabuAlgorithm(graph, nbClasses, tabuSize, iterMax, each, aspiration, &neighborhood, &criterion);
 
             Yolo::Algorithm* algorithms[] = {
-                // &EE,
-                // &IE,
+                &EE,
+                &IE,
                 &GD,
                 &TA};
 
@@ -68,7 +68,13 @@ int main()
                 const auto& endPoint = std::chrono::steady_clock::now();
 
                 auto elapsedSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(endPoint - startPoint).count() / 1000.0f;
-                YOLO_INFO(algorithm->getDetail());
+
+                const std::string& details = algorithm->getDetails();
+                if (!details.empty())
+                {
+                    YOLO_INFO(details);
+                }
+
                 // YOLO_INFO("Best solution found: {0}", solution.toString());
                 YOLO_INFO("Cost: {0}", graph.getSolutionCost(solution));
                 YOLO_INFO("Found in {0} seconds.\n", elapsedSeconds);

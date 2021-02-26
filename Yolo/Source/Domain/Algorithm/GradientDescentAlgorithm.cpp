@@ -2,12 +2,21 @@
 
 #include "Core/Logger/Logger.hpp"
 
+#include <sstream>
+
 namespace Yolo
 {
     Solution GradientDescentAlgorithm::solve()
     {
         Solution initalSolution = generateValidSolution();
         return solve(initalSolution);
+    }
+
+    std::string GradientDescentAlgorithm::getDetails() const
+    {
+        std::stringstream ss;
+        ss << "\n\tNumber of iterations: " << mCount;
+        return ss.str();
     }
 
     Solution GradientDescentAlgorithm::solve(Solution initialSolution)
@@ -29,7 +38,7 @@ namespace Yolo
             mActualSolutionCost = bestNeighborCost;
             bestNeighbor = mNeighborhood->generateBest(mGraph, mCriterion, mActualSolution);
             bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
-            mCount ++;
+            mCount++;
         }
         return mActualSolution;
     }

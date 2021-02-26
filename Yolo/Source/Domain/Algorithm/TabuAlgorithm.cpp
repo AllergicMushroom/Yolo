@@ -2,12 +2,25 @@
 
 #include "Core/Logger/Logger.hpp"
 
+#include <sstream>
+
 namespace Yolo
 {
     Solution TabuAlgorithm::solve()
     {
         Solution initalSolution = generateValidSolution();
         return solve(initalSolution);
+    }
+
+    std::string TabuAlgorithm::getDetails() const
+    {
+        std::stringstream ss;
+        ss << "\n\tNumber of iterations: " << mIterMax;
+        ss << "\n\tTabu list size: " << mTabuSize;
+        ss << "\n\tEach: " << (mEach ? "True" : "False");
+        ss << "\n\tAspiration: " << (mAspiration ? "True" : "False");
+
+        return ss.str();
     }
 
     Solution TabuAlgorithm::solve(Solution initialSolution)
@@ -27,7 +40,7 @@ namespace Yolo
         // Solution bestNeighbor = mNeighborhood->generateBestWithExceptions(mGraph, mTabu, mCriterion, initialSolution);
         Solution bestNeighbor = mNeighborhood->generateBest(mGraph, mCriterion, initialSolution);
         double bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
-        
+
         // YOLO_INFO("{0} {1}",bestNeighbor.toString(), bestNeighborCost);
 
         int iter = 0;
@@ -35,29 +48,32 @@ namespace Yolo
         {
             ++iter;
 
-            if(mEach || bestNeighborCost >= mActualSolutionCost){
+            if (mEach || bestNeighborCost >= mActualSolutionCost)
+            {
                 mTabu.push_back(bestNeighbor);
             }
 
-            if(mTabu.size() > mTabuSize){
+            if (mTabu.size() > mTabuSize)
+            {
                 mTabu.pop_front();
             }
 
             mActualSolution = bestNeighbor;
             mActualSolutionCost = bestNeighborCost;
 
-            if(mActualSolutionCost < veryBestCost){
+            if (mActualSolutionCost < veryBestCost)
+            {
                 veryBest = mActualSolution;
                 veryBestCost = mActualSolutionCost;
             }
 
             bestNeighbor = mNeighborhood->generateBestWithExceptions(mGraph, mTabu, mCriterion, mActualSolution);
             bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
-
         }
-        if(bestNeighborCost < veryBestCost){
-                veryBest = bestNeighbor;
-                veryBestCost = bestNeighborCost;
+        if (bestNeighborCost < veryBestCost)
+        {
+            veryBest = bestNeighbor;
+            veryBestCost = bestNeighborCost;
         }
         return veryBest;
     }

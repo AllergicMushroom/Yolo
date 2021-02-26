@@ -16,10 +16,10 @@ namespace Yolo
             mEpsilon = epsilon;
         }
 
-        virtual Solution solve() override;
+        virtual inline std::string getName() const override { return "Gradient Descent"; }
+        virtual std::string getDetails() const override;
 
-        std::string getName() override { return "Gradient Descent"; }
-        virtual std::string getDetail() override { return ("\n   Nb iter: "+std::to_string(mCount)); }
+        virtual Solution solve() override;
 
     private:
         Solution solve(Solution initialSolution);
