@@ -104,7 +104,7 @@ namespace Yolo
             /*
             * Todo
             * 
-            * I'm sure there is a way simpler and more efficient to construct the graph.
+            * I'm sure there is a simpler and more efficient way to construct the graph.
             * I'll come back to this later.
             * 
             * Also it would seems MSVC compiler cannot optimize this code well.
