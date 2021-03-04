@@ -17,11 +17,11 @@ namespace Yolo
 
         inline std::string getContent() const { return mFileContent; }
 
-        std::optional<std::string> getNextLine();
+        std::string getNextLine();
 
     private:
         std::string mFileContent;
 
         size_t mCurrentPosition;
     };
-}
+} // namespace Yolo

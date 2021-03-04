@@ -4,12 +4,12 @@
 
 static constexpr char* EOL = "\n";
 
+/* Todo: Create method isFinishedReading() */
 namespace Yolo
 {
-    FileReader::FileReader(std::string fileContent):
-        mCurrentPosition(0), mFileContent(fileContent)
+    FileReader::FileReader(std::string fileContent)
+        : mCurrentPosition(0), mFileContent(fileContent)
     {
-        
     }
 
     std::optional<FileReader> FileReader::create(std::string filepath)
@@ -35,10 +35,10 @@ namespace Yolo
         return std::nullopt;
     }
 
-    std::optional<std::string> FileReader::getNextLine()
+    std::string FileReader::getNextLine()
     {
         size_t endOfLine = mFileContent.find_first_of(EOL, mCurrentPosition); /* Doesn't include new line character. */
-        
+
         if (endOfLine != std::string::npos)
         {
             std::string line = mFileContent.substr(mCurrentPosition, endOfLine - mCurrentPosition);
@@ -46,7 +46,7 @@ namespace Yolo
             mCurrentPosition = endOfLine + strlen(EOL);
             return line;
         }
-     
-        return std::nullopt;
+
+        return std::string();
     }
-}
+} // namespace Yolo

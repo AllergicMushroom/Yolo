@@ -78,10 +78,10 @@ namespace Yolo
 
         std::vector<std::vector<std::string>> tokenizedLines;
 
-        std::optional<std::string> currentLine = fileReader.getNextLine();
-        while (currentLine.has_value())
+        std::string currentLine = fileReader.getNextLine();
+        while (!currentLine.empty())
         {
-            std::string& lineString = *currentLine;
+            std::string& lineString = currentLine;
 
             const size_t firstCharIndex = lineString.find_first_not_of(" ");
 
