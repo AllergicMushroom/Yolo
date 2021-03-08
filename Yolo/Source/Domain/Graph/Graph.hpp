@@ -11,6 +11,9 @@ namespace Yolo
     class Graph
     {
     public:
+        Graph()
+            : Graph(0, 0, 0, 0) {}
+
         Graph(int nbVertices, int nbEdges, int minDegree, int maxDegree);
 
         Graph(const std::vector<std::vector<Edge>>& adjacencyList);

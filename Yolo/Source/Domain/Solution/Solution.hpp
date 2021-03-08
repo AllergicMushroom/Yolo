@@ -10,6 +10,9 @@ namespace Yolo
     class Solution
     {
     public:
+        Solution()
+            : Solution(0, 0) {}
+
         Solution(int nbVertices, int nbClasses);
 
         inline int getNbVertices() const { return static_cast<int>(mSolution.size()); }
