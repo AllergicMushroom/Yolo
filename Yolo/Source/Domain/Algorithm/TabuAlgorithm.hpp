@@ -11,21 +11,25 @@ namespace Yolo
     class TabuAlgorithm : public Algorithm
     {
     public:
-        TabuAlgorithm(const Graph& graph, int nbClasses, const Criterion* criterion, const Neighborhood* neighborhood, int tabuListSize, int maxIterations, bool storeAll, bool aspiration);
+        TabuAlgorithm(const Graph& graph, int nbClasses);
 
         virtual inline std::string getName() const override { return "Tabu"; }
         virtual std::string getDetails() const override;
+
+        inline void setNeighborhood(const Neighborhood* neighborhood) { mNeighborhood = neighborhood; }
+        inline void setMaxIterations(int maxIterations) { mMaxIterations = std::max(1, maxIterations); }
+        inline void setTabuListSize(int tabuListSize) { mTabuListSize = std::max(1, tabuListSize); }
+        inline void setStoreAll(bool storeAll) { mStoreAll = storeAll; }
 
         virtual std::optional<Solution> solve() override;
 
     private:
         Solution solve(Solution initialSolution);
 
-        Solution generateValidSolution();
-
     protected:
         const Neighborhood* mNeighborhood;
 
+        // Todo: Look at Deque
         std::list<Solution> mTabuList;
         int mTabuListSize;
 

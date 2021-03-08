@@ -2,15 +2,23 @@
 
 #include "Core/Logger/Logger.hpp"
 
+#include "Domain/Neighborhood/PickNDropNeighborhood.hpp"
+
 #include <random>
+
+static const Yolo::PickNDropNeighborhood sDefaultNeighborhood;
+static constexpr int sDefaultMaxIterations = 1000;
+static constexpr double sDefaultTemperature = 1000;
 
 namespace Yolo
 {
-    SimulatedAnnealingAlgorithm::SimulatedAnnealingAlgorithm(const Graph& graph, int nbClasses, const Criterion* criterion, const Neighborhood* neighborhood, int maxIterations)
-        : Algorithm(graph, nbClasses, criterion)
+    SimulatedAnnealingAlgorithm::SimulatedAnnealingAlgorithm(const Graph& graph, int nbClasses)
+        : Algorithm(graph, nbClasses)
     {
-        mNeighborhood = neighborhood;
-        mMaxIterations = maxIterations;
+        mNeighborhood = &sDefaultNeighborhood;
+        mMaxIterations = sDefaultMaxIterations;
+
+        mTemperature = sDefaultTemperature;
     }
 
     std::string SimulatedAnnealingAlgorithm::getDetails() const
@@ -22,9 +30,8 @@ namespace Yolo
     std::optional<Solution> SimulatedAnnealingAlgorithm::solve()
     {
         std::optional<Solution> currentSolutionOpt = mCriterion->generateInitialSolution(mGraph, mNbClasses);
-        if (!currentSolutionOpt.has_value())
+        if (!currentSolutionOpt)
         {
-            YOLO_DEBUG("SimulatedAnnealingAlgorithm::solve(): Infeasible instance.\n");
             return std::nullopt;
         }
 
@@ -33,8 +40,6 @@ namespace Yolo
 
         Solution bestSolution = currentSolution;
         double bestSolutionCost = currentSolutionCost;
-
-        double T = 1000; // Todo: We can improve this.
 
         std::random_device randomDevice;
         std::mt19937_64 randomEngine(randomDevice());
@@ -63,7 +68,7 @@ namespace Yolo
                 {
                     double p = randomRealDistribution(randomEngine);
 
-                    double threshold = exp(-(nextSolutionCost - currentSolutionCost) / T);
+                    double threshold = exp(-(nextSolutionCost - currentSolutionCost) / mTemperature);
 
                     if (p <= threshold)
                     {
@@ -76,7 +81,7 @@ namespace Yolo
             }
 
             ++iteration1;
-            T *= 0.911; // Todo: We can improve on this.
+            mTemperature *= 0.911; // Todo: We can improve on this.
         }
 
         return bestSolution;

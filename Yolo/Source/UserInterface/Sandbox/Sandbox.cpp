@@ -24,7 +24,7 @@ int main()
 
     const auto& startPoint2 = std::chrono::steady_clock::now();
 
-    std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/dixMilleSommets.txt");
+    std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/dixSommets.txt");
 
     const auto& endPoint2 = std::chrono::steady_clock::now();
 
@@ -42,30 +42,19 @@ int main()
             // graph2
         };
 
-        int nbClasses = 3;
-        int epsilon = 0;
-
-        int tabuSize = 7;
-        int iterMax = 1000;
-        bool each = false;
-        // Aspiration is not implemented since we use Solution in tabu list.
-        bool aspiration = false;
-
-        Yolo::SimilarSizeCriterion criterion = Yolo::SimilarSizeCriterion(1);
-
-        Yolo::PickNDropNeighborhood neighborhood = Yolo::PickNDropNeighborhood();
+        int nbClasses = 4;
 
         for (const auto& graph : graphs)
         {
-            Yolo::ExplicitEnumerationAlgorithm EE = Yolo::ExplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
-            Yolo::ImplicitEnumerationAlgorithm IE = Yolo::ImplicitEnumerationAlgorithm(graph, nbClasses, &criterion);
-            Yolo::GradientDescentAlgorithm GD = Yolo::GradientDescentAlgorithm(graph, nbClasses, &criterion, &neighborhood, epsilon);
-            Yolo::TabuAlgorithm TA = Yolo::TabuAlgorithm(graph, nbClasses, &criterion, &neighborhood, tabuSize, iterMax, each, aspiration);
-            Yolo::SimulatedAnnealingAlgorithm SA = Yolo::SimulatedAnnealingAlgorithm(graph, nbClasses, &criterion, &neighborhood, iterMax);
+            Yolo::ExplicitEnumerationAlgorithm EE = Yolo::ExplicitEnumerationAlgorithm(graph, nbClasses);
+            Yolo::ImplicitEnumerationAlgorithm IE = Yolo::ImplicitEnumerationAlgorithm(graph, nbClasses);
+            Yolo::GradientDescentAlgorithm GD = Yolo::GradientDescentAlgorithm(graph, nbClasses);
+            Yolo::TabuAlgorithm TA = Yolo::TabuAlgorithm(graph, nbClasses);
+            Yolo::SimulatedAnnealingAlgorithm SA = Yolo::SimulatedAnnealingAlgorithm(graph, nbClasses);
 
             Yolo::Algorithm* algorithms[] = {
-                //&EE,
-                //&IE,
+                &EE,
+                &IE,
                 &GD,
                 &TA,
                 &SA

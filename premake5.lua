@@ -8,7 +8,7 @@ workspace "Yolo"
         "Release"
     }
 
-    startproject "Yolo"
+    startproject "Sandbox"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.architecture}-%{cfg.system}"
 libdir = "Libraries"
@@ -27,7 +27,7 @@ group ""
 
 project "Yolo"
     location "Yolo"
-    kind "ConsoleApp"
+    kind "StaticLib"
     staticruntime "On"
 
     language "C++"
@@ -48,6 +48,7 @@ project "Yolo"
         
         ".gitignore",
         ".clang-format",
+        ".editorconfig",
         "LICENSE",
         "readme.md",
 
@@ -64,8 +65,6 @@ project "Yolo"
         "%{sourcedir}/Domain/**.cpp",
         "%{sourcedir}/Technical/**.hpp",
         "%{sourcedir}/Technical/**.cpp",
-
-        "%{sourcedir}/UserInterface/Sandbox.cpp",
     }
 
     includedirs
@@ -78,12 +77,6 @@ project "Yolo"
     links
     {
         "spdlog",
-    }
-
-    postbuildcommands
-    {
-        -- postbuildcommands starts in bin directory so we have to cd ..
-        "{copy} ../Instances %{cfg.targetdir}/Instances"
     }
 
     filter "system:windows"
@@ -107,8 +100,72 @@ project "Yolo"
         symbols "Off"
         optimize "On"
 
-project "YoloUnitTests"
-    location "Yolo"
+project "Sandbox"
+    location "Yolo/Source/UserInterface/Sandbox"
+    kind "ConsoleApp"
+    staticruntime "on"
+
+    language "C++"
+    cppdialect "C++17"
+
+    floatingpoint "Fast"
+
+    warnings "Extra"
+
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-obj/" .. outputdir .. "/%{prj.name}")
+
+    debugdir ("%{cfg.targetdir}")
+
+    files
+    {
+        -- Source files
+
+        "%{sourcedir}/UserInterface/Sandbox/**.hpp",
+        "%{sourcedir}/UserInterface/Sandbox/**.cpp",
+    }
+
+    includedirs
+    {
+        "%{sourcedir}",
+
+        "%{includedir.spdlog}",
+    }
+
+    links
+    {
+        "Yolo"
+    }
+
+    postbuildcommands
+    {
+        -- postbuildcommands starts in project's directory 
+        "{copy} %{cfg.targetdir}/../../../Instances %{cfg.targetdir}/Instances"
+    }
+
+    filter "system:windows"
+        systemversion "latest"
+
+    filter "configurations:Debug"
+        defines "YOLO_MODE_DEBUG"
+        runtime "Debug"
+        symbols "On"
+        optimize "Off"
+
+    filter "configurations:DebugOptOn"
+        defines "YOLO_MODE_DEBUGOPTON"
+        runtime "Release"
+        symbols "On"
+        optimize "On"
+
+    filter "configurations:Release"
+        defines "YOLO_MODE_RELEASE"
+        runtime "Release"
+        symbols "Off"
+        optimize "On"
+
+project "UnitTests"
+    location "Yolo/Source/UserInterface/UnitTests"
     kind "ConsoleApp"
     staticruntime "On"
 
@@ -128,15 +185,8 @@ project "YoloUnitTests"
     {
         -- Source files
 
-        "%{sourcedir}/Core/**.hpp",
-        "%{sourcedir}/Core/**.cpp",
-        "%{sourcedir}/Domain/**.hpp",
-        "%{sourcedir}/Domain/**.cpp",
-        "%{sourcedir}/Technical/**.hpp",
-        "%{sourcedir}/Technical/**.cpp",
-
-        "%{sourcedir}/UnitTests/**.hpp",
-        "%{sourcedir}/UnitTests/**.cpp",
+        "%{sourcedir}/UserInterface/UnitTests/**.hpp",
+        "%{sourcedir}/UserInterface/UnitTests/**.cpp",
     }
 
     includedirs
@@ -149,6 +199,8 @@ project "YoloUnitTests"
 
     links
     {
+        "Yolo",
+
         "spdlog",
         "googletest",
     }
@@ -156,7 +208,7 @@ project "YoloUnitTests"
     postbuildcommands
     {
         -- postbuildcommands starts in bin directory so we have to cd ..
-        "{copy} ../Instances %{cfg.targetdir}/Instances"
+        "{copy} %{cfg.targetdir}/../../../Instances %{cfg.targetdir}/Instances"
     }
 
     filter "system:windows"
@@ -180,3 +232,66 @@ project "YoloUnitTests"
         symbols "Off"
         optimize "On"
 
+project "CLI"
+    location "Yolo/Source/UserInterface/CLI"
+    kind "ConsoleApp"
+    staticruntime "on"
+
+    language "C++"
+    cppdialect "C++17"
+
+    floatingpoint "Fast"
+
+    warnings "Extra"
+
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-obj/" .. outputdir .. "/%{prj.name}")
+
+    debugdir ("%{cfg.targetdir}")
+
+    files
+    {
+        -- Source files
+
+        "%{sourcedir}/UserInterface/CLI/**.hpp",
+        "%{sourcedir}/UserInterface/CLI/**.cpp",
+    }
+
+    includedirs
+    {
+        "%{sourcedir}",
+
+        "%{includedir.spdlog}",
+    }
+
+    links
+    {
+        "Yolo"
+    }
+
+    postbuildcommands
+    {
+        -- postbuildcommands starts in project's directory 
+        "{copy} %{cfg.targetdir}/../../../Instances %{cfg.targetdir}/Instances"
+    }
+
+    filter "system:windows"
+        systemversion "latest"
+
+    filter "configurations:Debug"
+        defines "YOLO_MODE_DEBUG"
+        runtime "Debug"
+        symbols "On"
+        optimize "Off"
+
+    filter "configurations:DebugOptOn"
+        defines "YOLO_MODE_DEBUGOPTON"
+        runtime "Release"
+        symbols "On"
+        optimize "On"
+
+    filter "configurations:Release"
+        defines "YOLO_MODE_RELEASE"
+        runtime "Release"
+        symbols "Off"
+        optimize "On"

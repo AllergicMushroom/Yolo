@@ -11,13 +11,12 @@ namespace Yolo
     class Algorithm
     {
     public:
-        Algorithm(const Graph& graph, int nbClasses, const Criterion* criterion)
-            : mGraph(graph), mCriterion(criterion), mNbClasses(nbClasses)
-        {
-        }
+        Algorithm(const Graph& graph, int nbClasses);
 
         virtual std::string getName() const = 0;
         virtual inline std::string getDetails() const { return std::string(); };
+
+        inline void setCriterion(const Criterion* criterion) { mCriterion = criterion; }
 
         virtual std::optional<Solution> solve() = 0;
 

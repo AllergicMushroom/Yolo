@@ -7,33 +7,35 @@ include_directories("Libraries/spdlog-1.8.2/include/")
 add_subdirectory("Libraries/googletest-1.10.0")
 include_directories("Libraries/googletest-1.10.0/include")
 
+set_target_properties(spdlog gtest gtest_main PROPERTIES FOLDER Dependencies)
+
 project("Yolo" LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
+
 if (CMAKE_CXX_COMPILER_ID MATCHES GNU)
     set(CMAKE_CXX_FLAGS "-Wall")
-    set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fprofile-arcs -ftest-coverage")
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fprofile-arcs -ftest-coverage -DYOLO_MODE_DEBUG")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DYOLO_MODE_RELEASE")
 elseif (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
-    set(CMAKE_CXX_FLAGS "/W4 /EHsc /MTd")
-    set(CMAKE_CXX_FLAGS_DEBUG "/DEBUG:FULL /Od")
-    set(CMAKE_CXX_FLAGS_RELEASE "/O2")
+    set(CMAKE_CXX_FLAGS "/W4 /EHsc")
+    set(CMAKE_CXX_FLAGS_DEBUG "/MTd /Od /DYOLO_MODE_DEBUG")
+    set(CMAKE_CXX_FLAGS_RELEASE "/MT /O2 /DYOLO_MODE_RELEASE")
 endif()
 
-option(ENABLE_DEBUG "Debug option" OFF)
-if (ENABLE_DEBUG)
-    set(CMAKE_BUILD_TYPE DEBUG)
-    add_definitions(-DYOLO_MODE_DEBUG)
-else()
-    set(CMAKE_BUILD_TYPE RELEASE)
-    add_definitions(-DYOLO_MODE_RELEASE)
-endif()
+#### Source directories ####
 
-# Source files
 set(SRC_ROOT "Yolo/Source")
 include_directories("${SRC_ROOT}")
 
-file(GLOB_RECURSE SRC_FILES
+############################
+
+#### Executables ####
+
+#### Library ####
+
+file(GLOB_RECURSE LIB_FILES
     "${SRC_ROOT}/Core/**.hpp"
     "${SRC_ROOT}/Core/**.cpp"
 
@@ -44,31 +46,69 @@ file(GLOB_RECURSE SRC_FILES
     "${SRC_ROOT}/Technical/**.cpp"
 )
 
+set(LIB_NAME "Yolo")
+add_library(${LIB_NAME} STATIC ${LIB_FILES})
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${LIB_FILES})
+
+set(SANDBOX_APP_NAME "Sandbox")
+set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${SANDBOX_APP_NAME})
+
+#################
+
+#### Sandbox for developping purposes ####
+
 file(GLOB_RECURSE SANDBOX_FILES
     "${SRC_ROOT}/UserInterface/Sandbox.cpp"
 )
 
+add_executable(${SANDBOX_APP_NAME} ${SANDBOX_FILES})
+target_link_libraries(${SANDBOX_APP_NAME} ${LIB_NAME})
+
+set_target_properties(${SANDBOX_APP_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/$(configuration))
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SANDBOX_FILES})
+
+add_custom_command(TARGET ${SANDBOX_APP_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Instances" "$<TARGET_FILE_DIR:${SANDBOX_APP_NAME}>/Instances")
+
+##########################################
+
+#### Unit tests ####
+
 file(GLOB_RECURSE TEST_FILES
-    "${SRC_ROOT}/UnitTests/**.hpp"
-    "${SRC_ROOT}/UnitTests/**.cpp"
+    "${SRC_ROOT}/UserInterface/UnitTests/**.hpp"
+    "${SRC_ROOT}/UserInterface/UnitTests/**.cpp"
 )
 
-# Executables
-set(APP_NAME "Yolo")
+set(UNIT_TESTS_APP_NAME "UnitTests")
+add_executable(${UNIT_TESTS_APP_NAME} ${TEST_FILES})
+target_link_libraries(${UNIT_TESTS_APP_NAME} ${LIB_NAME} gtest)
 
-add_executable(${APP_NAME} ${SRC_FILES} ${SANDBOX_FILES})
-set_property (DIRECTORY PROPERTY VS_STARTUP_PROJECT ${APP_NAME})
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRC_FILES} ${SANDBOX_FILES})
+set_target_properties(${UNIT_TESTS_APP_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/$(configuration))
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Instances
-     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${TEST_FILES})
 
-set(TEST_APP_NAME "YoloUnitTests")
+add_custom_command(TARGET ${UNIT_TESTS_APP_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Instances" "$<TARGET_FILE_DIR:${UNIT_TESTS_APP_NAME}>/Instances")
 
-add_executable(${TEST_APP_NAME} ${SRC_FILES} ${TEST_FILES})
-set_property (DIRECTORY PROPERTY VS_STARTUP_PROJECT ${TEST_APP_NAME})
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRC_FILES} ${TEST_FILES})
-target_link_libraries(${TEST_APP_NAME} PUBLIC gtest)
+####################
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Instances
-     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+#### Command line interface ####
+
+file(GLOB_RECURSE CLI_FILES
+    "${SRC_ROOT}/UserInterface/CLI/**.hpp"
+    "${SRC_ROOT}/UserInterface/CLI/**.cpp"
+)
+
+set(CLI_APP_NAME "CLI")
+add_executable(${CLI_APP_NAME} ${SANDBOX_FILES})
+target_link_libraries(${SANDBOX_APP_NAME} ${LIB_NAME})
+
+set_target_properties(${SANDBOX_APP_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/$(configuration))
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SANDBOX_FILES})
+
+add_custom_command(TARGET ${SANDBOX_APP_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Instances" "$<TARGET_FILE_DIR:${SANDBOX_APP_NAME}>/Instances")
+
+################################
+
+#####################

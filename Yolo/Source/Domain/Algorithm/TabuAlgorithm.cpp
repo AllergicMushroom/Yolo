@@ -2,28 +2,27 @@
 
 #include "Core/Logger/Logger.hpp"
 
+#include "Domain/Neighborhood/PickNDropNeighborhood.hpp"
+
 #include <sstream>
+
+static const Yolo::PickNDropNeighborhood sDefaultNeighborhood;
+static constexpr int sDefaultMaxIterations = 1000;
+static constexpr int sDefaultTabuListSize = 100;
+static constexpr bool sDefaultStoreAll = true;
 
 namespace Yolo
 {
-    TabuAlgorithm::TabuAlgorithm(const Graph& graph, int nbClasses, const Criterion* criterion, const Neighborhood* neighborhood, int tabuListSize, int maxIterations, bool storeAll, bool aspiration)
-        : Algorithm(graph, nbClasses, criterion), mActualSolution(Solution(mGraph.getNbVertices(), mNbClasses))
+    TabuAlgorithm::TabuAlgorithm(const Graph& graph, int nbClasses)
+        : Algorithm(graph, nbClasses)
     {
-        mNeighborhood = neighborhood;
+        mNeighborhood = &sDefaultNeighborhood;
 
+        mTabuListSize = sDefaultTabuListSize;
         mTabuList = std::list<Solution>();
-        mTabuListSize = tabuListSize;
 
-        mStoreAll = storeAll;
-        mAspiration = aspiration;
-        mMaxIterations = maxIterations;
-    }
-
-    std::optional<Solution> TabuAlgorithm::solve()
-    {
-        // Todo
-        Solution initalSolution = generateValidSolution();
-        return solve(initalSolution);
+        mStoreAll = sDefaultStoreAll;
+        mMaxIterations = sDefaultMaxIterations;
     }
 
     std::string TabuAlgorithm::getDetails() const
@@ -32,24 +31,27 @@ namespace Yolo
         ss << "\n\tNumber of iterations: " << mMaxIterations;
         ss << "\n\tTabu list size: " << mTabuListSize;
         ss << "\n\tAre we storing potentially better solutions: " << (mStoreAll ? "Yes" : "No");
-        ss << "\n\tAspiration: " << (mAspiration ? "True" : "False");
 
         return ss.str();
     }
 
-    Solution TabuAlgorithm::solve(Solution initialSolution)
+    std::optional<Solution> TabuAlgorithm::solve()
     {
-        Solution veryBest = initialSolution;
-
-        mActualSolution = initialSolution;
-
-        if (!mCriterion->evaluate(mGraph, mActualSolution))
+        std::optional<Solution> opt = mCriterion->generateInitialSolution(mGraph, mNbClasses);
+        if (opt)
         {
-            // Todo
-            YOLO_WARN("Initial solution in tabu isn't valid.");
+            return solve(*opt);
         }
 
+        return std::nullopt;
+    }
+
+    Solution TabuAlgorithm::solve(Solution initialSolution)
+    {
+        mActualSolution = initialSolution;
         mActualSolutionCost = mGraph.getSolutionCost(initialSolution);
+
+        Solution veryBest = initialSolution;
         double veryBestCost = mActualSolutionCost;
 
         // Solution bestNeighbor = mNeighborhood->generateBestWithExceptions(mGraph, mTabu, mCriterion, initialSolution);
@@ -91,15 +93,5 @@ namespace Yolo
             veryBestCost = bestNeighborCost;
         }
         return veryBest;
-    }
-
-    Solution TabuAlgorithm::generateValidSolution()
-    {
-        Solution solution = Solution(mGraph.getNbVertices(), mNbClasses);
-        for (int i = 0; i < mGraph.getNbVertices(); i++)
-        {
-            solution.setVertexClass(i, i % mNbClasses);
-        }
-        return solution;
     }
 } // namespace Yolo

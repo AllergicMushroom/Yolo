@@ -2,15 +2,23 @@
 
 #include "Core/Logger/Logger.hpp"
 
+#include "Domain/Neighborhood/PickNDropNeighborhood.hpp"
+
 #include <sstream>
+
+static const Yolo::PickNDropNeighborhood sDefaultNeighborhood;
+static constexpr double sDefaultEpsilon = 0.01;
+static constexpr int sDefaultMaxIterations = 1000;
 
 namespace Yolo
 {
-    GradientDescentAlgorithm::GradientDescentAlgorithm(const Graph& graph, int nbClasses, const Criterion* criterion, const Neighborhood* neighborhood, double epsilon)
-        : Algorithm(graph, nbClasses, criterion)
+    GradientDescentAlgorithm::GradientDescentAlgorithm(const Graph& graph, int nbClasses)
+        : Algorithm(graph, nbClasses)
     {
-        mNeighborhood = neighborhood;
-        mEpsilon = epsilon;
+        mNeighborhood = &sDefaultNeighborhood;
+        mEpsilon = sDefaultEpsilon;
+        mMaxIterations = sDefaultMaxIterations;
+
         mIterationCount = 0;
     }
 

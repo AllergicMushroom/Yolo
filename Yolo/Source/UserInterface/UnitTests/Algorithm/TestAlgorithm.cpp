@@ -36,8 +36,10 @@ TEST(AlgorithmsSuite, ExplicitEnumerationValid)
         {
             for (const auto& criterion : criterions)
             {
-                Yolo::ExplicitEnumerationAlgorithm algorithm(graph, nbClasses, criterion);
-                Yolo::Solution solution = algorithm.solve();
+                Yolo::ExplicitEnumerationAlgorithm algorithm(graph, nbClasses);
+                algorithm.setCriterion(criterion);
+
+                Yolo::Solution solution = algorithm.solve().value();
 
                 EXPECT_TRUE(criterion->evaluate(graph, solution));
             }
@@ -65,8 +67,10 @@ TEST(AlgorithmsSuite, ImplicitEnumerationValid)
         {
             for (const auto& criterion : criterions)
             {
-                Yolo::ImplicitEnumerationAlgorithm algorithm(graph, nbClasses, criterion);
-                Yolo::Solution solution = algorithm.solve();
+                Yolo::ImplicitEnumerationAlgorithm algorithm(graph, nbClasses);
+                algorithm.setCriterion(criterion);
+
+                Yolo::Solution solution = algorithm.solve().value();
 
                 EXPECT_TRUE(criterion->evaluate(graph, solution));
             }
@@ -94,11 +98,14 @@ TEST(AlgorithmsSuite, ExplicitImplicitEquality)
         {
             for (const auto& criterion : criterions)
             {
-                Yolo::ExplicitEnumerationAlgorithm explicitAlgorithm(graph, nbClasses, criterion);
-                Yolo::ImplicitEnumerationAlgorithm implicitAlgorithm(graph, nbClasses, criterion);
+                Yolo::ExplicitEnumerationAlgorithm explicitAlgorithm(graph, nbClasses);
+                explicitAlgorithm.setCriterion(criterion);
 
-                Yolo::Solution explicitSolution = explicitAlgorithm.solve();
-                Yolo::Solution implicitSolution = implicitAlgorithm.solve();
+                Yolo::ImplicitEnumerationAlgorithm implicitAlgorithm(graph, nbClasses);
+                implicitAlgorithm.setCriterion(criterion);
+
+                Yolo::Solution explicitSolution = explicitAlgorithm.solve().value();
+                Yolo::Solution implicitSolution = implicitAlgorithm.solve().value();
 
                 EXPECT_EQ(graph.getSolutionCost(explicitSolution), graph.getSolutionCost(implicitSolution));
             }
@@ -134,8 +141,12 @@ TEST(AlgorithmsSuite, GradientDescentValid)
             {
                 for (const auto& neighborhood : neighborhoods)
                 {
-                    Yolo::GradientDescentAlgorithm algorithm(graph, nbClasses, 1, neighborhood, criterion);
-                    Yolo::Solution solution = algorithm.solve();
+                    Yolo::GradientDescentAlgorithm algorithm(graph, nbClasses);
+                    algorithm.setCriterion(criterion);
+                    algorithm.setNeighborhood(neighborhood);
+                    algorithm.setEpsilon(1);
+
+                    Yolo::Solution solution = algorithm.solve().value();
 
                     EXPECT_TRUE(criterion->evaluate(graph, solution));
                 }
@@ -172,8 +183,14 @@ TEST(AlgorithmsSuite, TabuAlgorithmValid)
             {
                 for (const auto& neighborhood : neighborhoods)
                 {
-                    Yolo::TabuAlgorithm algorithm(graph, nbClasses, 8, 1000, true, true, neighborhood, criterion);
-                    Yolo::Solution solution = algorithm.solve();
+                    Yolo::TabuAlgorithm algorithm(graph, nbClasses);
+                    algorithm.setCriterion(criterion);
+                    algorithm.setNeighborhood(neighborhood);
+                    algorithm.setTabuListSize(10);
+                    algorithm.setMaxIterations(1000);
+                    algorithm.setStoreAll(true);
+
+                    Yolo::Solution solution = algorithm.solve().value();
 
                     EXPECT_TRUE(criterion->evaluate(graph, solution));
                 }

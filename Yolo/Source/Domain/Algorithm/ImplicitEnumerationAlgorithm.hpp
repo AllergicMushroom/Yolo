@@ -7,11 +7,7 @@ namespace Yolo
     class ImplicitEnumerationAlgorithm : public Algorithm
     {
     public:
-        ImplicitEnumerationAlgorithm(const Graph& graph, int nbClasses, const Criterion* criterion)
-            : Algorithm(graph, nbClasses, criterion), mBestSolution(Solution(mGraph.getNbVertices(), mNbClasses))
-        {
-            mIsBestSolutionValid = criterion->evaluate(mGraph, mBestSolution);
-        }
+        ImplicitEnumerationAlgorithm(const Graph& graph, int nbClasses);
 
         virtual inline std::string getName() const override { return "Implicit Enumeration"; }
 
@@ -22,7 +18,7 @@ namespace Yolo
 
     private:
         Solution mBestSolution;
-        double mBestCost;
         bool mIsBestSolutionValid;
+        double mBestSolutionCost;
     };
 } // namespace Yolo

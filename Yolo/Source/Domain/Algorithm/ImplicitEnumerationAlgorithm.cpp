@@ -4,6 +4,14 @@
 
 namespace Yolo
 {
+    ImplicitEnumerationAlgorithm::ImplicitEnumerationAlgorithm(const Graph& graph, int nbClasses)
+        : Algorithm(graph, nbClasses)
+    {
+        mBestSolution = Solution(mGraph.getNbVertices(), mNbClasses);
+        mIsBestSolutionValid = false;
+        mBestSolutionCost = mGraph.getSolutionCost(mBestSolution);
+    }
+
     std::optional<Solution> ImplicitEnumerationAlgorithm::solve()
     {
         enumerateFrom(mBestSolution, 0, 0);
@@ -27,12 +35,12 @@ namespace Yolo
                 {
                     mIsBestSolutionValid = true;
                     mBestSolution = solution;
-                    mBestCost = cost;
+                    mBestSolutionCost = cost;
                 }
-                else if (cost < mBestCost)
+                else if (cost < mBestSolutionCost)
                 {
                     mBestSolution = solution;
-                    mBestCost = cost;
+                    mBestSolutionCost = cost;
                 }
             }
         }
