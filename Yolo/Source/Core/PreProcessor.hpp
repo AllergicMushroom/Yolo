@@ -17,5 +17,5 @@ static constexpr CompileMode sCompileMode = CompileMode::DebugOptOn;
 static constexpr CompileMode sCompileMode = CompileMode::Release;
 
 #else
-#error Unknown compile mode!
+    #error Unknown compile mode!
 #endif
