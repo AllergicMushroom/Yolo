@@ -1,5 +1,6 @@
 #include "SweepNeighborhood.hpp"
 
+#include <algorithm>
 #include <random>
 
 namespace Yolo

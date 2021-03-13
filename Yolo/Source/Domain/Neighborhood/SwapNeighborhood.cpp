@@ -1,5 +1,6 @@
 #include "SwapNeighborhood.hpp"
 
+#include <algorithm>
 #include <random>
 
 namespace Yolo

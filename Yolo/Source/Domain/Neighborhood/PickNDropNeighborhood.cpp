@@ -1,5 +1,6 @@
 #include "PickNDropNeighborhood.hpp"
 
+#include <algorithm>
 #include <random>
 
 namespace Yolo

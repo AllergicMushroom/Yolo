@@ -1,5 +1,3 @@
-#pragma once
-
 #include "Logger.hpp"
 
 #include "Core/PreProcessor.hpp"
@@ -15,7 +13,7 @@ namespace Yolo
         spdlog::set_pattern("%^[%T] %n %l: %v%$");
         mLogger = spdlog::stdout_color_mt("Yolo");
 
-        if constexpr(sCompileMode == CompileMode::Debug || sCompileMode == CompileMode::DebugOptOn)
+        if constexpr (sCompileMode == CompileMode::Debug || sCompileMode == CompileMode::DebugOptOn)
         {
             mLogger->set_level(spdlog::level::trace);
         }
@@ -32,4 +30,4 @@ namespace Yolo
         YOLO_DEBUG("Shut down Logger.");
         spdlog::shutdown();
     }
-}
+} // namespace Yolo

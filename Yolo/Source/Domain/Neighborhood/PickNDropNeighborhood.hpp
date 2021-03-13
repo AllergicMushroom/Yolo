@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Domain/Neighborhood/Neighborhood.hpp"
+
 namespace Yolo
 {
     class PickNDropNeighborhood : public Neighborhood
