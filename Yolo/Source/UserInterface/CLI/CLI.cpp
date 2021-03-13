@@ -28,6 +28,8 @@ void printAlgorithmUsage(const std::string& algorithm);
 
 void processArgs(int argc, char** argv);
 
+std::vector<std::string> tokenizeString(std::string string, char limiter);
+
 int main(int argc, char** argv)
 {
     Yolo::Core::initialize();
@@ -39,7 +41,7 @@ int main(int argc, char** argv)
 
     if (argc == 2)
     {
-        printAlgorithmUsage(argv[1]);
+        printAlgorithmUsage(tokenizeString(argv[1], '=')[1]);
     }
 
     if (argc >= 3)
@@ -101,7 +103,7 @@ void printAlgorithmUsage(const std::string& algorithm)
     bool isAlgorithmValid = false;
     for (const char* algorithmIterator : algorithms)
     {
-        if (algorithm == algorithmIterator)
+        if (strcmp(algorithm.c_str(), algorithmIterator) == 0)
         {
             isAlgorithmValid = true;
         }
@@ -157,8 +159,6 @@ void printAlgorithmUsage(const std::string& algorithm)
 
     YOLO_INFO(ss.str());
 }
-
-std::vector<std::string> tokenizeString(std::string string, char limiter);
 
 void processArgs(int argc, char** argv)
 {
