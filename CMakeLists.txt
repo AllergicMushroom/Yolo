@@ -46,8 +46,8 @@ file(GLOB_RECURSE LIB_FILES
     "${SRC_ROOT}/Technical/**.cpp"
 )
 
-set(LIB_NAME "Yolo")
-add_library(${LIB_NAME} STATIC ${LIB_FILES})
+set(YOLO_LIBRARY "Yolo")
+add_library(${YOLO_LIBRARY} STATIC ${LIB_FILES})
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${LIB_FILES})
 
@@ -56,6 +56,8 @@ set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${SANDBOX_APP_NAME})
 
 #################
 
+set(COMMON_LIBRARIES "spdlog")
+
 #### Sandbox for developping purposes ####
 
 file(GLOB_RECURSE SANDBOX_FILES
@@ -63,13 +65,17 @@ file(GLOB_RECURSE SANDBOX_FILES
 )
 
 add_executable(${SANDBOX_APP_NAME} ${SANDBOX_FILES})
-target_link_libraries(${SANDBOX_APP_NAME} ${LIB_NAME})
+target_link_libraries(${SANDBOX_APP_NAME} ${YOLO_LIBRARY} ${COMMON_LIBRARIES})
 
 set_target_properties(${SANDBOX_APP_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/$(configuration))
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SANDBOX_FILES})
 
-add_custom_command(TARGET ${SANDBOX_APP_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Instances" "$<TARGET_FILE_DIR:${SANDBOX_APP_NAME}>/Instances")
+if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
+    add_custom_command(TARGET ${SANDBOX_APP_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Instances" "$<TARGET_FILE_DIR:${SANDBOX_APP_NAME}>/Instances")
+else()
+    file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/Instances" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+endif()
 
 ##########################################
 
@@ -82,13 +88,17 @@ file(GLOB_RECURSE TEST_FILES
 
 set(UNIT_TESTS_APP_NAME "UnitTests")
 add_executable(${UNIT_TESTS_APP_NAME} ${TEST_FILES})
-target_link_libraries(${UNIT_TESTS_APP_NAME} ${LIB_NAME} gtest)
+target_link_libraries(${UNIT_TESTS_APP_NAME} ${YOLO_LIBRARY} ${COMMON_LIBRARIES} gtest)
 
 set_target_properties(${UNIT_TESTS_APP_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/$(configuration))
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${TEST_FILES})
 
-add_custom_command(TARGET ${UNIT_TESTS_APP_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Instances" "$<TARGET_FILE_DIR:${UNIT_TESTS_APP_NAME}>/Instances")
+if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
+    add_custom_command(TARGET ${UNIT_TESTS_APP_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E "copy_directory" "${CMAKE_CURRENT_SOURCE_DIR}/Instances" "$<TARGET_FILE_DIR:${UNIT_TESTS_APP_NAME}>/Instances")
+else()
+    file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/Instances" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+endif()
 
 ####################
 
@@ -100,14 +110,18 @@ file(GLOB_RECURSE CLI_FILES
 )
 
 set(CLI_APP_NAME "CLI")
-add_executable(${CLI_APP_NAME} ${SANDBOX_FILES})
-target_link_libraries(${SANDBOX_APP_NAME} ${LIB_NAME})
+add_executable(${CLI_APP_NAME} ${CLI_FILES})
+target_link_libraries(${CLI_APP_NAME} ${YOLO_LIBRARY} ${COMMON_LIBRARIES})
 
-set_target_properties(${SANDBOX_APP_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/$(configuration))
+set_target_properties(${CLI_APP_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/$(configuration))
 
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SANDBOX_FILES})
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${CLI_FILES})
 
-add_custom_command(TARGET ${SANDBOX_APP_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Instances" "$<TARGET_FILE_DIR:${SANDBOX_APP_NAME}>/Instances")
+if (CMAKE_CXX_COMPILER_ID MATCHES MSVC)
+    add_custom_command(TARGET ${CLI_APP_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Instances" "$<TARGET_FILE_DIR:${CLI_APP_NAME}>/Instances")
+else()
+    file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/Instances" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+endif()
 
 ################################
 

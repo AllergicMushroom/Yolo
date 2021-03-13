@@ -31,6 +31,9 @@ project "googletest"
     filter "system:windows"
         systemversion "latest"
 
+    filter "system:linux"
+        links "pthread"
+
     filter "configurations:Debug"
         runtime "Debug"
         symbols "On"
