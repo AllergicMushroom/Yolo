@@ -91,7 +91,7 @@ namespace Yolo
 
         std::random_device randomDevice;
         std::mt19937_64 randomEngine(randomDevice());
-        std::uniform_int_distribution<int> randomIntDistribution(0, neighbors.size() - 1);
+        std::uniform_int_distribution<int> randomIntDistribution(0, static_cast<int>(neighbors.size()) - 1);
 
         return neighbors[randomIntDistribution(randomEngine)];
     }
@@ -103,7 +103,7 @@ namespace Yolo
 
         std::random_device randomDevice;
         std::mt19937_64 randomEngine(randomDevice());
-        std::uniform_int_distribution<int> randomIntDistribution(0, neighbors.size() - 1);
+        std::uniform_int_distribution<int> randomIntDistribution(0, static_cast<int>(neighbors.size()) - 1);
 
         return neighbors[randomIntDistribution(randomEngine)];
     }

@@ -57,11 +57,12 @@ namespace Yolo
 
     bool Solution::operator==(const Solution& sol) const
     {
-        if(sol.getNbVertices() != getNbVertices())
+        if (sol.getNbVertices() != getNbVertices())
             return false;
-        for (size_t i = 0; i < sol.getNbVertices(); i++)
+
+        for (int i = 0; i < sol.getNbVertices(); i++)
         {
-            if(sol.getVertexClass(i) != getVertexClass(i))
+            if (sol.getVertexClass(i) != getVertexClass(i))
                 return false;
         }
         return true;
