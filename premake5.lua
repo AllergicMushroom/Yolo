@@ -82,6 +82,9 @@ project "Yolo"
     filter "system:windows"
         systemversion "latest"
 
+    filter "system:linux"
+        links "pthread"
+
     filter "configurations:Debug"
         defines "YOLO_MODE_DEBUG"
         runtime "Debug"
