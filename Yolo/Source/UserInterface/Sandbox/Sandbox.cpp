@@ -4,7 +4,7 @@
 #include "Domain/Algorithm/GradientDescentAlgorithm.hpp"
 #include "Domain/Algorithm/ImplicitEnumerationAlgorithm.hpp"
 #include "Domain/Algorithm/SimulatedAnnealingAlgorithm.hpp"
-#include "Domain/Algorithm/TabuAlgorithm.hpp"
+#include "Domain/Algorithm/TabuListAlgorithm.hpp"
 
 #include "Domain/Criterion/SimilarSizeCriterion.hpp"
 
@@ -49,7 +49,7 @@ int main()
             Yolo::ExplicitEnumerationAlgorithm EE = Yolo::ExplicitEnumerationAlgorithm(graph, nbClasses);
             Yolo::ImplicitEnumerationAlgorithm IE = Yolo::ImplicitEnumerationAlgorithm(graph, nbClasses);
             Yolo::GradientDescentAlgorithm GD = Yolo::GradientDescentAlgorithm(graph, nbClasses);
-            Yolo::TabuAlgorithm TA = Yolo::TabuAlgorithm(graph, nbClasses);
+            Yolo::TabuListAlgorithm TA = Yolo::TabuListAlgorithm(graph, nbClasses);
             Yolo::SimulatedAnnealingAlgorithm SA = Yolo::SimulatedAnnealingAlgorithm(graph, nbClasses);
 
             Yolo::Algorithm* algorithms[] = {

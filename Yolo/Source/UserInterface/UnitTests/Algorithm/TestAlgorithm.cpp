@@ -3,7 +3,7 @@
 #include "Domain/Algorithm/ExplicitEnumerationAlgorithm.hpp"
 #include "Domain/Algorithm/GradientDescentAlgorithm.hpp"
 #include "Domain/Algorithm/ImplicitEnumerationAlgorithm.hpp"
-#include "Domain/Algorithm/TabuAlgorithm.hpp"
+#include "Domain/Algorithm/TabuListAlgorithm.hpp"
 
 #include "Domain/Criterion/AlwaysValidCriterion.hpp"
 #include "Domain/Criterion/SimilarSizeCriterion.hpp"
@@ -155,7 +155,7 @@ TEST(AlgorithmsSuite, GradientDescentValid)
     }
 }
 
-TEST(AlgorithmsSuite, TabuAlgorithmValid)
+TEST(AlgorithmsSuite, TabuListAlgorithmValid)
 {
     Yolo::AlwaysValidCriterion alwaysValid = Yolo::AlwaysValidCriterion();
     Yolo::SimilarSizeCriterion similarSize = Yolo::SimilarSizeCriterion(1);
@@ -183,7 +183,7 @@ TEST(AlgorithmsSuite, TabuAlgorithmValid)
             {
                 for (const auto& neighborhood : neighborhoods)
                 {
-                    Yolo::TabuAlgorithm algorithm(graph, nbClasses);
+                    Yolo::TabuListAlgorithm algorithm(graph, nbClasses);
                     algorithm.setCriterion(criterion);
                     algorithm.setNeighborhood(neighborhood);
                     algorithm.setTabuListSize(10);

@@ -6,7 +6,7 @@
 #include "Domain/Algorithm/GradientDescentAlgorithm.hpp"
 #include "Domain/Algorithm/ImplicitEnumerationAlgorithm.hpp"
 #include "Domain/Algorithm/SimulatedAnnealingAlgorithm.hpp"
-#include "Domain/Algorithm/TabuAlgorithm.hpp"
+#include "Domain/Algorithm/TabuListAlgorithm.hpp"
 
 #include "Domain/Neighborhood/Neighborhood.hpp"
 #include "Domain/Neighborhood/PickNDropNeighborhood.hpp"
@@ -323,7 +323,7 @@ void processArgs(int argc, char** argv)
     }
     else if (algorithm == "tabu_list")
     {
-        Yolo::TabuAlgorithm TL = Yolo::TabuAlgorithm(*graphOpt, nbClasses);
+        Yolo::TabuListAlgorithm TL = Yolo::TabuListAlgorithm(*graphOpt, nbClasses);
 
         for (const auto& argument : tokenizedArguments)
         {

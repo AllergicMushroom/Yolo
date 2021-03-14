@@ -1,4 +1,4 @@
-#include "TabuAlgorithm.hpp"
+#include "TabuListAlgorithm.hpp"
 
 #include "Core/Logger/Logger.hpp"
 
@@ -13,7 +13,7 @@ static constexpr bool sDefaultStoreAll = true;
 
 namespace Yolo
 {
-    TabuAlgorithm::TabuAlgorithm(const Graph& graph, int nbClasses)
+    TabuListAlgorithm::TabuListAlgorithm(const Graph& graph, int nbClasses)
         : Algorithm(graph, nbClasses)
     {
         mNeighborhood = &sDefaultNeighborhood;
@@ -25,7 +25,7 @@ namespace Yolo
         mMaxIterations = sDefaultMaxIterations;
     }
 
-    std::string TabuAlgorithm::getDetails() const
+    std::string TabuListAlgorithm::getDetails() const
     {
         std::stringstream ss;
         ss << "\n\tNumber of iterations: " << mMaxIterations;
@@ -35,7 +35,7 @@ namespace Yolo
         return ss.str();
     }
 
-    std::optional<Solution> TabuAlgorithm::solve()
+    std::optional<Solution> TabuListAlgorithm::solve()
     {
         std::optional<Solution> opt = mCriterion->generateInitialSolution(mGraph, mNbClasses);
         if (opt)
@@ -46,7 +46,7 @@ namespace Yolo
         return std::nullopt;
     }
 
-    Solution TabuAlgorithm::solve(Solution initialSolution)
+    Solution TabuListAlgorithm::solve(Solution initialSolution)
     {
         mActualSolution = initialSolution;
         mActualSolutionCost = mGraph.getSolutionCost(initialSolution);

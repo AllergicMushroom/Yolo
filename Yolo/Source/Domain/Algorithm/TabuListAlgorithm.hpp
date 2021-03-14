@@ -8,10 +8,10 @@
 
 namespace Yolo
 {
-    class TabuAlgorithm : public Algorithm
+    class TabuListAlgorithm : public Algorithm
     {
     public:
-        TabuAlgorithm(const Graph& graph, int nbClasses);
+        TabuListAlgorithm(const Graph& graph, int nbClasses);
 
         virtual inline std::string getName() const override { return "Tabu"; }
         virtual std::string getDetails() const override;
