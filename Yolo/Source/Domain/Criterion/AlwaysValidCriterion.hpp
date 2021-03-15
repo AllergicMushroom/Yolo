@@ -14,7 +14,7 @@ namespace Yolo
         AlwaysValidCriterion()
             : Criterion() {}
 
-        virtual inline bool evaluate(const Graph&, const Solution&) const override { return true; };
+        virtual inline bool evaluate(const Graph&, const Solution&, bool = false) const override { return true; };
 
         virtual std::optional<Solution> generateInitialSolution(const Graph& graph, int nbClasses) const override { return Solution(graph.getNbVertices(), nbClasses); };
     };

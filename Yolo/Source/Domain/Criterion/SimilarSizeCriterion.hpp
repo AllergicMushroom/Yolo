@@ -14,7 +14,7 @@ namespace Yolo
         SimilarSizeCriterion(int maxSlack);
         SimilarSizeCriterion(double percentage);
 
-        virtual bool evaluate(const Graph& graph, const Solution& solution) const override;
+        virtual bool evaluate(const Graph& graph, const Solution& solution, bool isPartial = false) const override;
 
         virtual std::optional<Solution> generateInitialSolution(const Graph& graph, int nbClasses) const override;
 

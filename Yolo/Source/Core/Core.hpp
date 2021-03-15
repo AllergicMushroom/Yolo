@@ -4,7 +4,6 @@
 
 #include "Core/Logger/Logger.hpp"
 
-// Todo: smart pointers
 namespace Yolo
 {
     class Core

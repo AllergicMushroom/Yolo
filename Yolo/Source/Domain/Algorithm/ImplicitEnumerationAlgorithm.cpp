@@ -25,7 +25,7 @@ namespace Yolo
         return mBestSolution;
     }
 
-    void ImplicitEnumerationAlgorithm::enumerateFrom(Solution solution, int vertex, double cost)
+    void ImplicitEnumerationAlgorithm::enumerateFrom(Solution solution, int vertex, double cost) // Todo: Pass by reference
     {
         if (vertex == mGraph.getNbVertices())
         {
@@ -50,11 +50,11 @@ namespace Yolo
             {
                 cost = cost + mGraph.getSolutionCostDifference(solution, vertex, i);
                 solution.setVertexClass(vertex, i);
-                enumerateFrom(solution, vertex + 1, cost);
 
-                // Todo
-                /*if (mGraph.isPartialSolutionValid(sol, mCriterion, from))
-                    enumerateFrom(sol, from + 1);*/
+                if (mCriterion->evaluate(mGraph, solution, true))
+                {
+                    enumerateFrom(solution, vertex + 1, cost);
+                }
             }
         }
     }

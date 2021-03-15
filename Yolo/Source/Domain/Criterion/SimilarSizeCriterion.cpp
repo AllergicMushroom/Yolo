@@ -16,41 +16,64 @@ namespace Yolo
         mPercentageSlack = std::min(0.0, percentage);
     }
 
-    bool SimilarSizeCriterion::evaluate(const Graph& graph, const Solution& solution) const
+    bool SimilarSizeCriterion::evaluate(const Graph& graph, const Solution& solution, bool isPartial) const
     {
-        int nbClasses = solution.getNbClasses();
+        const int nbClasses = solution.getNbClasses();
         if (nbClasses == 0)
         {
             return false;
         }
 
-        int elementPerClass = static_cast<int>(static_cast<size_t>(graph.getNbVertices()) / nbClasses);
-
-        int nbAssignedVertices = 0;
-        for (int i = 0; i < nbClasses; ++i)
+        const int elementsPerClass = static_cast<int>(static_cast<size_t>(graph.getNbVertices()) / nbClasses);
+        if (isPartial)
         {
-            int classCardinal = solution.getClassCardinal(i);
-            if (mUseIntSlack)
+            for (int i = 0; i < nbClasses; ++i)
             {
-                if (classCardinal < elementPerClass - mIntSlack || classCardinal > elementPerClass + mIntSlack)
+                const int classCardinal = solution.getClassCardinal(i);
+                if (mUseIntSlack)
                 {
-                    return false;
+                    if (classCardinal > elementsPerClass + mIntSlack)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (classCardinal > elementsPerClass * (1 + mPercentageSlack))
+                    {
+                        return false;
+                    }
                 }
             }
-            else
-            {
-                if (classCardinal < elementPerClass * (1 - mPercentageSlack) || classCardinal > elementPerClass * (1 + mPercentageSlack))
-                {
-                    return false;
-                }
-            }
-
-            nbAssignedVertices += classCardinal;
         }
-
-        if (nbAssignedVertices != solution.getNbVertices())
+        else
         {
-            return false;
+            int nbAssignedVertices = 0;
+            for (int i = 0; i < nbClasses; ++i)
+            {
+                const int classCardinal = solution.getClassCardinal(i);
+                if (mUseIntSlack)
+                {
+                    if (classCardinal < elementsPerClass - mIntSlack || classCardinal > elementsPerClass + mIntSlack)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (classCardinal < elementsPerClass * (1 - mPercentageSlack) || classCardinal > elementsPerClass * (1 + mPercentageSlack))
+                    {
+                        return false;
+                    }
+                }
+
+                nbAssignedVertices += classCardinal;
+            }
+
+            if (nbAssignedVertices != solution.getNbVertices())
+            {
+                return false;
+            }
         }
 
         return true;
