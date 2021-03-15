@@ -15,7 +15,8 @@ namespace Yolo
     GradientDescentAlgorithm::GradientDescentAlgorithm(const Graph& graph, int nbClasses)
         : Algorithm(graph, nbClasses)
     {
-        mNeighborhood = &sDefaultNeighborhood;
+        mNeighborhood = std::make_shared<PickNDropNeighborhood>(sDefaultNeighborhood);
+
         mEpsilon = sDefaultEpsilon;
         mMaxIterations = sDefaultMaxIterations;
 

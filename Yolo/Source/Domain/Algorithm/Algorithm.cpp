@@ -9,7 +9,7 @@ namespace Yolo
     Algorithm::Algorithm(const Graph& graph, int nbClasses)
         : mGraph(graph), mNbClasses(nbClasses)
     {
-        mCriterion = &sDefaultCriterion;
+        mCriterion = std::make_shared<const SimilarSizeCriterion>(sDefaultCriterion);
     }
 
 } // namespace Yolo

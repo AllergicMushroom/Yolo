@@ -43,7 +43,7 @@ namespace Yolo
         return neighbors;
     }
 
-    std::vector<Solution> SwapNeighborhood::generateAll(const Solution& solution, const Graph& graph, const Criterion* criterion) const
+    std::vector<Solution> SwapNeighborhood::generateAll(const Solution& solution, const Graph& graph, std::shared_ptr<const Criterion> criterion) const
     {
         /*
             We have to include the current solution so that convergence is guaranteed.
@@ -96,7 +96,7 @@ namespace Yolo
         return neighbors[randomIntDistribution(randomEngine)];
     }
 
-    Solution SwapNeighborhood::generateRandom(const Solution& solution, const Graph& graph, const Criterion* criterion) const
+    Solution SwapNeighborhood::generateRandom(const Solution& solution, const Graph& graph, std::shared_ptr<const Criterion> criterion) const
     {
         // Todo: optimise
         const auto& neighbors = generateAll(solution, graph, criterion);
@@ -108,7 +108,7 @@ namespace Yolo
         return neighbors[randomIntDistribution(randomEngine)];
     }
 
-    Solution SwapNeighborhood::generateBest(const Solution& solution, const Graph& graph, const Criterion* criterion) const
+    Solution SwapNeighborhood::generateBest(const Solution& solution, const Graph& graph, std::shared_ptr<const Criterion> criterion) const
     {
         Solution best = solution;
         double bestDeltaCost = 0.0;
@@ -180,7 +180,7 @@ namespace Yolo
         return best;
     }
 
-    Solution SwapNeighborhood::generateBest(const Solution& solution, const Graph& graph, const Criterion* criterion, const std::list<Solution>& exceptions) const
+    Solution SwapNeighborhood::generateBest(const Solution& solution, const Graph& graph, std::shared_ptr<const Criterion> criterion, const std::list<Solution>& exceptions) const
     {
         Solution best = solution;
         double bestDeltaCost = 0.0;

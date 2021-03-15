@@ -16,7 +16,7 @@ namespace Yolo
     TabuListAlgorithm::TabuListAlgorithm(const Graph& graph, int nbClasses)
         : Algorithm(graph, nbClasses)
     {
-        mNeighborhood = &sDefaultNeighborhood;
+        mNeighborhood = std::make_shared<PickNDropNeighborhood>(sDefaultNeighborhood);
 
         mTabuListSize = sDefaultTabuListSize;
         mTabuList = std::list<Solution>();

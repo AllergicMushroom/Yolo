@@ -5,7 +5,7 @@
 #include "Domain/Criterion/Criterion.hpp"
 
 #include "Domain/Solution/Solution.hpp"
-
+#include <memory>
 namespace Yolo
 {
     class Algorithm
@@ -16,13 +16,13 @@ namespace Yolo
         virtual std::string getName() const = 0;
         virtual inline std::string getDetails() const { return std::string(); };
 
-        inline void setCriterion(const Criterion* criterion) { mCriterion = criterion; }
+        inline void setCriterion(std::shared_ptr<const Criterion> criterion) { mCriterion = criterion; }
 
         virtual std::optional<Solution> solve() = 0;
 
     protected:
         Graph mGraph;
-        const Criterion* mCriterion;
+        std::shared_ptr<const Criterion> mCriterion;
 
         const int mNbClasses;
     };

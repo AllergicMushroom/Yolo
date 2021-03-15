@@ -38,7 +38,7 @@ namespace Yolo
         return neighbors;
     }
 
-    std::vector<Solution> SweepNeighborhood::generateAll(const Solution& solution, const Graph& graph, const Criterion* criterion) const
+    std::vector<Solution> SweepNeighborhood::generateAll(const Solution& solution, const Graph& graph, std::shared_ptr<const Criterion> criterion) const
     {
         // Todo: This method generates a lot of doubles. How to optimize it?
 
@@ -87,7 +87,7 @@ namespace Yolo
         return neighbors[randomIntDistribution(randomEngine)];
     }
 
-    Solution SweepNeighborhood::generateRandom(const Solution& solution, const Graph& graph, const Criterion* criterion) const
+    Solution SweepNeighborhood::generateRandom(const Solution& solution, const Graph& graph, std::shared_ptr<const Criterion> criterion) const
     {
         // Todo: optimise
         const auto& neighbors = generateAll(solution, graph, criterion);
@@ -99,7 +99,7 @@ namespace Yolo
         return neighbors[randomIntDistribution(randomEngine)];
     }
 
-    Solution SweepNeighborhood::generateBest(const Solution& solution, const Graph& graph, const Criterion* criterion) const
+    Solution SweepNeighborhood::generateBest(const Solution& solution, const Graph& graph, std::shared_ptr<const Criterion> criterion) const
     {
         const auto& neighbors = generateAll(solution, graph, criterion);
 
@@ -119,7 +119,7 @@ namespace Yolo
         return bestSolution;
     }
 
-    Solution SweepNeighborhood::generateBest(const Solution& solution, const Graph& graph, const Criterion* criterion, const std::list<Solution>& exceptions) const
+    Solution SweepNeighborhood::generateBest(const Solution& solution, const Graph& graph, std::shared_ptr<const Criterion> criterion, const std::list<Solution>& exceptions) const
     {
         const auto& neighbors = generateAll(solution, graph, criterion);
 

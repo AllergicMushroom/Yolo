@@ -15,7 +15,8 @@ namespace Yolo
     SimulatedAnnealingAlgorithm::SimulatedAnnealingAlgorithm(const Graph& graph, int nbClasses)
         : Algorithm(graph, nbClasses)
     {
-        mNeighborhood = &sDefaultNeighborhood;
+        mNeighborhood = std::make_shared<PickNDropNeighborhood>(sDefaultNeighborhood);
+
         mMaxIterations = sDefaultMaxIterations;
 
         mTemperature = sDefaultTemperature;
