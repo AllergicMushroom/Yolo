@@ -14,7 +14,8 @@ namespace Yolo
 
     std::optional<Solution> ExplicitEnumerationAlgorithm::solve()
     {
-        enumerateFrom(mBestSolution, 0, 0);
+        Solution solution = Solution(mGraph.getNbVertices(), mNbClasses);
+        enumerateFrom(solution, 0, 0);
 
         if (!mCriterion->evaluate(mGraph, mBestSolution))
         {
@@ -25,7 +26,7 @@ namespace Yolo
         return mBestSolution;
     }
 
-    void ExplicitEnumerationAlgorithm::enumerateFrom(Solution solution, int vertex, double cost)
+    void ExplicitEnumerationAlgorithm::enumerateFrom(Solution& solution, int vertex, double cost)
     {
         if (vertex == mGraph.getNbVertices())
         {
@@ -46,11 +47,20 @@ namespace Yolo
         }
         else
         {
+            int previousClass = solution.getVertexClass(vertex);
+            double previousCost = cost;
+
             for (int i = 0; i <= std::min(vertex, mNbClasses - 1); ++i)
             {
                 cost = cost + mGraph.getSolutionCostDifference(solution, vertex, i);
                 solution.setVertexClass(vertex, i);
                 enumerateFrom(solution, vertex + 1, cost);
+            }
+
+            if (previousClass >= 0)
+            {
+                solution.setVertexClass(vertex, previousClass);
+                cost = previousCost;
             }
         }
     }

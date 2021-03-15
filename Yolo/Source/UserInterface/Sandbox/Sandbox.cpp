@@ -24,7 +24,7 @@ int main()
 
     const auto& startPoint2 = std::chrono::steady_clock::now();
 
-    std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/dixSommets.txt");
+    std::optional<Yolo::Graph> graphOptional = graphRepository.load("Instances/quinzeSommets.txt");
 
     const auto& endPoint2 = std::chrono::steady_clock::now();
 
@@ -80,7 +80,7 @@ int main()
 
                 if (solution.has_value())
                 {
-                    // YOLO_INFO("Best solution found: {0}", solution.toString());
+                    //YOLO_INFO("Best solution found: {0}", solution->toString());
                     YOLO_INFO("Cost: {0}", graph.getSolutionCost(*solution));
                     YOLO_INFO("Found in {0} seconds.\n", elapsedSeconds);
                 }

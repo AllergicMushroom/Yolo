@@ -14,7 +14,7 @@ namespace Yolo
         virtual std::optional<Solution> solve() override;
 
     private:
-        void enumerateFrom(Solution solution, int vertex, double cost);
+        void enumerateFrom(Solution& solution, int vertex, double cost);
 
     private:
         Solution mBestSolution;
