@@ -52,8 +52,7 @@ namespace Yolo
             int iteration2 = 0;
             while (iteration2 < mGraph.getNbVertices() * mGraph.getNbVertices())
             {
-                Solution nextSolution = mNeighborhood->generateRandom(currentSolution, mGraph, mCriterion);
-                double nextSolutionCost = mGraph.getSolutionCost(nextSolution);
+                auto [nextSolution, nextSolutionCost] = mNeighborhood->generateRandom(currentSolution, currentSolutionCost, mGraph, mCriterion);
 
                 if (nextSolutionCost < currentSolutionCost)
                 {

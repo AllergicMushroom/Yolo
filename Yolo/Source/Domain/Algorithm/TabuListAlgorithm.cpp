@@ -55,10 +55,7 @@ namespace Yolo
         double veryBestCost = mActualSolutionCost;
 
         // Solution bestNeighbor = mNeighborhood->generateBestWithExceptions(mGraph, mTabu, mCriterion, initialSolution);
-        Solution bestNeighbor = mNeighborhood->generateBest(initialSolution, mGraph, mCriterion);
-        double bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
-
-        // YOLO_INFO("{0} {1}",bestNeighbor.toString(), bestNeighborCost);
+        auto [bestNeighbor, bestNeighborCost] = mNeighborhood->generateBest(mActualSolution, mActualSolutionCost, mGraph, mCriterion);
 
         int iter = 0;
         while (iter < mMaxIterations)
@@ -68,11 +65,10 @@ namespace Yolo
             if (mStoreAll || bestNeighborCost >= mActualSolutionCost)
             {
                 mTabuList.push_back(bestNeighbor);
-            }
-
-            if (mTabuList.size() > mTabuListSize)
-            {
-                mTabuList.pop_front();
+                if (mTabuList.size() > mTabuListSize)
+                {
+                    mTabuList.pop_front();
+                }
             }
 
             mActualSolution = bestNeighbor;
@@ -84,14 +80,17 @@ namespace Yolo
                 veryBestCost = mActualSolutionCost;
             }
 
-            bestNeighbor = mNeighborhood->generateBest(mActualSolution, mGraph, mCriterion, mTabuList);
-            bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
+            auto [newBestNeighbor, newBestNeighborCost] = mNeighborhood->generateBest(mActualSolution, mActualSolutionCost, mGraph, mCriterion, mTabuList);
+            bestNeighbor = newBestNeighbor;
+            bestNeighborCost = newBestNeighborCost;
         }
+
         if (bestNeighborCost < veryBestCost)
         {
             veryBest = bestNeighbor;
             veryBestCost = bestNeighborCost;
         }
+
         return veryBest;
     }
 } // namespace Yolo

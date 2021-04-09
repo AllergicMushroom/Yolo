@@ -15,12 +15,12 @@ namespace Yolo
         Neighborhood() {}
 
         virtual std::vector<Solution> generateAll(const Solution& solution) const = 0;
-        virtual std::vector<Solution> generateAll(const Solution& solution, const Graph& graph, std::shared_ptr<const Criterion> criterion) const = 0;
+        virtual std::vector<std::pair<Solution, double>> generateAll(const Solution& solution, double solutionCost, const Graph& graph, std::shared_ptr<const Criterion> criterion) const = 0;
 
         virtual Solution generateRandom(const Solution& solution) const = 0;
-        virtual Solution generateRandom(const Solution& sollution, const Graph& graph, std::shared_ptr<const Criterion> criterion) const = 0;
+        virtual std::pair<Solution, double> generateRandom(const Solution& sollution, double solutionCost, const Graph& graph, std::shared_ptr<const Criterion> criterion) const = 0;
 
-        virtual Solution generateBest(const Solution& solution, const Graph& graph, std::shared_ptr<const Criterion> criterion) const = 0;
-        virtual Solution generateBest(const Solution& solution, const Graph& graph, std::shared_ptr<const Criterion> criterion, const std::list<Solution>& exceptions) const = 0; // Todo: std::vector instead of list
+        virtual std::pair<Solution, double> generateBest(const Solution& solution, double solutionCost, const Graph& graph, std::shared_ptr<const Criterion> criterion) const = 0;
+        virtual std::pair<Solution, double> generateBest(const Solution& solution, double solutionCost, const Graph& graph, std::shared_ptr<const Criterion> criterion, const std::list<Solution>& exceptions) const = 0;
     };
 } // namespace Yolo

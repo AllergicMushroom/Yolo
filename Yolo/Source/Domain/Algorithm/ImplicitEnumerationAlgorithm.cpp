@@ -14,18 +14,19 @@ namespace Yolo
 
     std::optional<Solution> ImplicitEnumerationAlgorithm::solve()
     {
-        enumerateFrom(mBestSolution, 0, 0);
+        Solution solution = Solution(mGraph.getNbVertices(), mNbClasses);
+        enumerateFrom(solution, 0, 0);
 
         if (!mCriterion->evaluate(mGraph, mBestSolution))
         {
-            YOLO_DEBUG("ExplicitEnumerationAlgorithm::solve(): Infeasible instance.\n");
+            YOLO_DEBUG("ImplicitEnumerationAlgorithm::solve(): Infeasible instance.\n");
             return std::nullopt;
         }
 
         return mBestSolution;
     }
 
-    void ImplicitEnumerationAlgorithm::enumerateFrom(Solution solution, int vertex, double cost) // Todo: Pass by reference
+    void ImplicitEnumerationAlgorithm::enumerateFrom(Solution& solution, int vertex, double cost)
     {
         if (vertex == mGraph.getNbVertices())
         {
@@ -37,15 +38,20 @@ namespace Yolo
                     mBestSolution = solution;
                     mBestSolutionCost = cost;
                 }
-                else if (cost < mBestSolutionCost)
+                else
                 {
-                    mBestSolution = solution;
-                    mBestSolutionCost = cost;
+                    if (cost < mBestSolutionCost)
+                    {
+                        mBestSolution = solution;
+                        mBestSolutionCost = cost;
+                    }
                 }
             }
         }
         else
         {
+            int previousClass = solution.getVertexClass(vertex);
+
             for (int i = 0; i <= std::min(vertex, mNbClasses - 1); ++i)
             {
                 cost = cost + mGraph.getSolutionCostDifference(solution, vertex, i);
@@ -56,6 +62,8 @@ namespace Yolo
                     enumerateFrom(solution, vertex + 1, cost);
                 }
             }
+
+            solution.setVertexClass(vertex, previousClass);
         }
     }
 } // namespace Yolo

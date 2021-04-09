@@ -38,17 +38,19 @@ namespace Yolo
                     mBestSolution = solution;
                     mBestSolutionCost = cost;
                 }
-                else if (cost < mBestSolutionCost)
+                else
                 {
-                    mBestSolution = solution;
-                    mBestSolutionCost = cost;
+                    if (cost < mBestSolutionCost)
+                    {
+                        mBestSolution = solution;
+                        mBestSolutionCost = cost;
+                    }
                 }
             }
         }
         else
         {
             int previousClass = solution.getVertexClass(vertex);
-            double previousCost = cost;
 
             for (int i = 0; i <= std::min(vertex, mNbClasses - 1); ++i)
             {
@@ -60,7 +62,6 @@ namespace Yolo
             if (previousClass >= 0)
             {
                 solution.setVertexClass(vertex, previousClass);
-                cost = previousCost;
             }
         }
     }

@@ -18,19 +18,31 @@ namespace Yolo
             return;
         }
 
-        if (vertexClass < 0 || vertexClass > mClassCardinals.size() - 1)
+        if (vertexClass == sVertexNoClass)
         {
-            YOLO_DEBUG("Solution::setVertexClass(int vertex, int vertexClass): Changing vertex {0} to forbidden class {1}.", vertex, vertexClass);
-            return;
-        }
+            if (mSolution[vertex] != sVertexNoClass)
+            {
+                --mClassCardinals[mSolution[vertex]];
+            }
 
-        if (mSolution[vertex] != sVertexNoClass)
+            mSolution[vertex] = vertexClass;
+        }
+        else
         {
-            --mClassCardinals[mSolution[vertex]];
-        }
+            if (vertexClass < 0 || vertexClass > mClassCardinals.size() - 1)
+            {
+                YOLO_DEBUG("Solution::setVertexClass(int vertex, int vertexClass): Changing vertex {0} to forbidden class {1}.", vertex, vertexClass);
+                return;
+            }
 
-        mSolution[vertex] = vertexClass;
-        ++mClassCardinals[mSolution[vertex]];
+            if (mSolution[vertex] != sVertexNoClass)
+            {
+                --mClassCardinals[mSolution[vertex]];
+            }
+
+            mSolution[vertex] = vertexClass;
+            ++mClassCardinals[mSolution[vertex]];
+        }
     }
 
     int Solution::getVertexClass(int vertex) const

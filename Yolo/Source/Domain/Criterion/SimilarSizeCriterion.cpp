@@ -25,25 +25,53 @@ namespace Yolo
         }
 
         const int elementsPerClass = static_cast<int>(static_cast<size_t>(graph.getNbVertices()) / nbClasses);
+
+        int cardinalsLowerBound = 0;
+        int cardinalsUpperBound = 0;
+        if (mUseIntSlack)
+        {
+            cardinalsLowerBound = elementsPerClass - mIntSlack;
+            cardinalsUpperBound = elementsPerClass + mIntSlack;
+        }
+        else
+        {
+            cardinalsLowerBound = static_cast<int>(elementsPerClass * (1 - mPercentageSlack));
+            cardinalsUpperBound = static_cast<int>(elementsPerClass * (1 + mPercentageSlack));
+        }
+
         if (isPartial)
         {
+            int nbAssignedVertices = 0;
+
             for (int i = 0; i < nbClasses; ++i)
             {
                 const int classCardinal = solution.getClassCardinal(i);
-                if (mUseIntSlack)
+                if (classCardinal > cardinalsUpperBound)
                 {
-                    if (classCardinal > elementsPerClass + mIntSlack)
-                    {
-                        return false;
-                    }
+                    return false;
                 }
-                else
+
+                nbAssignedVertices += classCardinal;
+            }
+
+            const int nbUnassignedVertices = solution.getNbVertices() - nbAssignedVertices;
+
+            int cardinalsGapToLowerBoundSum = 0;
+
+            for (int i = 0; i < nbClasses; ++i)
+            {
+                const int cardinalGapToLowerBound = std::max(0, cardinalsLowerBound - solution.getClassCardinal(i));
+                if (cardinalGapToLowerBound > nbUnassignedVertices)
                 {
-                    if (classCardinal > elementsPerClass * (1 + mPercentageSlack))
-                    {
-                        return false;
-                    }
+                    return false;
                 }
+
+                cardinalsGapToLowerBoundSum += cardinalGapToLowerBound;
+            }
+
+            if (cardinalsGapToLowerBoundSum > nbUnassignedVertices)
+            {
+                return false;
             }
         }
         else
@@ -52,19 +80,9 @@ namespace Yolo
             for (int i = 0; i < nbClasses; ++i)
             {
                 const int classCardinal = solution.getClassCardinal(i);
-                if (mUseIntSlack)
+                if (classCardinal < cardinalsLowerBound || classCardinal > cardinalsUpperBound)
                 {
-                    if (classCardinal < elementsPerClass - mIntSlack || classCardinal > elementsPerClass + mIntSlack)
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    if (classCardinal < elementsPerClass * (1 - mPercentageSlack) || classCardinal > elementsPerClass * (1 + mPercentageSlack))
-                    {
-                        return false;
-                    }
+                    return false;
                 }
 
                 nbAssignedVertices += classCardinal;

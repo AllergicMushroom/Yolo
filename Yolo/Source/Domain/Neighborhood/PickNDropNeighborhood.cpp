@@ -3,6 +3,9 @@
 #include <algorithm>
 #include <random>
 
+static std::random_device sRandomDevice;
+static std::mt19937_64 sRandomEngine(sRandomDevice());
+
 namespace Yolo
 {
     std::vector<Solution> PickNDropNeighborhood::generateAll(const Solution& solution) const
@@ -17,51 +20,52 @@ namespace Yolo
         int index = 0;
         neighbors[index++] = solution;
 
-        for (int i = 0; i < solution.getNbVertices(); i++)
+        for (int vertex = 0; vertex < solution.getNbVertices(); vertex++)
         {
-            for (int j = 0; j < solution.getNbClasses(); j++)
+            for (int cls = 0; cls < solution.getNbClasses(); cls++)
             {
-                if (solution.getVertexClass(i) == j)
+                if (solution.getVertexClass(vertex) == cls)
                 {
                     continue;
                 }
 
-                Solution temp = solution;
-                temp.setVertexClass(i, j);
-                neighbors[index++] = temp;
+                Solution newSolution = solution;
+                newSolution.setVertexClass(vertex, cls);
+                neighbors[index++] = newSolution;
             }
         }
 
         return neighbors;
     }
 
-    std::vector<Solution> PickNDropNeighborhood::generateAll(const Solution& solution, const Graph& graph, std::shared_ptr<const Criterion> criterion) const
+    std::vector<std::pair<Solution, double>> PickNDropNeighborhood::generateAll(const Solution& solution, double solutionCost, const Graph& graph, std::shared_ptr<const Criterion> criterion) const
     {
         /*
             We have to include the current solution so that convergence is guaranteed.
             We can cut nbVertices solutions because they're the same ones as the current solution.
         */
         size_t size = static_cast<size_t>(solution.getNbVertices()) * (static_cast<size_t>(solution.getNbClasses()) - 1) + 1;
-        std::vector<Solution> neighbors(size, Solution(0, 0));
+        std::vector<std::pair<Solution, double>> neighbors(size);
 
         int index = 0;
-        neighbors[index++] = solution;
+        neighbors[index++] = std::pair<Solution, double>(solution, solutionCost);
 
-        for (int i = 0; i < solution.getNbVertices(); i++)
+        for (int vertex = 0; vertex < solution.getNbVertices(); vertex++)
         {
-            for (int j = 0; j < solution.getNbClasses(); j++)
+            for (int cls = 0; cls < solution.getNbClasses(); cls++)
             {
-                if (solution.getVertexClass(i) == j)
+                if (solution.getVertexClass(vertex) == cls)
                 {
                     continue;
                 }
 
-                Solution temp = solution;
-                temp.setVertexClass(i, j);
+                Solution newSolution = solution;
+                newSolution.setVertexClass(vertex, cls);
 
-                if (criterion->evaluate(graph, temp))
+                if (criterion->evaluate(graph, newSolution))
                 {
-                    neighbors[index++] = temp;
+                    int newSolutionCost = solutionCost + graph.getSolutionCostDifference(solution, vertex, cls);
+                    neighbors[index++] = std::pair<Solution, double>(newSolution, newSolutionCost);
                 }
             }
         }
@@ -72,112 +76,149 @@ namespace Yolo
 
     Solution PickNDropNeighborhood::generateRandom(const Solution& solution) const
     {
-        // Todo: optimise
-        const auto& neighbors = generateAll(solution);
+        std::uniform_int_distribution<int> vertexDistribution(0, solution.getNbVertices() - 1);
+        std::uniform_int_distribution<int> classDistribution(0, solution.getNbClasses() - 1);
 
-        std::random_device randomDevice;
-        std::mt19937_64 randomEngine(randomDevice());
-        std::uniform_int_distribution<int> randomIntDistribution(0, static_cast<int>(neighbors.size()) - 1);
+        constexpr int maxIterations = 1000;
 
-        return neighbors[randomIntDistribution(randomEngine)];
+        for (int iteration = 0; iteration < maxIterations; ++iteration)
+        {
+            int vertex = vertexDistribution(sRandomEngine);
+            int cls = classDistribution(sRandomEngine);
+
+            if (solution.getVertexClass(vertex) != cls)
+            {
+                Solution newSolution = solution;
+                newSolution.setVertexClass(vertex, cls);
+                return newSolution;
+            }
+        }
+
+        return solution;
     }
 
-    Solution PickNDropNeighborhood::generateRandom(const Solution& solution, const Graph& graph, std::shared_ptr<const Criterion> criterion) const
+    std::pair<Solution, double> PickNDropNeighborhood::generateRandom(const Solution& solution, double solutionCost, const Graph& graph, std::shared_ptr<const Criterion> criterion) const
     {
-        // Todo: optimise
-        const auto& neighbors = generateAll(solution, graph, criterion);
+        std::uniform_int_distribution<int> vertexDistribution(0, solution.getNbVertices() - 1);
+        std::uniform_int_distribution<int> classDistribution(0, solution.getNbClasses() - 1);
 
-        std::random_device randomDevice;
-        std::mt19937_64 randomEngine(randomDevice());
-        std::uniform_int_distribution<int> randomIntDistribution(0, static_cast<int>(neighbors.size()) - 1);
+        constexpr int maxIterations = 1000;
 
-        return neighbors[randomIntDistribution(randomEngine)];
+        for (int iteration = 0; iteration < maxIterations; ++iteration)
+        {
+            int vertex = vertexDistribution(sRandomEngine);
+            int cls = classDistribution(sRandomEngine);
+
+            if (solution.getVertexClass(vertex) != cls)
+            {
+                Solution newSolution = solution;
+                int newSolutionCost = solutionCost + graph.getSolutionCostDifference(solution, vertex, cls);
+                newSolution.setVertexClass(vertex, cls);
+
+                if (criterion->evaluate(graph, newSolution))
+                {
+                    return std::pair<Solution, double>(newSolution, newSolutionCost);
+                }
+            }
+        }
+
+        return std::pair<Solution, double>(solution, solutionCost);
     }
 
-    Solution PickNDropNeighborhood::generateBest(const Solution& solution, const Graph& graph, std::shared_ptr<const Criterion> criterion) const
+    std::pair<Solution, double> PickNDropNeighborhood::generateBest(const Solution& solution, double solutionCost, const Graph& graph, std::shared_ptr<const Criterion> criterion) const
     {
-        Solution best = solution;
-        double bestDeltaCost = 0;
+        Solution bestSolution = solution;
+        double bestSolutionCost = solutionCost;
 
         int previousModifiedVertex = 0;
 
-        for (int i = 0; i < solution.getNbVertices(); i++)
+        for (int vertex = 0; vertex < solution.getNbVertices(); vertex++)
         {
-            for (int j = 0; j < solution.getNbClasses(); j++)
+            for (int cls = 0; cls < solution.getNbClasses(); cls++)
             {
-                if (solution.getVertexClass(i) == j)
+                if (solution.getVertexClass(vertex) == cls)
                 {
                     continue;
                 }
 
-                double currentDeltaCost = graph.getSolutionCostDifference(solution, i, j);
-                if (currentDeltaCost < bestDeltaCost)
+                double newSolutionCost = solutionCost + graph.getSolutionCostDifference(solution, vertex, cls);
+
+                if (newSolutionCost < bestSolutionCost)
                 {
-                    int previousModifiedVertexClass = best.getVertexClass(previousModifiedVertex);
+                    int previousModifiedVertexClass = bestSolution.getVertexClass(previousModifiedVertex);
 
-                    best.setVertexClass(previousModifiedVertex, solution.getVertexClass(previousModifiedVertex));
+                    bestSolution.setVertexClass(previousModifiedVertex, solution.getVertexClass(previousModifiedVertex));
 
-                    best.setVertexClass(i, j);
+                    bestSolution.setVertexClass(vertex, cls);
 
-                    if (criterion->evaluate(graph, best))
+                    if (criterion->evaluate(graph, bestSolution))
                     {
-                        bestDeltaCost = currentDeltaCost;
+                        bestSolutionCost = newSolutionCost;
 
-                        previousModifiedVertex = i;
+                        previousModifiedVertex = vertex;
                     }
                     else
                     {
-                        best.setVertexClass(i, solution.getVertexClass(i));
-                        best.setVertexClass(previousModifiedVertex, previousModifiedVertexClass);
+                        bestSolution.setVertexClass(vertex, solution.getVertexClass(vertex));
+                        bestSolution.setVertexClass(previousModifiedVertex, previousModifiedVertexClass);
                     }
                 }
             }
         }
-        return best;
+
+        return std::pair<Solution, double>(bestSolution, bestSolutionCost);
     }
 
-    Solution PickNDropNeighborhood::generateBest(const Solution& solution, const Graph& graph, std::shared_ptr<const Criterion> criterion, const std::list<Solution>& exceptions) const
+    std::pair<Solution, double> PickNDropNeighborhood::generateBest(const Solution& solution, double solutionCost, const Graph& graph, std::shared_ptr<const Criterion> criterion, const std::list<Solution>& exceptions) const
     {
-        Solution best = solution;
-        double bestDeltaCost = 0;
+        Solution bestSolution = solution;
+        double bestSolutionCost = solutionCost;
+
         bool isSet = false;
+
         int previousModifiedVertex = 0;
 
-        for (int i = 0; i < solution.getNbVertices(); i++)
+        for (int vertex = 0; vertex < solution.getNbVertices(); vertex++)
         {
-            for (int j = 0; j < solution.getNbClasses(); j++)
+            for (int cls = 0; cls < solution.getNbClasses(); cls++)
             {
-                if (solution.getVertexClass(i) == j)
+                if (solution.getVertexClass(vertex) == cls)
                 {
                     continue;
                 }
-                double currentDeltaCost = graph.getSolutionCostDifference(solution, i, j);
-                if (currentDeltaCost < bestDeltaCost || !isSet)
-                {
-                    int previousModifiedVertexClass = best.getVertexClass(previousModifiedVertex);
 
-                    best.setVertexClass(previousModifiedVertex, solution.getVertexClass(previousModifiedVertex));
-                    best.setVertexClass(i, j);
+                double currentSolutionCost = solutionCost + graph.getSolutionCostDifference(solution, vertex, cls);
+
+                if (currentSolutionCost < bestSolutionCost || !isSet)
+                {
+                    int previousModifiedVertexClass = bestSolution.getVertexClass(previousModifiedVertex);
+
+                    bestSolution.setVertexClass(previousModifiedVertex, solution.getVertexClass(previousModifiedVertex));
+                    bestSolution.setVertexClass(vertex, cls);
 
                     bool isInExceptions = false;
-                    bool isValid = criterion->evaluate(graph, best);
+
+                    bool isValid = criterion->evaluate(graph, bestSolution);
                     if (isValid)
-                        isInExceptions = (exceptions.end() != std::find(exceptions.begin(), exceptions.end(), best));
+                    {
+                        isInExceptions = (std::find(exceptions.begin(), exceptions.end(), bestSolution) != exceptions.end());
+                    }
 
                     if (isValid && !isInExceptions)
                     {
-                        bestDeltaCost = currentDeltaCost;
-                        previousModifiedVertex = i;
+                        bestSolutionCost = currentSolutionCost;
+                        previousModifiedVertex = vertex;
                         isSet = true;
                     }
                     else
                     {
-                        best.setVertexClass(i, solution.getVertexClass(i));
-                        best.setVertexClass(previousModifiedVertex, previousModifiedVertexClass);
+                        bestSolution.setVertexClass(vertex, solution.getVertexClass(vertex));
+                        bestSolution.setVertexClass(previousModifiedVertex, previousModifiedVertexClass);
                     }
                 }
             }
         }
-        return best;
+
+        return std::pair<Solution, double>(bestSolution, bestSolutionCost);
     }
 } // namespace Yolo

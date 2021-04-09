@@ -35,16 +35,16 @@ namespace Yolo
         Solution currentSolution = *currentSolutionOpt;
         double currentSolutionCost = mGraph.getSolutionCost(currentSolution);
 
-        Solution bestNeighbor = mNeighborhood->generateBest(currentSolution, mGraph, mCriterion);
-        double bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
+        auto [bestNeighbor, bestNeighborCost] = mNeighborhood->generateBest(currentSolution, currentSolutionCost, mGraph, mCriterion);
 
-        while (abs(currentSolutionCost - bestNeighborCost) > mEpsilon)
+        while (abs(currentSolutionCost - bestNeighborCost) > mEpsilon && mIterationCount < mMaxIterations)
         {
             currentSolution = bestNeighbor;
             currentSolutionCost = bestNeighborCost;
 
-            bestNeighbor = mNeighborhood->generateBest(currentSolution, mGraph, mCriterion);
-            bestNeighborCost = mGraph.getSolutionCost(bestNeighbor);
+            const auto [newNeighbor, newNeighborCost] = mNeighborhood->generateBest(currentSolution, currentSolutionCost, mGraph, mCriterion);
+            bestNeighbor = newNeighbor;
+            bestNeighborCost = newNeighborCost;
 
             ++mIterationCount;
         }

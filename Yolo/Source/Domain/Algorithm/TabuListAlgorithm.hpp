@@ -13,7 +13,7 @@ namespace Yolo
     public:
         TabuListAlgorithm(const Graph& graph, int nbClasses);
 
-        virtual inline std::string getName() const override { return "Tabu"; }
+        virtual inline std::string getName() const override { return "Tabu list"; }
         virtual std::string getDetails() const override;
 
         inline void setNeighborhood(std::shared_ptr<const Neighborhood> neighborhood) { mNeighborhood = neighborhood; }
