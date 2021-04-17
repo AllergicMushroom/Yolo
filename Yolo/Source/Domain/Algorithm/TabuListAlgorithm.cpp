@@ -54,7 +54,6 @@ namespace Yolo
         Solution veryBest = initialSolution;
         double veryBestCost = mActualSolutionCost;
 
-        // Solution bestNeighbor = mNeighborhood->generateBestWithExceptions(mGraph, mTabu, mCriterion, initialSolution);
         auto [bestNeighbor, bestNeighborCost] = mNeighborhood->generateBest(mActualSolution, mActualSolutionCost, mGraph, mCriterion);
 
         int iter = 0;
