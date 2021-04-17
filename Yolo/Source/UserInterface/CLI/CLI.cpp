@@ -294,15 +294,15 @@ void processArgs(int argc, char** argv)
             {
                 if (argument[1] == "swap")
                 {
-                    GD.setNeighborhood(new Yolo::SwapNeighborhood());
+                    GD.setNeighborhood(std::shared_ptr<Yolo::SwapNeighborhood>(new Yolo::SwapNeighborhood()));
                 }
                 else if (argument[1] == "sweep")
                 {
-                    GD.setNeighborhood(new Yolo::SweepNeighborhood());
+                    GD.setNeighborhood(std::shared_ptr<Yolo::SweepNeighborhood>(new Yolo::SweepNeighborhood()));
                 }
                 else if (argument[1] == "pick_n_drop")
                 {
-                    GD.setNeighborhood(new Yolo::PickNDropNeighborhood());
+                    GD.setNeighborhood(std::shared_ptr<Yolo::PickNDropNeighborhood>(new Yolo::PickNDropNeighborhood()));
                 }
                 else
                 {
@@ -331,15 +331,15 @@ void processArgs(int argc, char** argv)
             {
                 if (argument[1] == "swap")
                 {
-                    TL.setNeighborhood(new Yolo::SwapNeighborhood());
+                    TL.setNeighborhood(std::shared_ptr<Yolo::SwapNeighborhood>(new Yolo::SwapNeighborhood()));
                 }
                 else if (argument[1] == "sweep")
                 {
-                    TL.setNeighborhood(new Yolo::SweepNeighborhood());
+                    TL.setNeighborhood(std::shared_ptr<Yolo::SweepNeighborhood>(new Yolo::SweepNeighborhood()));
                 }
                 else if (argument[1] == "pick_n_drop")
                 {
-                    TL.setNeighborhood(new Yolo::PickNDropNeighborhood());
+                    TL.setNeighborhood(std::shared_ptr<Yolo::PickNDropNeighborhood>(new Yolo::PickNDropNeighborhood()));
                 }
                 else
                 {
@@ -372,15 +372,15 @@ void processArgs(int argc, char** argv)
             {
                 if (argument[1] == "swap")
                 {
-                    SA.setNeighborhood(new Yolo::SwapNeighborhood());
+                    SA.setNeighborhood(std::shared_ptr<Yolo::SwapNeighborhood>(new Yolo::SwapNeighborhood()));
                 }
                 else if (argument[1] == "sweep")
                 {
-                    SA.setNeighborhood(new Yolo::SweepNeighborhood());
+                    SA.setNeighborhood(std::shared_ptr<Yolo::SweepNeighborhood>(new Yolo::SweepNeighborhood()));
                 }
                 else if (argument[1] == "pick_n_drop")
                 {
-                    SA.setNeighborhood(new Yolo::PickNDropNeighborhood());
+                    SA.setNeighborhood(std::shared_ptr<Yolo::PickNDropNeighborhood>(new Yolo::PickNDropNeighborhood()));
                 }
                 else
                 {

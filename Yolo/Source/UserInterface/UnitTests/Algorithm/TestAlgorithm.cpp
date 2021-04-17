@@ -18,11 +18,10 @@ static constexpr char* instance = "Instances/quatreSommets.txt";
 
 TEST(AlgorithmsSuite, ExplicitEnumerationValid)
 {
-    Yolo::AlwaysValidCriterion alwaysValid = Yolo::AlwaysValidCriterion();
-    Yolo::SimilarSizeCriterion similarSize = Yolo::SimilarSizeCriterion(1);
+    std::shared_ptr<Yolo::AlwaysValidCriterion> alwaysValid = std::shared_ptr<Yolo::AlwaysValidCriterion>(new Yolo::AlwaysValidCriterion());
+    std::shared_ptr<Yolo::SimilarSizeCriterion> similarSize = std::shared_ptr<Yolo::SimilarSizeCriterion>(new Yolo::SimilarSizeCriterion(1));
 
-    Yolo::Criterion* criterions[] = {&alwaysValid,
-                                     &similarSize};
+    std::shared_ptr<Yolo::Criterion> criterions[] = {alwaysValid, similarSize};
 
     Yolo::GraphFileRepository graphRepository;
 
@@ -49,11 +48,10 @@ TEST(AlgorithmsSuite, ExplicitEnumerationValid)
 
 TEST(AlgorithmsSuite, ImplicitEnumerationValid)
 {
-    Yolo::AlwaysValidCriterion alwaysValid = Yolo::AlwaysValidCriterion();
-    Yolo::SimilarSizeCriterion similarSize = Yolo::SimilarSizeCriterion(1);
+    std::shared_ptr<Yolo::AlwaysValidCriterion> alwaysValid = std::shared_ptr<Yolo::AlwaysValidCriterion>(new Yolo::AlwaysValidCriterion());
+    std::shared_ptr<Yolo::SimilarSizeCriterion> similarSize = std::shared_ptr<Yolo::SimilarSizeCriterion>(new Yolo::SimilarSizeCriterion(1));
 
-    Yolo::Criterion* criterions[] = {&alwaysValid,
-                                     &similarSize};
+    std::shared_ptr<Yolo::Criterion> criterions[] = {alwaysValid, similarSize};
 
     Yolo::GraphFileRepository graphRepository;
 
@@ -80,11 +78,10 @@ TEST(AlgorithmsSuite, ImplicitEnumerationValid)
 
 TEST(AlgorithmsSuite, ExplicitImplicitEquality)
 {
-    Yolo::AlwaysValidCriterion alwaysValid = Yolo::AlwaysValidCriterion();
-    Yolo::SimilarSizeCriterion similarSize = Yolo::SimilarSizeCriterion(1);
+    std::shared_ptr<Yolo::AlwaysValidCriterion> alwaysValid = std::shared_ptr<Yolo::AlwaysValidCriterion>(new Yolo::AlwaysValidCriterion());
+    std::shared_ptr<Yolo::SimilarSizeCriterion> similarSize = std::shared_ptr<Yolo::SimilarSizeCriterion>(new Yolo::SimilarSizeCriterion(1));
 
-    Yolo::Criterion* criterions[] = {&alwaysValid,
-                                     &similarSize};
+    std::shared_ptr<Yolo::Criterion> criterions[] = {alwaysValid, similarSize};
 
     Yolo::GraphFileRepository graphRepository;
 
@@ -115,17 +112,16 @@ TEST(AlgorithmsSuite, ExplicitImplicitEquality)
 
 TEST(AlgorithmsSuite, GradientDescentValid)
 {
-    Yolo::AlwaysValidCriterion alwaysValid = Yolo::AlwaysValidCriterion();
-    Yolo::SimilarSizeCriterion similarSize = Yolo::SimilarSizeCriterion(1);
+    std::shared_ptr<Yolo::AlwaysValidCriterion> alwaysValid = std::shared_ptr<Yolo::AlwaysValidCriterion>(new Yolo::AlwaysValidCriterion());
+    std::shared_ptr<Yolo::SimilarSizeCriterion> similarSize = std::shared_ptr<Yolo::SimilarSizeCriterion>(new Yolo::SimilarSizeCriterion(1));
 
-    Yolo::Criterion* criterions[] = {&alwaysValid,
-                                     &similarSize};
+    std::shared_ptr<Yolo::Criterion> criterions[] = {alwaysValid, similarSize};
 
-    Yolo::SwapNeighborhood swap = Yolo::SwapNeighborhood();
-    Yolo::SweepNeighborhood sweep = Yolo::SweepNeighborhood();
-    Yolo::PickNDropNeighborhood pnd = Yolo::PickNDropNeighborhood();
+    std::shared_ptr<Yolo::SwapNeighborhood> swap = std::shared_ptr<Yolo::SwapNeighborhood>(new Yolo::SwapNeighborhood());
+    std::shared_ptr<Yolo::SweepNeighborhood> sweep = std::shared_ptr<Yolo::SweepNeighborhood>(new Yolo::SweepNeighborhood());
+    std::shared_ptr<Yolo::PickNDropNeighborhood> pnd = std::shared_ptr<Yolo::PickNDropNeighborhood>(new Yolo::PickNDropNeighborhood());
 
-    Yolo::Neighborhood* neighborhoods[] = {&swap, &sweep, &pnd};
+    std::shared_ptr<Yolo::Neighborhood> neighborhoods[] = {swap, sweep, pnd};
 
     Yolo::GraphFileRepository graphRepository;
 
@@ -157,17 +153,16 @@ TEST(AlgorithmsSuite, GradientDescentValid)
 
 TEST(AlgorithmsSuite, TabuListAlgorithmValid)
 {
-    Yolo::AlwaysValidCriterion alwaysValid = Yolo::AlwaysValidCriterion();
-    Yolo::SimilarSizeCriterion similarSize = Yolo::SimilarSizeCriterion(1);
+    std::shared_ptr<Yolo::AlwaysValidCriterion> alwaysValid = std::shared_ptr<Yolo::AlwaysValidCriterion>(new Yolo::AlwaysValidCriterion());
+    std::shared_ptr<Yolo::SimilarSizeCriterion> similarSize = std::shared_ptr<Yolo::SimilarSizeCriterion>(new Yolo::SimilarSizeCriterion(1));
 
-    Yolo::Criterion* criterions[] = {&alwaysValid,
-                                     &similarSize};
+    std::shared_ptr<Yolo::Criterion> criterions[] = {alwaysValid, similarSize};
 
-    Yolo::SwapNeighborhood swap = Yolo::SwapNeighborhood();
-    Yolo::SweepNeighborhood sweep = Yolo::SweepNeighborhood();
-    Yolo::PickNDropNeighborhood pnd = Yolo::PickNDropNeighborhood();
+    std::shared_ptr<Yolo::SwapNeighborhood> swap = std::shared_ptr<Yolo::SwapNeighborhood>(new Yolo::SwapNeighborhood());
+    std::shared_ptr<Yolo::SweepNeighborhood> sweep = std::shared_ptr<Yolo::SweepNeighborhood>(new Yolo::SweepNeighborhood());
+    std::shared_ptr<Yolo::PickNDropNeighborhood> pnd = std::shared_ptr<Yolo::PickNDropNeighborhood>(new Yolo::PickNDropNeighborhood());
 
-    Yolo::Neighborhood* neighborhoods[] = {&swap, &sweep, &pnd};
+    std::shared_ptr<Yolo::Neighborhood> neighborhoods[] = {swap, sweep, pnd};
 
     Yolo::GraphFileRepository graphRepository;
 
