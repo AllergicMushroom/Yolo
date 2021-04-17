@@ -67,17 +67,32 @@ namespace Yolo
         return mClassCardinals[c];
     }
 
-    bool Solution::operator==(const Solution& sol) const
+    bool Solution::operator==(const Solution& solution) const
     {
-        if (sol.getNbVertices() != getNbVertices())
+        if (solution.getNbVertices() != getNbVertices())
             return false;
 
-        for (int i = 0; i < sol.getNbVertices(); i++)
+        for (int i = 0; i < solution.getNbVertices(); i++)
         {
-            if (sol.getVertexClass(i) != getVertexClass(i))
+            if (solution.getVertexClass(i) != getVertexClass(i))
                 return false;
         }
+
         return true;
+    }
+
+    bool Solution::operator!=(const Solution& solution) const
+    {
+        if (solution.getNbVertices() != getNbVertices())
+            return true;
+
+        for (int i = 0; i < solution.getNbVertices(); i++)
+        {
+            if (solution.getVertexClass(i) != getVertexClass(i))
+                return true;
+        }
+
+        return false;
     }
 
     std::string Solution::toString() const

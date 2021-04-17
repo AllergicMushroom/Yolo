@@ -23,7 +23,9 @@ namespace Yolo
 
         int getClassCardinal(int c) const;
 
-        bool operator==(const Solution& sol) const;
+        bool operator==(const Solution& solution) const;
+        bool operator!=(const Solution& solution) const;
+
         std::string toString() const;
 
     private:
