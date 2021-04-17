@@ -64,7 +64,7 @@ namespace Yolo
 
                 if (criterion->evaluate(graph, newSolution))
                 {
-                    int newSolutionCost = solutionCost + graph.getSolutionCostDifference(solution, vertex, cls);
+                    double newSolutionCost = solutionCost + graph.getSolutionCostDifference(solution, vertex, cls);
                     neighbors[index++] = std::pair<Solution, double>(newSolution, newSolutionCost);
                 }
             }
@@ -112,7 +112,7 @@ namespace Yolo
             if (solution.getVertexClass(vertex) != cls)
             {
                 Solution newSolution = solution;
-                int newSolutionCost = solutionCost + graph.getSolutionCostDifference(solution, vertex, cls);
+                double newSolutionCost = solutionCost + graph.getSolutionCostDifference(solution, vertex, cls);
                 newSolution.setVertexClass(vertex, cls);
 
                 if (criterion->evaluate(graph, newSolution))
