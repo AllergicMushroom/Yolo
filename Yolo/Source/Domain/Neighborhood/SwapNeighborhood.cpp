@@ -181,6 +181,7 @@ namespace Yolo
                 bestSolution.setVertexClass(previousModifiedVertices[0], solution.getVertexClass(previousModifiedVertices[0]));
                 bestSolution.setVertexClass(previousModifiedVertices[1], solution.getVertexClass(previousModifiedVertices[1]));
 
+                /* Calculate new solution cost */
                 double newSolutionCost = solutionCost;
 
                 newSolutionCost += graph.getSolutionCostDifference(bestSolution, vertex1, cls2);
@@ -188,6 +189,7 @@ namespace Yolo
 
                 newSolutionCost += graph.getSolutionCostDifference(bestSolution, vertex2, cls1);
 
+                /* Revert to original solution */
                 bestSolution.setVertexClass(vertex1, cls1);
                 bestSolution.setVertexClass(vertex2, cls2);
 
