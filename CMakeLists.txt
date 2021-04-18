@@ -46,8 +46,11 @@ file(GLOB_RECURSE LIB_FILES
     "${SRC_ROOT}/Technical/**.cpp"
 )
 
+set(COMMON_LIBRARIES "spdlog")
+
 set(YOLO_LIBRARY "Yolo")
 add_library(${YOLO_LIBRARY} STATIC ${LIB_FILES})
+target_link_libraries(${YOLO_LIBRARY} ${COMMON_LIBRARIES})
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${LIB_FILES})
 
@@ -55,8 +58,6 @@ set(SANDBOX_APP_NAME "Sandbox")
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${SANDBOX_APP_NAME})
 
 #################
-
-set(COMMON_LIBRARIES "spdlog")
 
 #### Sandbox for developping purposes ####
 
